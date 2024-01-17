@@ -1,1 +1,2 @@
-# Webserv
+# IRC
+Internet Relay Chat
