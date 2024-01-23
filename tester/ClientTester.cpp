@@ -28,8 +28,8 @@ std::string receiveIRCResponse(int socket) {
 }
 
 int main() {
-  const char* serverAddress = "irc.freenode.net";
-  const char* serverPort = "6667";
+  const char* serverAddress = "0.0.0.0";
+  const char* serverPort = "6677";
   const char* channel = "#your_channel_name";
   const char* nickname = "your_nickname";
 
@@ -60,6 +60,7 @@ int main() {
     freeaddrinfo(serverInfo);
     return 1;
   }
+  std::cout << "connected to server!\n";
 
   freeaddrinfo(serverInfo);
 

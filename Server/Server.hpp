@@ -1,6 +1,7 @@
 #ifndef SERVER_HPP
 #define SERVER_HPP
 
+#include <arpa/inet.h>
 #include <netdb.h>
 #include <sys/select.h>
 #include <sys/socket.h>
@@ -25,6 +26,7 @@ class Server {
   static std::map<std::string, Channel *> _channelNames;
 
   void init();  // Server init : Select function
+  void init_tmp();
 
   // Wrapper functions
   void Getaddrinfo(const char *node, const char *service,

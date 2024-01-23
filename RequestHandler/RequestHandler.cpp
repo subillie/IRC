@@ -8,10 +8,11 @@ void RequestHandler::init() {
 RequestHandler::RequestHandler(int clientFd, std::string request) {
   init();
   // parse(request);  //=> 토큰 저장
-  (void)clientFd;
+  this->_clientFd = clientFd;
   (void)request;
-  _token[0] = "PRIVMSG";  // command test
+  _token.push_back("PRIVMSG");  // command test
 }
+
 void RequestHandler::execute() {
   // find command
   std::map<std::string, RequestHandler::CommandFunction>::iterator found =
@@ -29,9 +30,13 @@ void RequestHandler::join(int fd, std::vector<std::string> token) {
   (void)token;
 }
 
+#include <stdio.h>
 void RequestHandler::privmsg(int fd, std::vector<std::string> token) {
   (void)fd;
   (void)token;
   const char* response = "Hello from the server!";  // client connection test
-  send(_clientFd, response, strlen(response), 0);
+  printf("client fd: %d\n", _clientFd);
+  if (send(_clientFd, response, strlen(response), 0) == -1) {
+    perror("send: ");
+  }
 }
