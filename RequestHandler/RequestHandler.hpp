@@ -1,6 +1,8 @@
 #ifndef REQUESTHANDLER_HPP
 #define REQUESTHANDLER_HPP
 
+#include <sys/socket.h>
+
 #include <functional>
 #include <map>
 #include <string>

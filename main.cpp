@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "Server.hpp"
+#include "Server/Server.hpp"
 
 void signalHandler(int signum) { (void)signum; }
 
