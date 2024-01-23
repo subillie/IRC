@@ -7,7 +7,10 @@ void RequestHandler::init() {
 
 RequestHandler::RequestHandler(int clientFd, std::string request) {
   init();
-  // parse(request); => 토큰 저장
+  // parse(request);  //=> 토큰 저장
+  (void)clientFd;
+  (void)request;
+  _token[0] = "PRIVMSG";  // command test
 }
 void RequestHandler::execute() {
   // find command
@@ -21,5 +24,14 @@ void RequestHandler::execute() {
 }
 
 // commands
-void RequestHandler::join(int fd, std::vector<std::string> token) {}
-void RequestHandler::privmsg(int fd, std::vector<std::string> token) {}
+void RequestHandler::join(int fd, std::vector<std::string> token) {
+  (void)fd;
+  (void)token;
+}
+
+void RequestHandler::privmsg(int fd, std::vector<std::string> token) {
+  (void)fd;
+  (void)token;
+  const char* response = "Hello from the server!";  // client connection test
+  send(_clientFd, response, strlen(response), 0);
+}
