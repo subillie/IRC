@@ -12,6 +12,13 @@ class Client {
 
  public:
   Client(int fd);
+  void setUsername();
+  void setNickname();
+  void setPassword();
+  const int &getFd() const;
+  const std::string &getUsername() const;
+  const std::string &getNickname() const;
+  const std::string &getPassword() const;
 };
 
 #endif
