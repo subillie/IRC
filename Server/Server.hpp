@@ -16,7 +16,7 @@ class Channel;
 
 class Server {
  private:
-  char *_port;
+  int _port;
   char *_password;
   int _serverFd;
   fd_set _readSet;   // 초기 상태의 set
@@ -39,7 +39,7 @@ class Server {
   static std::map<std::string, Client *> _clientNicks;
   static std::map<std::string, Channel *> _channelNames;
 
-  Server(char *port, char *password);
+  Server(int port, char *password);
 
   void run();  // event loop
   void addClient(int fd);

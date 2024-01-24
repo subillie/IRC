@@ -5,9 +5,7 @@
 #include "../Client/Client.hpp"
 #include "../RequestHandler/RequestHandler.hpp"
 
-Server::Server(char *port, char *password) : _port(port), _password(password) {
-  (void)_password;  // 임시
-}
+Server::Server(int port, char *password) : _port(port), _password(password) {}
 
 void Server::init() {
   _serverFd = Socket(PF_INET, SOCK_STREAM, 0);
@@ -15,7 +13,7 @@ void Server::init() {
   struct sockaddr_in serverAddr;
   memset(&serverAddr, 0, sizeof(struct sockaddr_in));
   serverAddr.sin_family = AF_INET;  // IPv4
-  serverAddr.sin_port = htons(atoi(_port));
+  serverAddr.sin_port = htons(_port);
   serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
   Bind(_serverFd, reinterpret_cast<struct sockaddr *>(&serverAddr),
@@ -62,7 +60,7 @@ void Server::run() {
         else {
           char buffer[512];
           memset(buffer, 0, sizeof(buffer));
-          if (Recv(clientFd, buffer, sizeof(buffer) - 1, 0) == 0) {
+          if (Recv(clientFd, buffer, sizeof(buffer), 0) == 0) {
             std::cout << "client Fd: " << clientFd << "\n";
             deleteClient(clientFd);
             continue;

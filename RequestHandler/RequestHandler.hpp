@@ -3,8 +3,9 @@
 
 #include <sys/socket.h>
 
-#include <functional>
+#include <iostream>
 #include <map>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -18,12 +19,11 @@ class RequestHandler {
   std::map<std::string, CommandFunction> _commandMap;
 
  public:
-  RequestHandler(int clientFd, std::string request);  // init map
-  // void parse(std::string request);
-  void privmsg(int fd, std::vector<std::string> token);
-  void join(int fd, std::vector<std::string> token);
-  void init();
+  RequestHandler(int clientFd, const std::string &request);  // init map
+  void parse();
   void execute();  // execute command and handle errors
+  void join(int fd, std::vector<std::string> token);
+  void privmsg(int fd, std::vector<std::string> token);
 };
 
 #endif

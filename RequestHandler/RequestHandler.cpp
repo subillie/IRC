@@ -1,41 +1,44 @@
 #include "RequestHandler.hpp"
 
-void RequestHandler::init() {
+RequestHandler::RequestHandler(int clientFd, const std::string& request)
+    : _clientFd(clientFd) {
+  size_t found = request.find("\r\n");  // CRLF
+  _request = request.substr(0, found);
   _commandMap["JOIN"] = &RequestHandler::join;
   _commandMap["PRIVMSG"] = &RequestHandler::privmsg;
+  // 추후에 명령어 추가될때마다 함수 포인터 추가
 }
 
-RequestHandler::RequestHandler(int clientFd, std::string request) {
-  init();
-  // parse(request);  //=> 토큰 저장
-  this->_clientFd = clientFd;
-  (void)request;
-  _token.push_back("PRIVMSG");  // command test
+void RequestHandler::parse() {
+  std::stringstream ss(_request);
+  std::string str;
+  while (getline(ss, str, ' ')) {
+    _token.push_back(str);
+  }
 }
 
 void RequestHandler::execute() {
-  // find command
+  parse();
+  // Find command
   std::map<std::string, RequestHandler::CommandFunction>::iterator found =
       _commandMap.find(_token[0]);
   if (found == _commandMap.end()) {
-    // send unknown command error to client
+    // throw err
     return;
   }
   (this->*(found->second))(_clientFd, _token);
 }
 
-// commands
+// Commands
 void RequestHandler::join(int fd, std::vector<std::string> token) {
   (void)fd;
   (void)token;
 }
 
-#include <stdio.h>
 void RequestHandler::privmsg(int fd, std::vector<std::string> token) {
   (void)fd;
   (void)token;
   const char* response = "Hello from the server!";  // client connection test
-  printf("client fd: %d\n", _clientFd);
   if (send(_clientFd, response, strlen(response), 0) == -1) {
     perror("send: ");
   }
