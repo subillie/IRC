@@ -4,6 +4,10 @@
 
 #include "Server/Server.hpp"
 
+std::map<int, Client *> Server::_clientFds;
+std::map<std::string, Client *> Server::_clientNicks;
+std::map<std::string, Channel *> Server::_channelNames;
+
 void signalHandler(int signum) { (void)signum; }
 
 int main(int ac, char **av) {
@@ -11,9 +15,12 @@ int main(int ac, char **av) {
     std::cerr << "Usage: ./ircserver <port> <password>" << std::endl;
     return (1);
   }
-
   signal(SIGINT, signalHandler);
-  Server server(av[1], av[2]);
-  server.run();
+  try {
+    Server server(av[1], av[2]);
+    server.run();
+  } catch (std::exception &e) {
+    std::cerr << e.what() << std::endl;
+  }
   return 0;
 }

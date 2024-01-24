@@ -8,6 +8,7 @@ SRCS	=	Channel/Channel.cpp \
 			Client/Client.cpp \
 			RequestHandler/RequestHandler.cpp \
 			Server/Server.cpp \
+			Server/Wrappers.cpp \
 			main.cpp
 
 OBJS 	=	$(SRCS:%.cpp=%.o)
