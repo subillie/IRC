@@ -13,10 +13,8 @@ void Server::init() {
   serverAddr.sin_family = AF_INET;  // IPv4
   serverAddr.sin_port = htons(_port);
   serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-  int option = 1;
 
-  setsockopt(_serverFd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option));
-
+  Setsockopt(_serverFd, SOL_SOCKET, SO_REUSEADDR);
   Bind(_serverFd, reinterpret_cast<struct sockaddr *>(&serverAddr),
        sizeof(serverAddr));
   Listen(_serverFd, FD_MAX);
@@ -44,39 +42,53 @@ void Server::run() {
     }
     // Accept connection and handle client's requirements
     for (int i = 0; i <= fdCount; i++) {
-      // Accept connection of a new client
       if (FD_ISSET(i, &_readySet)) {
+        // Accept connection of a new client
         if (i == _serverFd && _clientFds.size() <= FD_MAX) {
           sockaddr_in clientAddr;
           socklen_t clientAddrLen = sizeof(clientAddr);
           clientFd = Accept(_serverFd,
                             reinterpret_cast<struct sockaddr *>(&clientAddr),
                             &clientAddrLen);
-
-          // delete
           printPikachu();
           printHi();
           addClient(clientFd);  // client 할당
           if (fdCount < clientFd) {
             fdCount = clientFd;
           }
-        }
-        // Handle requirements of 기존 client
-        else {
+          // Handle requirements of 기존 client
+        } else {
           char buffer[512];
           memset(buffer, 0, sizeof(buffer));
           if (Recv(clientFd, buffer, sizeof(buffer), 0) == 0) {
-            printDebug("client Fd", clientFd);
-            printDebug("buffer", buffer);
             deleteClient(clientFd);
             continue;
           }
-          RequestHandler requestHandler(clientFd, buffer);
-          requestHandler.execute();
+          printDebug("buffer", buffer);  // TODO: delete
+          parse(buffer);
+          while (!_requests.empty()) {
+            RequestHandler requestHandler(_clientFds[clientFd],
+                                          _requests.front(), _password);
+            _requests.pop();
+            requestHandler.execute();
+          }
           memset(buffer, 0, sizeof(buffer));
         }
       }
     }
+  }
+}
+
+void Server::parse(const std::string &buffer) {
+  size_t found = buffer.find("\r\n");
+  size_t len = found + 1;
+  for (size_t curr = 0; curr < buffer.length();) {
+    // std::string tmp = buffer.substr(curr, len);
+    // printDebug("**tmp", tmp);
+    _requests.push(buffer.substr(curr, len));
+    curr = found + 2;
+    found = buffer.find("\r\n", curr);
+    len = found - curr;
   }
 }
 

@@ -1,9 +1,10 @@
 #include "RequestHandler.hpp"
 
-RequestHandler::RequestHandler(int clientFd, const std::string& request)
-    : _clientFd(clientFd) {
-  size_t found = request.find("\r\n");  // CRLF
-  _request = request.substr(0, found);
+RequestHandler::RequestHandler(Client* client, const std::string& request,
+                               const std::string& password)
+    : _client(client), _request(request), _password(password) {
+  _commandMap["CAP"] = &RequestHandler::cap;
+  _commandMap["PASS"] = &RequestHandler::pass;
   _commandMap["JOIN"] = &RequestHandler::join;
   _commandMap["PRIVMSG"] = &RequestHandler::privmsg;
   // 추후에 명령어 추가될때마다 함수 포인터 추가
@@ -23,24 +24,67 @@ void RequestHandler::execute() {
   // Find command
   std::map<std::string, RequestHandler::CommandFunction>::iterator found =
       _commandMap.find(_command);
+  // 임시
   if (found == _commandMap.end()) {
     // throw err
     return;
   }
-  (this->*(found->second))(_clientFd, _token);
+  (this->*(found->second))();
 }
 
 // Commands
-void RequestHandler::join(int fd, std::vector<std::string> token) {
-  (void)fd;
-  (void)token;
-}
 
-void RequestHandler::privmsg(int fd, std::vector<std::string> token) {
-  (void)fd;
-  (void)token;
-  const char* response = "Hello from the server!";  // client connection test
-  if (send(_clientFd, response, strlen(response), 0) == -1) {
-    perror("send: ");
+void sendToClient(int socket, const std::string& msg) {
+  std::string reply = msg + "\r\n";
+  if (send(socket, reply.c_str(), reply.size(), 0) == -1) {
+    perror("send: ");  // throw ??
   }
 }
+
+void RequestHandler::cap() {
+  // Make reply for...
+  std::string reply;
+  if (_token[1] == "LS") {  // CAP LS
+    reply = "CAP * LS :";
+  } else if (_token[1] == "END") {  // CAP END
+    reply = "";
+  }
+  sendToClient(_client->getFd(), reply);
+}
+
+// prefix
+void RequestHandler::nick() {
+  // 닉네임 규칙 확인
+  // 닉네임 중복 체크
+
+  // 이미 닉네임이 있어도 수정되도록
+}
+
+void RequestHandler::user() {}
+
+// set a ‘connection password’
+void RequestHandler::pass() {
+  // 가입 여부 확인 -> 가입 전까지는 pass 여러 번 받을 수 있음, 마지막꺼만
+  // 유효함, 등록되면 변경 불가 server pass 일치 여부 확인
+  // 일치하지 않으면 passdmismatch
+  //
+}
+
+void RequestHandler::join() {
+  // if (no param) re
+}
+
+void RequestHandler::privmsg() {
+  const char* response = "Hello from the server!";  // client connection test
+  if (send(_client->getFd(), response, strlen(response), 0) == -1) {
+    throw std::runtime_error("Send error");
+  }
+}
+
+void RequestHandler::kick() {}
+
+void RequestHandler::invite() {}
+
+void RequestHandler::topic() {}
+
+void RequestHandler::mode() {}

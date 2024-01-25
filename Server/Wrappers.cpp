@@ -8,10 +8,17 @@ int Server::Socket(int domain, int type, int protocol) {
   return val;
 }
 
+void Server::Setsockopt(int s, int level, int optname) {
+  int optval = 1;
+  if (setsockopt(s, level, optname, &optval, sizeof(optval)) < 0) {
+    throw std::runtime_error("Setsockopt error");
+  }
+}
+
 int Server::Bind(int sockfd, struct sockaddr *my_addr, int addrlen) {
   int val = bind(sockfd, my_addr, addrlen);
   if (val == -1) {
-    close(sockfd);
+    Close(sockfd);
     throw std::runtime_error("Bind error");
   }
   return val;
@@ -50,7 +57,7 @@ int Server::Accept(int s, struct sockaddr *addr, socklen_t *addrlen) {
 int Server::Recv(int fd, char *buffer, int bufLen, int n) {
   int val = recv(fd, buffer, bufLen, n);
   if (val < 0) {
-    perror("recv: ");
+    Close(fd);
     throw std::runtime_error("Recv error");
   }
   return val;
