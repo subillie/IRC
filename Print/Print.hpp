@@ -48,7 +48,9 @@ void printWhite(const T& val) {
 
 template <typename T>
 void printDebug(const std::string& key, const T& val) {
+  std::cout << "=============\n";
   std::cout << key << ": " << val << std::endl;
+  std::cout << "=============\n";
 }
 
 void printPikachu();

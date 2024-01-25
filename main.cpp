@@ -11,7 +11,7 @@ std::map<std::string, Channel *> Server::_channelNames;
 void signalHandler(int signum) { (void)signum; }
 
 int getPort(std::string port) {
-  if (port.length() > 5) {
+  if (port.empty() || port.length() > 5) {
     throw std::runtime_error("Wrong port number");
   }
   size_t found = port.find_first_not_of("0123456789");
@@ -26,7 +26,7 @@ int getPort(std::string port) {
 
 int main(int ac, char **av) {
   if (ac != 3) {
-    std::cerr << "Usage: ./ircserver <port> <password>" << std::endl;
+    std::cerr << RED << "Usage: ./ircserver <port> <password>" << std::endl;
     return 1;
   }
   signal(SIGINT, signalHandler);
@@ -34,7 +34,7 @@ int main(int ac, char **av) {
     Server server(getPort(av[1]), av[2]);
     server.run();
   } catch (std::exception &e) {
-    std::cerr << e.what() << std::endl;
+    std::cerr << RED << e.what() << std::endl;
   }
   return 0;
 }

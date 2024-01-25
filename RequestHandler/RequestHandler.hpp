@@ -3,27 +3,44 @@
 
 #include <sys/socket.h>
 
+#include <algorithm>
 #include <iostream>
 #include <map>
 #include <sstream>
 #include <string>
 #include <vector>
 
+#include "../Macros/Replies.hpp"
+#include "../Print/Print.hpp"
+#include "../Client/Client.hpp"
+
 class RequestHandler {
  private:
-  int _clientFd;
+  Client *_client;
   std::string _request;
+  std::string _command;
+  std::string _password;
   std::vector<std::string> _token;
-  typedef void (RequestHandler::*CommandFunction)(int,
-                                                  std::vector<std::string>);
+  typedef void (RequestHandler::*CommandFunction)(void);
   std::map<std::string, CommandFunction> _commandMap;
 
+  void cap();
+  void nick();
+  void user();
+  void pass();
+  void join();
+  void privmsg();
+  void kick();
+  void invite();
+  void topic();
+  void mode();
+
  public:
-  RequestHandler(int clientFd, const std::string &request);  // init map
+  RequestHandler(Client *client, const std::string &request,
+                 const std::string &password);  // Init map
+
   void parse();
-  void execute();  // execute command and handle errors
-  void join(int fd, std::vector<std::string> token);
-  void privmsg(int fd, std::vector<std::string> token);
+  void execute();  // Execute commands and handle errors
 };
 
 #endif
