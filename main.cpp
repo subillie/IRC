@@ -10,14 +10,15 @@ std::map<std::string, Channel *> Server::_channelNames;
 
 void signalHandler(int signum) { (void)signum; }
 
-int getPort(char *port) {
-  size_t len = strlen(port);
-  for (size_t i = 0; i < len; i++) {
-    if (!isdigit(port[i])) {
-      throw std::runtime_error("Wrong port number");
-    }
+int getPort(std::string port) {
+  if (port.length() > 5) {
+    throw std::runtime_error("Wrong port number");
   }
-  int portNum = atoi(port);
+  size_t found = port.find_first_not_of("0123456789");
+  if (found != std::string::npos) {
+    throw std::runtime_error("Wrong port number");
+  }
+  int portNum = atoi(port.c_str());
   if (portNum < 0 || portNum > 65535)
     throw std::runtime_error("Wrong port number");
   return portNum;
@@ -30,8 +31,7 @@ int main(int ac, char **av) {
   }
   signal(SIGINT, signalHandler);
   try {
-    int portNum = getPort(av[1]);
-    Server server(portNum, av[2]);
+    Server server(getPort(av[1]), av[2]);
     server.run();
   } catch (std::exception &e) {
     std::cerr << e.what() << std::endl;
