@@ -15,13 +15,14 @@ void RequestHandler::parse() {
   while (getline(ss, str, ' ')) {
     _token.push_back(str);
   }
+  _command = _token[0][0] == ':' ? _token[1] : _token[0];
 }
 
 void RequestHandler::execute() {
   parse();
   // Find command
   std::map<std::string, RequestHandler::CommandFunction>::iterator found =
-      _commandMap.find(_token[0]);
+      _commandMap.find(_command);
   if (found == _commandMap.end()) {
     // throw err
     return;

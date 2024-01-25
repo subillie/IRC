@@ -13,6 +13,7 @@ class RequestHandler {
  private:
   int _clientFd;
   std::string _request;
+  std::string _command;
   std::vector<std::string> _token;
   typedef void (RequestHandler::*CommandFunction)(int,
                                                   std::vector<std::string>);
