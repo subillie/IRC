@@ -1,0 +1,9 @@
+#ifndef ERROR_MACROS_HPP
+#define ERROR_MACROS_HPP
+
+// Errors
+#define ERR_NEEDMOREPARAMS "461"
+#define ERR_ALREADYREGISTERED "462"
+#define ERR_PASSWDMISMATCH "464"
+
+#endif

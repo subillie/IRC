@@ -10,9 +10,10 @@
 #include <string>
 #include <vector>
 
+#include "../Client/Client.hpp"
 #include "../Macros/Replies.hpp"
 #include "../Print/Print.hpp"
-#include "../Client/Client.hpp"
+#include "ErrorHandler/ErrorHandler.hpp"
 
 class RequestHandler {
  private:
@@ -23,6 +24,7 @@ class RequestHandler {
   std::vector<std::string> _token;
   typedef void (RequestHandler::*CommandFunction)(void);
   std::map<std::string, CommandFunction> _commandMap;
+  ErrorHandler _error;
 
   void cap();
   void nick();

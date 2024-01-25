@@ -3,8 +3,11 @@
 RequestHandler::RequestHandler(Client* client, const std::string& request,
                                const std::string& password)
     : _client(client), _request(request), _password(password) {
+  this->_error.setFd(_client->getFd());
   _commandMap["CAP"] = &RequestHandler::cap;
   _commandMap["PASS"] = &RequestHandler::pass;
+  _commandMap["NICK"] = &RequestHandler::pass;
+  _commandMap["USER"] = &RequestHandler::pass;
   _commandMap["JOIN"] = &RequestHandler::join;
   _commandMap["PRIVMSG"] = &RequestHandler::privmsg;
   // 추후에 명령어 추가될때마다 함수 포인터 추가
@@ -62,12 +65,20 @@ void RequestHandler::nick() {
 
 void RequestHandler::user() {}
 
-// set a ‘connection password’
+// PASS <password>
 void RequestHandler::pass() {
+  if (_token.size() != 2) {
+    // 인자 1개ERR_NEEDMOREPARAMS
+  } else if (_client->getIsAuthenticated()) {
+    // 이미 가입 됨 ERR_ALREADYREGISTERED
+  } else if (_token[1] != _password) {
+    // 비번 틀림 ERR_PASSWDMISMATCH => close connection
+  }
   // 가입 여부 확인 -> 가입 전까지는 pass 여러 번 받을 수 있음, 마지막꺼만
   // 유효함, 등록되면 변경 불가 server pass 일치 여부 확인
   // 일치하지 않으면 passdmismatch
   //
+  // sendresponse
 }
 
 void RequestHandler::join() {

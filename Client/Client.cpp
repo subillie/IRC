@@ -10,3 +10,5 @@ const std::string &Client::getNickname() const { return _nickname; }
 const std::string &Client::getPassword() const { return _password; }
 
 const std::string &Client::getUsername() const { return _username; }
+
+bool Client::getIsAuthenticated() const { return _isAuthenticated; }

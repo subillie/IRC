@@ -20,6 +20,7 @@ class Client {
   const std::string &getUsername() const;
   const std::string &getNickname() const;
   const std::string &getPassword() const;
+  bool getIsAuthenticated() const;
 };
 
 #endif
