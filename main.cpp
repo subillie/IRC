@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "Macros/Characters.hpp"
 #include "Server/Server.hpp"
 
 std::map<int, Client *> Server::_clientFds;
@@ -10,11 +11,11 @@ std::map<std::string, Channel *> Server::_channelNames;
 
 void signalHandler(int signum) { (void)signum; }
 
-int getPort(std::string port) {
+int getPort(const std::string &port) {
   if (port.empty() || port.length() > 5) {
     throw std::runtime_error("Wrong port number");
   }
-  size_t found = port.find_first_not_of("0123456789");
+  size_t found = port.find_first_not_of(DIGIT);
   if (found != std::string::npos) {
     throw std::runtime_error("Wrong port number");
   }
@@ -24,6 +25,15 @@ int getPort(std::string port) {
   return portNum;
 }
 
+void isValidPassword(const std::string &pw) {
+  if (pw.length() > 10) {
+    throw std::runtime_error("Password should be no more than 10 characters");
+  }
+  if (pw.find_first_not_of(LOWERCASE + UPPERCASE + DIGIT)) {
+    throw std::runtime_error("Valid password format : [a-z], [A-Z], [digits]");
+  }
+}
+
 int main(int ac, char **av) {
   if (ac != 3) {
     std::cerr << RED << "Usage: ./ircserver <port> <password>" << std::endl;
@@ -31,6 +41,7 @@ int main(int ac, char **av) {
   }
   signal(SIGINT, signalHandler);
   try {
+    isValidPassword(av[2]);
     Server server(getPort(av[1]), av[2]);
     server.run();
   } catch (std::exception &e) {

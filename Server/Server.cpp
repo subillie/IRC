@@ -80,14 +80,14 @@ void Server::run() {
 }
 
 void Server::parse(const std::string &buffer) {
-  size_t found = buffer.find("\r\n");
+  size_t found = buffer.find(CRLF);
   size_t len = found + 1;
   for (size_t curr = 0; curr < buffer.length();) {
     // std::string tmp = buffer.substr(curr, len);
     // printDebug("**tmp", tmp);
     _requests.push(buffer.substr(curr, len));
     curr = found + 2;
-    found = buffer.find("\r\n", curr);
+    found = buffer.find(CRLF, curr);
     len = found - curr;
   }
 }

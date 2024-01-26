@@ -9,11 +9,19 @@ class ErrorHandler {
 
  public:
   ErrorHandler();
-  ErrorHandler(int fd);
+
   void ErrNeedMoreParams();
   void ErrAlreadyRegistered();
   void ErrPasswdMismatch();
+  void ErrNoNickNameGiven();
+  void ErrErroneusNickName();
+  void ErrNickNameInUse();
+  void ErrNoOrigin();
+  void ErrUnknown();
+
   void setFd(int fd);
+
+  void sendToClient();
 };
 
 #endif
