@@ -20,3 +20,14 @@ const std::string &Client::getUsername() const { return _username; }
 bool Client::getIsRegistered() const { return _isRegistered; }
 
 void Client::setIsRegisterd(bool val) { _isRegistered = val; }
+
+std::ostream &operator<<(std::ostream &os, const Client &client) {
+  os << "Client Information:" << std::endl;
+  os << "File Descriptor: " << client.getFd() << std::endl;
+  os << "Username: " << client.getUsername() << std::endl;
+  os << "Nickname: " << client.getNickname() << std::endl;
+  os << "Password: " << client.getPassword() << std::endl;
+  os << "Is Registered: " << (client.getIsRegistered() ? "Yes" : "No")
+     << std::endl;
+  return os;
+}

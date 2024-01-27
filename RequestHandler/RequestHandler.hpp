@@ -16,6 +16,7 @@
 #include "../Print/Print.hpp"
 #include "../Server/Server.hpp"
 #include "ErrorHandler/ErrorHandler.hpp"
+#include "Messenger/Messenger.hpp"
 
 class RequestHandler {
  private:

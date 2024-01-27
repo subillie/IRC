@@ -10,14 +10,11 @@ all 		:
 run		:
 	docker run --name irc --rm irc:my
 
-ins		:
-	docker exec -it irc inspricd -p 6667 -n one -w 1234
-
 local		:
 	docker exec -it irc irssi -c host.docker.internal -p 6667 -n one -w 1234
 	
 c1		:
-	docker exec -it irc irssi -c 127.0.0.1 -p 6667 -n one -w 1234
+	docker exec -it irc irssi -c 127.0.0.1 -p 6667 -n one
 
 c2		:
 	docker exec -it irc irssi -c 127.0.0.1 -p 6667 -n two
