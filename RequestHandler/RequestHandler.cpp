@@ -20,15 +20,14 @@ RequestHandler::RequestHandler(Client* client, const std::string& request,
 void RequestHandler::parse() {
   std::stringstream ss(_request);
   std::string str;
-  while (true) {
-    getline(ss, str, ' ');
-    if (str.empty() || str == ":") {
+  while (getline(ss, str, ' ')) {
+    if (str.find(":") != std::string::npos) {
+      str.erase(0, 1);
+      std::string remainer;
+      getline(ss, remainer);
+      _token.push_back(str + remainer);
       break;
     }
-    _token.push_back(str);
-  }
-  if (str == ":") {
-    getline(ss, str, '\0');
     _token.push_back(str);
   }
   _command = _token[0];

@@ -29,7 +29,8 @@ void isValidPassword(const std::string &pw) {
   if (pw.length() > 10) {
     throw std::runtime_error("Password should be no more than 10 characters");
   }
-  if (pw.find_first_not_of(LOWERCASE + UPPERCASE + DIGIT)) {
+  if (pw.find_first_not_of(LOWERCASE + UPPERCASE + DIGIT) !=
+      std::string::npos) {
     throw std::runtime_error("Valid password format : [a-z], [A-Z], [digits]");
   }
 }
