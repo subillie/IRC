@@ -1,8 +1,10 @@
 #ifndef PRINT_HPP
 #define PRINT_HPP
 
+#include <algorithm>
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include "../Macros/Colors.hpp"
 
@@ -52,6 +54,8 @@ void printDebug(const std::string& key, const T& val) {
   std::cout << key << ": " << val << std::endl;
   std::cout << "=============\n";
 }
+
+void printV(std::vector<std::string> v);
 
 void printPikachu();
 

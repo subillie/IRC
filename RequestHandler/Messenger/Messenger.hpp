@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "../../Macros/Characters.hpp"
+
 class Messenger {
  private:
   std::string _prefix;
