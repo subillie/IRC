@@ -26,7 +26,7 @@ class Server {
   std::queue<std::string> _requests;
 
   void init();  // Server init : Select function
-  void parse(const std::string &buffer);
+  void parse(std::string buffer);
 
   // Wrapper functions
   int Socket(int domain, int type, int protocol);
