@@ -6,7 +6,6 @@ RequestHandler::RequestHandler(Client* client, const std::string& request,
       _client(client),
       _request(request),
       _password(password) {
-  this->_error.setFd(_fd);
   _commandMap["CAP"] = &RequestHandler::cap;
   _commandMap["PASS"] = &RequestHandler::pass;
   _commandMap["NICK"] = &RequestHandler::nick;
@@ -17,8 +16,9 @@ RequestHandler::RequestHandler(Client* client, const std::string& request,
   // 추후에 명령어 추가될때마다 함수 포인터 추가
 }
 
+// TODO : 대격변 (다 이상함)
 void RequestHandler::parse() {
-  printDebug("req", _request);
+  std::cout << _request << std::endl;
   std::stringstream ss(_request);
   std::string str;
   while (getline(ss, str, ' ')) {
@@ -26,32 +26,23 @@ void RequestHandler::parse() {
       str.erase(0, 1);
       std::string remainer;
       getline(ss, remainer);
-      _token.push_back(str + remainer);
+      _token.push_back(str + " " + remainer);
       break;
     }
+    printCyan(str);
     _token.push_back(str);
   }
   _command = _token[0];
 }
 
 void RequestHandler::execute() {
+  Messenger msg;
   parse();
-  // Find command
   std::map<std::string, RequestHandler::CommandFunction>::iterator found =
       _commandMap.find(_command);
-  // 임시
   if (found == _commandMap.end()) {
-    printRed(_token[0]);
-    // throw err
+    msg.ErrUnknownCommand(_fd);
     return;
   }
-  //_messenger.setCommand(_command);
   (this->*(found->second))();
-}
-
-void RequestHandler::sendToClient(int socket, const std::string& msg) {
-  const std::string reply = msg + CRLF;
-  if (send(socket, &reply, reply.length(), 0) == -1) {
-    throw std::runtime_error("Send error");
-  }
 }
