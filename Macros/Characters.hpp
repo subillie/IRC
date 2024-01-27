@@ -3,10 +3,10 @@
 
 #include <string>
 
-const std::string LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
-const std::string UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-const std::string SPECIAL_CHAR = "[]\\`_-^{|}";
-const std::string DIGIT = "0123456789";
-const std::string CRLF = "\r\n";
+#define LOWERCASE std::string("abcdefghijklmnopqrstuvwxyz")
+#define UPPERCASE std::string("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+#define SPECIAL_CHAR std::string("[]\\`_-^{|}")
+#define DIGIT std::string("0123456789")
+#define CRLF std::string("\r\n")
 
 #endif
