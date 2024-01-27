@@ -8,7 +8,7 @@ SRCS	=	Channel/Channel.cpp \
 			Client/Client.cpp \
 			RequestHandler/RequestHandler.cpp \
 			RequestHandler/ErrorHandler/ErrorHandler.cpp \
-			RequestHandler/Command.cpp \
+			RequestHandler/Commands.cpp \
 			Server/Server.cpp \
 			Server/Wrappers.cpp \
 			Print/Print.cpp \

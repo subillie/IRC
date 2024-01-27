@@ -2,11 +2,9 @@
 
 ErrorHandler::ErrorHandler() : _fd(0) {}
 
-void ErrorHandler::ErrNeedMoreParams() {}
+void ErrorHandler::ErrNoSuchChannel() {}
 
-void ErrorHandler::ErrAlreadyRegistered() {}
-
-void ErrorHandler::ErrPasswdMismatch() {}
+void ErrorHandler::ErrNoOrigin() {}
 
 void ErrorHandler::ErrNoNickNameGiven() {}
 
@@ -14,7 +12,11 @@ void ErrorHandler::ErrErroneusNickName() {}
 
 void ErrorHandler::ErrNickNameInUse() {}
 
-void ErrorHandler::ErrNoOrigin() {}
+void ErrorHandler::ErrNeedMoreParams() {}
+
+void ErrorHandler::ErrAlreadyRegistered() {}
+
+void ErrorHandler::ErrPasswdMismatch() {}
 
 void ErrorHandler::ErrUnknown() {}
 
