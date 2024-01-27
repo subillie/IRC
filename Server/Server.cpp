@@ -79,14 +79,12 @@ void Server::run() {
   }
 }
 
-void Server::parse(const std::string &buffer) {
+void Server::parse(std::string buffer) {
   size_t found = buffer.find("\r\n");
-  size_t len = found + 1;
-  for (size_t curr = 0; curr < buffer.length();) {
-    _requests.push(buffer.substr(curr, len));
-    curr = found + 2;
-    found = buffer.find("\r\n", curr);
-    len = found - curr;
+  while (found != std::string::npos) {
+    _requests.push(buffer.substr(0, found));
+    buffer.erase(0, found + 2);
+    found = buffer.find("\r\n");
   }
 }
 
