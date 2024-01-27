@@ -17,11 +17,18 @@ RequestHandler::RequestHandler(Client* client, const std::string& request,
   // 추후에 명령어 추가될때마다 함수 포인터 추가
 }
 
-// 파싱 수정 : param에 공백 들어오는 경우 고려해야 함
 void RequestHandler::parse() {
   std::stringstream ss(_request);
   std::string str;
-  while (getline(ss, str, ' ')) {
+  while (true) {
+    getline(ss, str, ' ');
+    if (str.empty() || str == ":") {
+      break;
+    }
+    _token.push_back(str);
+  }
+  if (str == ":") {
+    getline(ss, str, '\0');
     _token.push_back(str);
   }
   _command = _token[0];
@@ -98,7 +105,7 @@ void RequestHandler::user() {
   }
   std::string username = _token[1];
   std::map<int, Client*>::iterator iter = Server::_clientFds.begin();
-  for (iter; iter != Server::_clientFds.end(); iter++) {
+  for (; iter != Server::_clientFds.end(); iter++) {
     if (iter->second->getUsername() == username) {
       _error.ErrAlreadyRegistered();
     }
