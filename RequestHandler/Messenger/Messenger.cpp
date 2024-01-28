@@ -4,53 +4,58 @@ Messenger::Messenger() : _prefix(""), _param(""), _trailing("") {}
 
 #include "../../Print/Print.hpp"
 
-// Error function
-void Messenger::ErrNeedMoreParams(int fd) {
-  printRed("NeedMoreParams");
+// Error functions
+void Messenger::ErrNoSuchChannel(int fd) {
+  printRed("NoSuchChannel");
   sendToClient(fd);
-}
-
-void Messenger::ErrAlreadyRegistered(int fd) {
-  printRed("AlreadyRegistered");
-  sendToClient(fd);
-}
-
-void Messenger::ErrPasswdMismatch(int fd) {
-  printRed("ErrPasswdMismatch");
-  sendToClient(fd);
-}
-
-void Messenger::ErrNoNickNameGiven(int fd) {
-  printRed("ErrNoNickNameGiven");
-  sendToClient(fd);
-}
-
-void Messenger::ErrErroneusNickName(int fd) {
-  printRed("ErrErroneusNickName");
-  sendToClient(fd);
-}
-
-void Messenger::ErrNickNameInUse(int fd) {
-  printRed("ErrNickNameInUse");
-  sendToClient(fd);
-}
+}  // 403
 
 void Messenger::ErrNoOrigin(int fd) {
   printRed("ErrNoOrigin");
   sendToClient(fd);
-}
+}  // 409
 
 void Messenger::ErrUnknownCommand(int fd) {
   printRed("UnknownCommand");
   sendToClient(fd);
-}
+}  // 421
+
+void Messenger::ErrNoNickNameGiven(int fd) {
+  printRed("ErrNoNickNameGiven");
+  sendToClient(fd);
+}  // 431
+
+void Messenger::ErrErroneusNickName(int fd) {
+  printRed("ErrErroneusNickName");
+  sendToClient(fd);
+}  // 432
+
+void Messenger::ErrNickNameInUse(int fd) {
+  printRed("ErrNickNameInUse");
+  sendToClient(fd);
+}  // 433
+
+void Messenger::ErrNeedMoreParams(int fd) {
+  printRed("NeedMoreParams");
+  sendToClient(fd);
+}  // 461
+
+void Messenger::ErrAlreadyRegistered(int fd) {
+  printRed("AlreadyRegistered");
+  sendToClient(fd);
+}  // 462
+
+void Messenger::ErrPasswdMismatch(int fd) {
+  printRed("ErrPasswdMismatch");
+  sendToClient(fd);
+}  // 464
 
 void Messenger::ErrUnexpected(int fd) {
   printRed("Unexpected");
   sendToClient(fd);
 }
 
-// Reply function
+// Reply functions
 void Messenger::RplWelcome(int fd) {
   Client* client = Server::_clientFds[fd];
   setPrefix(":" + SERVER);
