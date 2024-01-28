@@ -7,7 +7,7 @@ NAME 	=	ircserv
 SRCS	=	Channel/Channel.cpp \
 			Client/Client.cpp \
 			RequestHandler/RequestHandler.cpp \
-			RequestHandler/Command.cpp \
+			RequestHandler/Commands.cpp \
 			RequestHandler/Messenger/Messenger.cpp \
 			Server/Server.cpp \
 			Server/Wrappers.cpp \

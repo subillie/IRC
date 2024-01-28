@@ -105,6 +105,40 @@ void RequestHandler::pass() {
 
 void RequestHandler::join() {
   Messenger msg;
+  // /join #채널명 <암호> // 각각 여러 개 들어갈 수 있음
+  // 인자가 없으면 ERR_NEEDMOREPARAMS
+  if (_token.size() < 2) {
+    msg.ErrNeedMoreParams(_fd);
+    return;
+  }
+  std::vector<std::string> channels;
+  std::stringstream ss;
+  while (getline(ss, _token[1], ',')) {
+    channels.push_back(_token[1]);
+  }
+
+  // TODO: no such channel로 처리하는 게 맞나?
+  // 채널명이 유효하지 않으면 ERR_NOSUCHCHANNEL
+  std::vector<std::string>::iterator iter = channels.begin();
+  for (; iter != channels.end(); iter++) {
+    if (iter->empty() || (*iter)[0] != '#' ||
+        iter->find_first_not_of(LOWERCASE + UPPERCASE + SPECIAL_CHAR + DIGIT) !=
+            std::string::npos) {
+      // msg.ErrNoSuchChannel();
+      return;
+    }
+  }
+  // // 채널이 없으면 생성
+  // if (Server::_channelNames.find(channel) == Server::_channelNames.end()) {
+  //   Server::_channelNames[channel] = new Channel(channel);
+  // } else {
+  //   // 채널에 이미 참가 중이면 ERR_TOOMANYCHANNELS
+  //   if (Server::_channelNames[channel]->getClients().find(_client) !=
+  //       Server::_channelNames[channel]->getClients().end()) {
+  //     msg.ErrTooManyChannels();
+  //     return;
+  //   }
+  // }
 
   msg.sendToClient(_fd);
 }

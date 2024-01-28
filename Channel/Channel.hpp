@@ -12,6 +12,9 @@ class Channel {
   std::string _name;
   std::list<std::string> _members;
   std::list<int> _operaters;
+
+ public:
+  Channel(const std::string& name);
 };
 
 #endif
