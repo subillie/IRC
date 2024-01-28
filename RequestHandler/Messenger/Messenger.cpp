@@ -2,7 +2,7 @@
 
 Messenger::Messenger() : _prefix(""), _param(""), _trailing("") {}
 
-#include "../../Print/Print.hpp"
+#include "../../Print/Print.hpp"  // for test
 
 // Error function
 void Messenger::ErrNeedMoreParams(int fd) {
@@ -53,16 +53,17 @@ void Messenger::ErrUnexpected(int fd) {
 // Reply function
 void Messenger::RplWelcome(int fd) {
   Client* client = Server::_clientFds[fd];
-  setPrefix(":" + SERVER);
   const std::string& nick = client->getNickname();
   const std::string& username = client->getUsername();
   const std::string& hostname = client->getHostname();
-  setParam(RPL_WELCOME + " " + nick);
-  setTrailing(":Welcome to private irc server! " + nick + "!" + username + "@" +
-              hostname);
+
+  _prefix = SERVER;
+  _param = RPL_WELCOME + " " + nick;
+  _trailing = "Welcome to private irc server! " + nick + "!" + username + "@" +
+              hostname;
   printRed("RplWelcome");
   sendToClient(fd);
-}  // 001
+}
 
 void Messenger::RplYourHost(int fd) {
   printRed("RplYourHost");
@@ -88,7 +89,9 @@ void Messenger::setTrailing(const std::string& trailing) {
 }
 
 void Messenger::sendToClient(int fd) {
-  std::string response = _prefix + " " + _param + " " + _trailing + CRLF;
+  if (!_prefix.empty()) _prefix = ":" + _prefix + " ";
+  if (!_trailing.empty()) _trailing = " :" + _trailing;
+  std::string response = _prefix + _param + _trailing + CRLF;
   printCyan(response);
   if (send(fd, response.c_str(), response.length(), 0) == -1) {
     throw std::runtime_error("Send error");

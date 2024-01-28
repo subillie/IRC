@@ -3,6 +3,7 @@
 
 #include <string>
 
+// TODO: 서버 이름 바꾸기
 #define SERVER std::string("IRC")
 
 #define RPL_WELCOME std::string("001")
