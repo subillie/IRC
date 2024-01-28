@@ -3,13 +3,14 @@
 void RequestHandler::cap() {
   Messenger msg;
 
-  if (_token[1] == "LS") {  // CAP LS
+  if (_token[1] == "LS") {
+    msg.setPrefix(SERVER);
     msg.setParam("CAP * LS :");
     msg.sendToClient(_fd);
-  } else if (_token[1] == "END") {  // CAP END
-    msg.setParam("");
-    msg.sendToClient(_fd);
   }
+  // else if (_token[1] == "END") {
+  //   // start registration
+  // }
 }
 
 void RequestHandler::nick() {
