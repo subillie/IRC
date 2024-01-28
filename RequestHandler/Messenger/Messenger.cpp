@@ -54,13 +54,32 @@ void Messenger::ErrUnexpected(int fd) {
 void Messenger::RplWelcome(int fd) {
   Client* client = Server::_clientFds[fd];
   const std::string& nick = client->getNickname();
-  const std::string& username = client->getUsername();
-  const std::string& hostname = client->getHostname();
+  // const std::string& username = client->getUsername();
+  // const std::string& hostname = client->getHostname();
+  const std::string squirtle =
+      "\033[0;34m⠀⠀⠀⠀⠀⣀⠤⠤⠤⠤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
+      "\033[0;34m⠀⠀⠀⡰⠋⠀⠀⠀⠀⠀⠀⠡⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
+      "\033[0;34m⠀⠀⢠⠁⢰⣴⠀⠀⠀⠀⣿⡇⢇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
+      "\033[0;34m⠀⢀⣸⠀⠈⠙⠃⣀⣀⡀⣤⡄⢸⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
+      "\033[0;34m⢰⠃⠉⠁⠂⢦⣀⢀⡀⠤⠤⣥⣌⡀⠀⠈⠱⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
+      "\033[0;34m⠘⠦⡀⠀⠀⠀⠈⡄⠂⠉⠀⣀⠵⢵⡒⠠⢴⡋⠉⢑⠖⠦⢄⠀⠀⠀⠀⠀⠀⠀\n"
+      "\033[0;34m⠀⠀⠈⠲⢤⣤⣴⡥⢄⡨⠋⠀⠒⢄⡑⣄⠀⠈⠄⠀⠀⠀⠈⡝⢀⣀⠀⠀⠀⠀\n"
+      "\033[0;34m⠀⠀⠀⠀⠈⢿⣿⣿⣆⡇⠀⠀⠊⠉⠉⡆⠈⠢⣶⣀⡀⢀⡰⠋⠀⠀⠉⠑⡄⠀\n"
+      "\033[0;34m⠀⠀⠀⠀⠀⠀⢿⣿⣿⣔⠀⠠⡀⠀⢀⡇⠀⠀⠠⣇⠈⢹⠀⠀⡀⠀⠀⠀⠘⡄\n"
+      "\033[0;34m⠀⠀⠀⠀⠀⠀⠀⠙⠛⢿⣿⣿⣿⣿⣶⣶⢆⠀⠀⠈⠉⠈⢄⠀⠀⠀⠂⠀⢀⠇\n"
+      "\033[0;34m⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠁⠀⠀⠑⠦⣄⠀⠀⠀⠁⠀⠈⠀⢀⠎⠀\n"
+      "\033[0;34m⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠓⠒⠲⠖⠒⠊⠁⠀⠀\n";
+  const std::string& hello =
+      "\033[0;36m _  _ ___ _    _    ___  _ \n"
+      "\033[0;36m| || | __| |  | |  / _ \\| |\n"
+      "\033[0;36m| __ | _|| |__| |_| (_) |_|\n"
+      "\033[0;36m|_||_|___|____|____\\___/(_) \033[0m";
 
   _prefix = SERVER;
   _param = RPL_WELCOME + " " + nick;
-  _trailing = "Welcome to private irc server! " + nick + "!" + username + "@" +
-              hostname;
+  _trailing =
+      squirtle + hello + nick;  //+ "!" + username + "@" + hostname (optional)
+
   printRed("RplWelcome");
   sendToClient(fd);
 }
