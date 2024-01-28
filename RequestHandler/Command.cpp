@@ -52,7 +52,7 @@ void RequestHandler::user() {
   }
   // : 뒤에는 하나로 침
   if (_token.size() != 5) {
-    msg.ErrNeedMoreParams(_fd);
+    msg.ErrNeedMoreParams(_fd, "USER");
     return;
   }
   std::string username = _token[1];
@@ -90,12 +90,12 @@ void RequestHandler::pass() {
   Messenger msg;
   // 인자가 없을 때
   if (_token.size() < 2) {
-    msg.ErrNeedMoreParams(_fd);
+    msg.ErrNeedMoreParams(_fd, "PASS");
     return;
     // 비번 틀림 ERR_PASSWDMISMATCH => close connection
   } else if (_token[1] != _password) {
     msg.ErrPasswdMismatch(_fd);
-    // return;
+    return;
     // 이미 가입 됨 ERR_ALREADYREGISTERED
   } else if (_client->getIsRegistered()) {
     msg.ErrAlreadyRegistered(_fd);
@@ -129,14 +129,14 @@ void RequestHandler::mode() {}
 void RequestHandler::pong() {
   Messenger msg;
   if (_token.size() < 2) {
-    msg.ErrNeedMoreParams(_fd);
+    msg.ErrNeedMoreParams(_fd, "PONG");
     return;
   } else if (_token[1].empty()) {
     msg.ErrNoOrigin(_fd);
     return;
   }
-  msg.setPrefix("prefix");
-  msg.setParam("Pong");
-  msg.setTrailing("??");
+  msg.setPrefix(SERVER);
+  msg.setParam("PONG " + SERVER);
+  msg.setTrailing(_token[1]);
   msg.sendToClient(_fd);
 }

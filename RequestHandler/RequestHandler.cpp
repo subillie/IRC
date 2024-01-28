@@ -16,7 +16,6 @@ RequestHandler::RequestHandler(Client* client, const std::string& request,
   // 추후에 명령어 추가될때마다 함수 포인터 추가
 }
 
-// TODO : 대격변 (다 이상함)
 void RequestHandler::parse() {
   std::cout << _request << std::endl;
   std::stringstream ss(_request);
