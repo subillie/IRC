@@ -21,7 +21,7 @@ class Messenger {
  public:
   Messenger();
   // Error function
-  void ErrNeedMoreParams(int fd);
+  void ErrNeedMoreParams(int fd, const std::string& command);
   void ErrAlreadyRegistered(int fd);
   void ErrPasswdMismatch(int fd);
   void ErrNoNickNameGiven(int fd);
