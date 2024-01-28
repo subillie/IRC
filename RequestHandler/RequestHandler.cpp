@@ -29,7 +29,6 @@ void RequestHandler::parse() {
       _token.push_back(str + " " + remainer);
       break;
     }
-    printCyan(str);
     _token.push_back(str);
   }
   _command = _token[0];

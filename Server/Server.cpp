@@ -26,7 +26,6 @@ void Server::run() {
   init();
 
   int fdCount = _serverFd;
-  printDebug("server Fd", _serverFd);
   int clientFd = -1;
   // TODO: timeout
   struct timeval timeout;
