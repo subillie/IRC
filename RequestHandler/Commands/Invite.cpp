@@ -27,10 +27,10 @@ void RequestHandler::invite() {
 
   // 채널이 Invite Only이고 유저가 채널의 Operator가 아닐 때
   std::list<char> modeList = chanToInvite->getModes();
-  std::list<std::string> operList = chanToInvite->getOperators();
-  if (std::find(modeList.begin(), modeList.end(), INVITE_ONLY) !=
+  std::list<std::string> opList = chanToInvite->getOps();
+  if (std::find(modeList.begin(), modeList.end(), INVITE_ONLY_CHANNEL) !=
           modeList.end() &&
-      std::find(operList.begin(), operList.end(), nickname) == operList.end()) {
+      std::find(opList.begin(), opList.end(), nickname) == opList.end()) {
     _msg.ErrChanOPrivsNeeded(_fd, channel);
     return;
   }
