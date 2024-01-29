@@ -21,15 +21,15 @@ class Messenger {
  public:
   Messenger();
   // Error function
-  void ErrNoSuchChannel(int fd);      // 403
-  void ErrNoOrigin(int fd);           // 409
-  void ErrUnknownCommand(int fd);     // 421
-  void ErrNoNickNameGiven(int fd);    // 431
-  void ErrErroneusNickName(int fd);   // 432
-  void ErrNickNameInUse(int fd);      // 433
-  void ErrNeedMoreParams(int fd);     // 461
-  void ErrAlreadyRegistered(int fd);  // 462
-  void ErrPasswdMismatch(int fd);     // 464
+  void ErrNoSuchChannel(int fd);
+  void ErrNeedMoreParams(int fd, const std::string& command);
+  void ErrAlreadyRegistered(int fd);
+  void ErrPasswdMismatch(int fd);
+  void ErrNoNickNameGiven(int fd);
+  void ErrErroneusNickName(int fd);
+  void ErrNickNameInUse(int fd);
+  void ErrNoOrigin(int fd);
+  void ErrUnknownCommand(int fd);
   void ErrUnexpected(int fd);  // 에러코드가 정해져 있지 않은 에러
   // Reply function
   void RplWelcome(int fd);   // 001

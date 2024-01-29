@@ -2,55 +2,79 @@
 
 Messenger::Messenger() : _prefix(""), _param(""), _trailing("") {}
 
-#include "../../Print/Print.hpp"
+#include "../../Print/Print.hpp"  // for test
 
 // Error functions
 void Messenger::ErrNoSuchChannel(int fd) {
   printRed("NoSuchChannel");
   sendToClient(fd);
-}  // 403
+}
 
-void Messenger::ErrNoOrigin(int fd) {
-  printRed("ErrNoOrigin");
-  sendToClient(fd);
-}  // 409
+void Messenger::ErrNeedMoreParams(int fd, const std::string& command) {
+  Client* client = Server::_clientFds[fd];
 
-void Messenger::ErrUnknownCommand(int fd) {
-  printRed("UnknownCommand");
-  sendToClient(fd);
-}  // 421
-
-void Messenger::ErrNoNickNameGiven(int fd) {
-  printRed("ErrNoNickNameGiven");
-  sendToClient(fd);
-}  // 431
-
-void Messenger::ErrErroneusNickName(int fd) {
-  printRed("ErrErroneusNickName");
-  sendToClient(fd);
-}  // 432
-
-void Messenger::ErrNickNameInUse(int fd) {
-  printRed("ErrNickNameInUse");
-  sendToClient(fd);
-}  // 433
-
-void Messenger::ErrNeedMoreParams(int fd) {
+  _prefix = SERVER;
+  _param = ERR_NEEDMOREPARAMS + " " + client->getNickname() + command;
+  _trailing = "Not enough parameters";
   printRed("NeedMoreParams");
   sendToClient(fd);
-}  // 461
+}
 
 void Messenger::ErrAlreadyRegistered(int fd) {
+  Client* client = Server::_clientFds[fd];
+  _prefix = SERVER;
+  _param = ERR_ALREADYREGISTERED + " " + client->getNickname();
+  _trailing = "You may not reregister";
   printRed("AlreadyRegistered");
   sendToClient(fd);
-}  // 462
+}
+
+void Messenger::ErrPasswdMismatch(int fd) {
+  Client* client = Server::_clientFds[fd];
+  _prefix = SERVER;
+  _param = ERR_PASSWDMISMATCH + " " + client->getNickname();
+  _trailing = "Password incorrect";
+  printRed("ErrPasswdMismatch");
+  sendToClient(fd);
+}
+
+void Messenger::ErrNoNickNameGiven(int fd) {
+  _prefix = SERVER;
+  printRed("ErrNoNickNameGiven");
+  sendToClient(fd);
+}
+
+void Messenger::ErrErroneusNickName(int fd) {
+  _prefix = SERVER;
+  printRed("ErrErroneusNickName");
+  sendToClient(fd);
+}
+
+void Messenger::ErrNickNameInUse(int fd) {
+  _prefix = SERVER;
+  printRed("ErrNickNameInUse");
+  sendToClient(fd);
+}
+
+void Messenger::ErrNoOrigin(int fd) {
+  _prefix = SERVER;
+  printRed("ErrNoOrigin");
+  sendToClient(fd);
+}
+
+void Messenger::ErrUnknownCommand(int fd) {
+  _prefix = SERVER;
+  printRed("UnknownCommand");
+  sendToClient(fd);
+}
 
 void Messenger::ErrPasswdMismatch(int fd) {
   printRed("ErrPasswdMismatch");
   sendToClient(fd);
-}  // 464
+}
 
 void Messenger::ErrUnexpected(int fd) {
+  _prefix = SERVER;
   printRed("Unexpected");
   sendToClient(fd);
 }
@@ -58,28 +82,51 @@ void Messenger::ErrUnexpected(int fd) {
 // Reply functions
 void Messenger::RplWelcome(int fd) {
   Client* client = Server::_clientFds[fd];
-  setPrefix(":" + SERVER);
   const std::string& nick = client->getNickname();
-  const std::string& username = client->getUsername();
-  const std::string& hostname = client->getHostname();
-  setParam(RPL_WELCOME + " " + nick);
-  setTrailing(":Welcome to private irc server! " + nick + "!" + username + "@" +
-              hostname);
+  // const std::string& username = client->getUsername();
+  // const std::string& hostname = client->getHostname();
+  const std::string squirtle =
+      "\033[0;34m⠀⠀⠀⠀⠀⣀⠤⠤⠤⠤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
+      "\033[0;34m⠀⠀⠀⡰⠋⠀⠀⠀⠀⠀⠀⠡⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
+      "\033[0;34m⠀⠀⢠⠁⢰⣴⠀⠀⠀⠀⣿⡇⢇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
+      "\033[0;34m⠀⢀⣸⠀⠈⠙⠃⣀⣀⡀⣤⡄⢸⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
+      "\033[0;34m⢰⠃⠉⠁⠂⢦⣀⢀⡀⠤⠤⣥⣌⡀⠀⠈⠱⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
+      "\033[0;34m⠘⠦⡀⠀⠀⠀⠈⡄⠂⠉⠀⣀⠵⢵⡒⠠⢴⡋⠉⢑⠖⠦⢄⠀⠀⠀⠀⠀⠀⠀\n"
+      "\033[0;34m⠀⠀⠈⠲⢤⣤⣴⡥⢄⡨⠋⠀⠒⢄⡑⣄⠀⠈⠄⠀⠀⠀⠈⡝⢀⣀⠀⠀⠀⠀\n"
+      "\033[0;34m⠀⠀⠀⠀⠈⢿⣿⣿⣆⡇⠀⠀⠊⠉⠉⡆⠈⠢⣶⣀⡀⢀⡰⠋⠀⠀⠉⠑⡄⠀\n"
+      "\033[0;34m⠀⠀⠀⠀⠀⠀⢿⣿⣿⣔⠀⠠⡀⠀⢀⡇⠀⠀⠠⣇⠈⢹⠀⠀⡀⠀⠀⠀⠘⡄\n"
+      "\033[0;34m⠀⠀⠀⠀⠀⠀⠀⠙⠛⢿⣿⣿⣿⣿⣶⣶⢆⠀⠀⠈⠉⠈⢄⠀⠀⠀⠂⠀⢀⠇\n"
+      "\033[0;34m⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠁⠀⠀⠑⠦⣄⠀⠀⠀⠁⠀⠈⠀⢀⠎⠀\n"
+      "\033[0;34m⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠓⠒⠲⠖⠒⠊⠁⠀⠀\n";
+  const std::string& hello =
+      "\033[0;36m _  _ ___ _    _    ___  _ \n"
+      "\033[0;36m| || | __| |  | |  / _ \\| |\n"
+      "\033[0;36m| __ | _|| |__| |_| (_) |_|\n"
+      "\033[0;36m|_||_|___|____|____\\___/(_) \033[0m";
+
+  _prefix = SERVER;
+  _param = RPL_WELCOME + " " + nick;
+  _trailing =
+      squirtle + hello + nick;  //+ "!" + username + "@" + hostname (optional)
+
   printRed("RplWelcome");
   sendToClient(fd);
-}  // 001
+}
 
 void Messenger::RplYourHost(int fd) {
+  _prefix = SERVER;
   printRed("RplYourHost");
   sendToClient(fd);
 }  // 002
 
 void Messenger::RplCreated(int fd) {
+  _prefix = SERVER;
   printRed("RplCreated");
   sendToClient(fd);
 }  // 003
 
 void Messenger::RplMyinfo(int fd) {
+  _prefix = SERVER;
   printRed("RplMyinfo");
   sendToClient(fd);
 }  // 004
@@ -93,7 +140,9 @@ void Messenger::setTrailing(const std::string& trailing) {
 }
 
 void Messenger::sendToClient(int fd) {
-  std::string response = _prefix + " " + _param + " " + _trailing + CRLF;
+  if (!_prefix.empty()) _prefix = ":" + _prefix + " ";
+  if (!_trailing.empty()) _trailing = " :" + _trailing;
+  std::string response = _prefix + _param + _trailing + CRLF;
   printCyan(response);
   if (send(fd, response.c_str(), response.length(), 0) == -1) {
     throw std::runtime_error("Send error");
