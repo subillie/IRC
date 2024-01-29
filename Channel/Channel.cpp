@@ -23,19 +23,7 @@ void Channel::removeInvitee(const std::string& member) {
   _invitees.remove(member);
 }
 
-void Channel::setMode(const char mode) {
-  if (mode == 'd') {
-    _mode = DEFAULT;
-  } else if (mode == 'i') {
-    _mode = INVITE_ONLY_CHANNEL;
-  } else if (mode == 't') {
-    _mode = PROTECTED_TOPIC;
-  } else if (mode == 'k') {
-    _mode = KEY_CHANNEL;
-  } else if (mode == 'l') {
-    _mode = CLIENT_LIMIT_CHANNEL;
-  }
-}
+void Channel::setMode(const char mode) { _mode = mode; }
 
 void Channel::setLimit(size_t limit) { _limit = limit; }
 
