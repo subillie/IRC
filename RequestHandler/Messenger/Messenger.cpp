@@ -5,10 +5,23 @@ Messenger::Messenger() : _prefix(""), _param(""), _trailing("") {}
 #include "../../Print/Print.hpp"  // for test
 
 // Error functions
-void Messenger::ErrNoSuchNick(int fd) {}
+void Messenger::ErrNoSuchNick(int fd, const std::string& nick) {
+  Client* client = Server::_clientFds[fd];
 
-void Messenger::ErrNoSuchChannel(int fd) {
-  printRed("NoSuchChannel");
+  _prefix = SERVER;
+  _param = ERR_NOSUCHNICK + " " + client->getNickname() + " " + nick;
+  _trailing = "No such nick/channel";
+  printRed("ErrNoSuchNick");
+  sendToClient(fd);
+}
+
+void Messenger::ErrNoSuchChannel(int fd, const std::string& channel) {
+  Client* client = Server::_clientFds[fd];
+
+  _prefix = SERVER;
+  _param = ERR_NOSUCHCHANNEL + " " + client->getNickname() + " " + channel;
+  _trailing = "No such channel";
+  printRed("ErrNoSuchChannel");
   sendToClient(fd);
 }
 
@@ -95,9 +108,25 @@ void Messenger::ErrBadChanMask(int fd) {
   sendToClient(fd);
 }
 
-void ErrUModeUnknownFlag(int fd) {}
+void Messenger::ErrUModeUnknownFlag(int fd) {
+  Client* client = Server::_clientFds[fd];
 
-void ErrUsersDontMatch(int fd) {}
+  _prefix = SERVER;
+  _param = ERR_UMODEUNKNOWNFLAG + " " + client->getNickname();
+  _trailing = "Unknown MODE flag";
+  printRed("ErrUModeUnknownFlag");
+  sendToClient(fd);
+}
+
+void Messenger::ErrUsersDontMatch(int fd) {
+  Client* client = Server::_clientFds[fd];
+
+  _prefix = SERVER;
+  _param = ERR_USERSDONTMATCH + " " + client->getNickname();
+  _trailing = "Cant change mode for other users";
+  printRed("ErrUsersDontMatch");
+  sendToClient(fd);
+}
 
 void Messenger::ErrUnexpected(int fd) {
   _prefix = SERVER;
@@ -166,6 +195,15 @@ void Messenger::RplCreated(int fd) {
 void Messenger::RplMyinfo(int fd) {
   _prefix = SERVER;
   printRed("RplMyinfo");
+  sendToClient(fd);
+}
+
+void Messenger::RplUModeIs(int fd, const std::string& usermode) {
+  Client* client = Server::_clientFds[fd];
+
+  _prefix = SERVER;
+  _param = RPL_UMODEIS + " " + client->getNickname() + " " + usermode;
+  printRed("RplUModeIs");
   sendToClient(fd);
 }
 

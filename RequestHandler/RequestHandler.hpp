@@ -33,11 +33,15 @@ class RequestHandler {
   void nick();
   void user();
   void pass();
+
   void join();
   void privmsg();
   void kick();
   void invite();
   void topic();
+
+  void userMode(const std::string &target);
+  void channelMode(const std::string &target);
   void mode();
   void pong();
 

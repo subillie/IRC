@@ -51,9 +51,8 @@ void RequestHandler::user() {
     return;
   }
   std::string username = _token[1];
-  std::string hostname = _token[4];
+  std::string hostname = _token[3];
   if (_client->getIsRegistered()) {
-    _msg.ErrAlreadyRegistered(_fd);
     return;
   }
   // max 길이 정해야 함
@@ -186,8 +185,6 @@ void RequestHandler::kick() {}
 void RequestHandler::invite() {}
 
 void RequestHandler::topic() {}
-
-void RequestHandler::mode() {}
 
 void RequestHandler::pong() {
   if (_token.size() < 2) {

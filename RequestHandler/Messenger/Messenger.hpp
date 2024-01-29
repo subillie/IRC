@@ -21,8 +21,8 @@ class Messenger {
  public:
   Messenger();
   // Error function
-  void ErrNoSuchNick(int fd);                                  // 401
-  void ErrNoSuchChannel(int fd);                               // 403
+  void ErrNoSuchNick(int fd, const std::string& nick);         // 401
+  void ErrNoSuchChannel(int fd, const std::string& channel);   // 403
   void ErrTooManyChannels(int fd);                             // 405
   void ErrNoOrigin(int fd);                                    // 409
   void ErrUnknownCommand(int fd);                              // 421
@@ -41,10 +41,11 @@ class Messenger {
   void ErrUnexpected(int fd);  // 에러코드가 정해져 있지 않은 에러
 
   // Reply function
-  void RplWelcome(int fd);   // 001
-  void RplYourHost(int fd);  // 002
-  void RplCreated(int fd);   // 003
-  void RplMyinfo(int fd);    // 004
+  void RplWelcome(int fd);                               // 001
+  void RplYourHost(int fd);                              // 002
+  void RplCreated(int fd);                               // 003
+  void RplMyinfo(int fd);                                // 004
+  void RplUModeIs(int fd, const std::string& usermode);  // 221
   void RplTopic(int fd, const std::string& channel,
                 const std::string& topic);  // 332
   void RplNamReply(int fd, const std::string& channel,
