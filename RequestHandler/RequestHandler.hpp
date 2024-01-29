@@ -20,6 +20,7 @@
 class RequestHandler {
  private:
   int _fd;
+  Messenger _msg;
   Client *_client;
   std::string _request;
   std::string _command;

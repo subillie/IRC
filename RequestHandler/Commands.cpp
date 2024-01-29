@@ -1,36 +1,32 @@
 #include "RequestHandler.hpp"
 
 void RequestHandler::cap() {
-  Messenger msg;
-
   if (_token[1] == "LS") {  // CAP LS
-    msg.setParam("CAP * LS :");
-    msg.sendToClient(_fd);
+    _msg.setParam("CAP * LS :");
+    _msg.sendToClient(_fd);
   } else if (_token[1] == "END") {  // CAP END
-    msg.setParam("");
-    msg.sendToClient(_fd);
+    _msg.setParam("");
+    _msg.sendToClient(_fd);
   }
 }
 
 void RequestHandler::nick() {
-  Messenger msg;
-
   if (_token.size() != 2) {
-    msg.ErrNoNickNameGiven(_fd);
+    _msg.ErrNoNickNameGiven(_fd);
     return;
   } else if (Server::_clientNicks.find(_token[1]) !=
              Server::_clientNicks.end()) {
-    msg.ErrNickNameInUse(_fd);
+    _msg.ErrNickNameInUse(_fd);
     return;
   } else {
     if (std::isdigit(_token[1][0])) {
-      msg.ErrErroneusNickName(_fd);
+      _msg.ErrErroneusNickName(_fd);
       return;
     }
     size_t pos = _token[1].find_first_not_of(
         LOWERCASE + UPPERCASE + SPECIAL_CHAR + DIGIT, 1);
     if (pos != std::string::npos) {
-      msg.ErrErroneusNickName(_fd);
+      _msg.ErrErroneusNickName(_fd);
       return;
     }
   }
@@ -43,15 +39,14 @@ void RequestHandler::nick() {
 }
 
 void RequestHandler::user() {
-  Messenger msg;
   // USER <username> 0 * <realname> 외의 형식 있는지 확인해야함
   if (!_client->getUsername().empty()) {
-    msg.ErrUnexpected(_fd);
+    _msg.ErrUnexpected(_fd);
     return;
   }
   // : 뒤에는 하나로 침
   if (_token.size() != 5) {
-    msg.ErrNeedMoreParams(_fd);
+    _msg.ErrNeedMoreParams(_fd);
     return;
   }
   std::string username = _token[1];
@@ -60,7 +55,7 @@ void RequestHandler::user() {
   for (std::map<int, Client*>::iterator iter = Server::_clientFds.begin();
        iter != Server::_clientFds.end(); iter++) {
     if (iter->second->getUsername() == username) {
-      msg.ErrAlreadyRegistered(_fd);
+      _msg.ErrAlreadyRegistered(_fd);
       return;
     }
   }
@@ -68,7 +63,7 @@ void RequestHandler::user() {
   bool isOutOfLen = (username.length() < 1 || username.length() > 12);
   bool isSpecialChar = (username.find_first_not_of("\0@") == std::string::npos);
   if (isOutOfLen || isSpecialChar) {
-    msg.ErrUnexpected(_fd);
+    _msg.ErrUnexpected(_fd);
     return;
   }
   _client->setUsername(username);
@@ -77,78 +72,117 @@ void RequestHandler::user() {
         _client->getUsername().empty())) {
     _client->setIsRegisterd(true);
   } else {
-    msg.ErrUnexpected(_fd);
+    _msg.ErrUnexpected(_fd);
     return;
   }
   std::cout << *_client;  // debug
-  msg.RplWelcome(_fd);
+  _msg.RplWelcome(_fd);
 }
 
 // PASS <password>
 void RequestHandler::pass() {
-  Messenger msg;
   // 인자가 없을 때
   if (_token.size() < 2) {
-    msg.ErrNeedMoreParams(_fd);
+    _msg.ErrNeedMoreParams(_fd);
     return;
     // 비번 틀림 ERR_PASSWDMISMATCH => close connection
   } else if (_token[1] != _password) {
-    msg.ErrPasswdMismatch(_fd);
+    _msg.ErrPasswdMismatch(_fd);
     // return;
     // 이미 가입 됨 ERR_ALREADYREGISTERED
   } else if (_client->getIsRegistered()) {
-    msg.ErrAlreadyRegistered(_fd);
+    _msg.ErrAlreadyRegistered(_fd);
     return;
   }
   _client->setPassword(_token[1]);
 }
 
 void RequestHandler::join() {
-  Messenger msg;
-  // /join #채널명 <암호> // 각각 여러 개 들어갈 수 있음
-  // 인자가 없으면 ERR_NEEDMOREPARAMS
+  // /join <channel>{,<channel>} [<key>{,<key>}]
+
+  // 인자가 없을 때
   if (_token.size() < 2) {
-    msg.ErrNeedMoreParams(_fd);
+    _msg.ErrNeedMoreParams(_fd);
     return;
   }
-  std::vector<std::string> channels;
+
   std::stringstream ss;
+  std::vector<std::string> channels;
   while (getline(ss, _token[1], ',')) {
     channels.push_back(_token[1]);
   }
+  std::vector<std::string> passwords;
+  while (getline(ss, _token[2], ',')) {
+    passwords.push_back(_token[2]);
+  }
 
-  // TODO: no such channel로 처리하는 게 맞나?
-  // 채널명이 유효하지 않으면 ERR_NOSUCHCHANNEL
-  std::vector<std::string>::iterator iter = channels.begin();
-  for (; iter != channels.end(); iter++) {
-    if (iter->empty() || (*iter)[0] != '#' ||
-        iter->find_first_not_of(LOWERCASE + UPPERCASE + SPECIAL_CHAR + DIGIT) !=
-            std::string::npos) {
-      // msg.ErrNoSuchChannel();
-      return;
+  std::vector<std::string>::iterator chanIter = channels.begin();
+  std::vector<std::string>::iterator passIter = passwords.begin();
+  for (; chanIter != channels.end(); chanIter++, passIter++) {
+    // 채널명이 유효하지 않을 때
+    if (chanIter->empty() || (*chanIter)[0] != '#' ||
+        chanIter->find_first_not_of(LOWERCASE + UPPERCASE + SPECIAL_CHAR +
+                                    DIGIT) != std::string::npos) {
+      _msg.ErrBadChanMask(_fd);
+      continue;
+    }
+    // 채널이 없으면 생성
+    if (Server::_channelNames.find(*chanIter) == Server::_channelNames.end()) {
+      Server::_channelNames[*chanIter] = new Channel('d', *chanIter);
+    } else {
+      Channel* chanToJoin = Server::_channelNames[*chanIter];
+      std::list<std::string> memberList = chanToJoin->getMembers();
+      std::list<std::string>::iterator membIter =
+          std::find(memberList.begin(), memberList.end(), *chanIter);
+      // 이미 참가 중인 채널이면 무시
+      if (membIter != memberList.end()) {
+        continue;
+        // 채널이 존재하고 멤버 명단에 없으면 참가
+      } else {
+        // 해당 채널이 Key Channel Mode이면 비밀번호 확인
+        if (chanToJoin->getMode() == KEY_CHANNEL) {
+          if (chanToJoin->getPassword() != *passIter) {
+            _msg.ErrBadChannelKey(_fd);
+            continue;
+          }
+          // 해당 채널이 Invite Only Channel Mode이면 초대 리스트에 있는지 확인
+        } else if (chanToJoin->getMode() == INVITE_ONLY_CHANNEL) {
+          std::list<std::string> inviteeList = chanToJoin->getInvitees();
+          if (std::find(inviteeList.begin(), inviteeList.end(),
+                        _client->getNickname()) ==
+              chanToJoin->getInvitees().end()) {
+            _msg.ErrInviteOnlyChan(_fd);
+            continue;
+          }
+          // 해당 채널이 Client Limit Channel Mode이면 인원 제한 확인
+        } else if (chanToJoin->getMode() == CLIENT_LIMIT_CHANNEL) {
+          if (chanToJoin->getLimit() < chanToJoin->getMembers().size()) {
+            _msg.ErrTooManyChannels(_fd);
+            continue;
+          }
+        }
+        chanToJoin->addMember(*chanIter);
+        // 해당 채널에 topic이 존재한다면 topic 전송
+        if (!chanToJoin->getTopic().empty()) {
+          _msg.RplTopic(_fd, *chanIter, chanToJoin->getTopic());
+        }
+        // 해당 채널의 모든 유저에게 join 메시지 전송
+        for (membIter = memberList.begin(); membIter != memberList.end();
+             membIter++) {
+          _msg.RplNamReply(_fd, *chanIter, *membIter);
+          _msg.RplEndOfNames(_fd, *chanIter);
+        }
+      }
     }
   }
-  // // 채널이 없으면 생성
-  // if (Server::_channelNames.find(channel) == Server::_channelNames.end()) {
-  //   Server::_channelNames[channel] = new Channel(channel);
-  // } else {
-  //   // 채널에 이미 참가 중이면 ERR_TOOMANYCHANNELS
-  //   if (Server::_channelNames[channel]->getClients().find(_client) !=
-  //       Server::_channelNames[channel]->getClients().end()) {
-  //     msg.ErrTooManyChannels();
-  //     return;
-  //   }
-  // }
 
-  msg.sendToClient(_fd);
+  _msg.sendToClient(_fd);
 }
 
 void RequestHandler::privmsg() {
-  Messenger msg;
-
   const std::string response =
       "Hello from the server!";  // client connection test
-  msg.sendToClient(_fd);
+  _msg.sendToClient(_fd);
 }
 
 void RequestHandler::kick() {}
@@ -160,16 +194,15 @@ void RequestHandler::topic() {}
 void RequestHandler::mode() {}
 
 void RequestHandler::pong() {
-  Messenger msg;
   if (_token.size() < 2) {
-    msg.ErrNeedMoreParams(_fd);
+    _msg.ErrNeedMoreParams(_fd);
     return;
   } else if (_token[1].empty()) {
-    msg.ErrNoOrigin(_fd);
+    _msg.ErrNoOrigin(_fd);
     return;
   }
-  msg.setPrefix("prefix");
-  msg.setParam("Pong");
-  msg.setTrailing("??");
-  msg.sendToClient(_fd);
+  _msg.setPrefix("prefix");
+  _msg.setParam("Pong");
+  _msg.setTrailing("??");
+  _msg.sendToClient(_fd);
 }
