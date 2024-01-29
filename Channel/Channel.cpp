@@ -1,7 +1,11 @@
 #include "Channel.hpp"
 
-Channel::Channel(const char mode, const std::string& name)
-    : _mode(mode), _limit(0), _name(name) {}
+Channel::Channel(const char& mode, const std::string& name)
+    : _limit(0), _name(name) {
+  _modes.push_back(mode);
+}
+
+void Channel::addMode(const char mode) { _modes.push_back(mode); }
 
 void Channel::addOperater(const std::string& operater) {
   _operaters.push_back(operater);
@@ -27,8 +31,6 @@ void Channel::removeInvitee(const std::string& member) {
   _invitees.remove(member);
 }
 
-void Channel::setMode(const char mode) { _mode = mode; }
-
 void Channel::setLimit(size_t limit) { _limit = limit; }
 
 void Channel::setName(const std::string& name) { _name = name; }
@@ -37,8 +39,6 @@ void Channel::setTopic(const std::string& topic) { _topic = topic; }
 
 void Channel::setPassword(const std::string& password) { _password = password; }
 
-char Channel::getMode() const { return _mode; }
-
 size_t Channel::getLimit() const { return _limit; }
 
 const std::string& Channel::getName() const { return _name; }
@@ -46,6 +46,8 @@ const std::string& Channel::getName() const { return _name; }
 const std::string& Channel::getTopic() const { return _topic; }
 
 const std::string& Channel::getPassword() const { return _password; }
+
+const std::list<char>& Channel::getModes() const { return _modes; }
 
 const std::list<std::string>& Channel::getOperaters() const {
   return _operaters;

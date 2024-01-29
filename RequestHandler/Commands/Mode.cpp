@@ -7,6 +7,12 @@ void RequestHandler::channelMode(const std::string& target) {
   if (Server::_channelNames.find(target) == Server::_channelNames.end()) {
     _msg.ErrNoSuchChannel(_fd, target);
   }
+  Channel* channel = Server::_channelNames[target];
+  // <modestring> 이 없으면
+  if (_token.size() == 2) {
+    _msg.RplChannelModeIS(_fd, channel->getName());
+    return;
+  }
 }
 
 void RequestHandler::userMode(const std::string& target) {

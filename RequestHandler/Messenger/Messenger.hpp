@@ -42,11 +42,12 @@ class Messenger {
   void ErrUnexpected(int fd);  // 에러코드가 정해져 있지 않은 에러
 
   // Reply function
-  void RplWelcome(int fd);                               // 001
-  void RplYourHost(int fd);                              // 002
-  void RplCreated(int fd);                               // 003
-  void RplMyinfo(int fd);                                // 004
-  void RplUModeIs(int fd, const std::string& usermode);  // 221
+  void RplWelcome(int fd);                                    // 001
+  void RplYourHost(int fd);                                   // 002
+  void RplCreated(int fd);                                    // 003
+  void RplMyinfo(int fd);                                     // 004
+  void RplUModeIs(int fd, const std::string& usermode);       // 221
+  void RplChannelModeIS(int fd, const std::string& channel);  // 324
   void RplTopic(int fd, const std::string& channel,
                 const std::string& topic);                 // 332
   void RplInviteList(int fd, const std::string& channel);  // 336
