@@ -92,17 +92,18 @@ void RequestHandler::join() {
     }
   }
 
-  std::map<std::string, Channel*>::iterator it = Server::_channelNames.begin();
-  for (; it != Server::_channelNames.end(); it++) {
-    std::cout << "channel: " << it->first << std::endl;
-    std::cout << "members: ";
-    std::list<std::string> members = it->second->getMembers();
-    std::list<std::string>::iterator mIter = members.begin();
-    for (; mIter != members.end(); mIter++) {
-      std::cout << *mIter << " ";
-    }
-    std::cout << std::endl;
-  }
+  // std::map<std::string, Channel*>::iterator it =
+  // Server::_channelNames.begin(); for (; it != Server::_channelNames.end();
+  // it++) {
+  //   std::cout << "channel: " << it->first << std::endl;
+  //   std::cout << "members: ";
+  //   std::list<std::string> members = it->second->getMembers();
+  //   std::list<std::string>::iterator mIter = members.begin();
+  //   for (; mIter != members.end(); mIter++) {
+  //     std::cout << *mIter << " ";
+  //   }
+  //   std::cout << std::endl;
+  // }
 
   _msg.sendToClient(_fd);
 }
