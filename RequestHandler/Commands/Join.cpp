@@ -1,98 +1,6 @@
-#include "RequestHandler.hpp"
+#include "../RequestHandler.hpp"
 
-void RequestHandler::cap() {
-  if (_token[1] == "LS") {
-    _msg.setPrefix(SERVER);
-    _msg.setParam("CAP * LS :");
-    _msg.sendToClient(_fd);
-  }
-  // else if (_token[1] == "END") {
-  //   // start registration
-  // }
-}
-
-void RequestHandler::nick() {
-  if (_token.size() != 2) {
-    _msg.ErrNoNickNameGiven(_fd);
-    return;
-  } else if (Server::_clientNicks.find(_token[1]) !=
-             Server::_clientNicks.end()) {
-    _msg.ErrNickNameInUse(_fd, _token[1]);
-    return;
-  } else {
-    if (std::isdigit(_token[1][0])) {
-      _msg.ErrErroneusNickName(_fd, _token[1]);
-      return;
-    }
-    size_t pos = _token[1].find_first_not_of(
-        LOWERCASE + UPPERCASE + SPECIAL_CHAR + DIGIT, 1);
-    if (pos != std::string::npos) {
-      _msg.ErrErroneusNickName(_fd, _token[1]);
-      return;
-    }
-  }
-  // nickname 설정이 되어 있을 경우
-  if (_client->getNickname() != "") {
-    Server::_clientNicks.erase(_client->getNickname());
-  }
-  _client->setNickname(_token[1]);
-  Server::_clientNicks[_token[1]] = _client;
-}
-
-void RequestHandler::user() {
-  // USER <username> 0 * <realname> 외의 형식 있는지 확인해야함
-  if (!_client->getUsername().empty()) {
-    _msg.ErrUnexpected(_fd);
-    return;
-  }
-  // : 뒤에는 하나로 침
-  if (_token.size() != 5) {
-    _msg.ErrNeedMoreParams(_fd, "USER");
-    return;
-  }
-  std::string username = _token[1];
-  std::string hostname = _token[3];
-  if (_client->getIsRegistered()) {
-    return;
-  }
-  // max 길이 정해야 함
-  bool isOutOfLen = (username.length() < 1 || username.length() > 12);
-  bool isSpecialChar = (username.find_first_not_of("\0@") == std::string::npos);
-  if (isOutOfLen || isSpecialChar) {
-    _msg.ErrUnexpected(_fd);
-    return;
-  }
-  _client->setUsername(username);
-  _client->setHostname(hostname);
-  if (!(_client->getPassword().empty() || _client->getNickname().empty() ||
-        _client->getUsername().empty())) {
-    _client->setIsRegisterd(true);
-  } else {
-    _msg.ErrUnexpected(_fd);
-    return;
-  }
-  std::cout << *_client;  // debug
-  _msg.RplWelcome(_fd);
-}
-
-// PASS <password>
-void RequestHandler::pass() {
-  // 인자가 없을 때
-  if (_token.size() < 2) {
-    _msg.ErrNeedMoreParams(_fd, "PASS");
-    return;
-    // 비번 틀림 ERR_PASSWDMISMATCH => close connection
-  } else if (_token[1] != _password) {
-    _msg.ErrPasswdMismatch(_fd);
-    return;
-    // 이미 가입 됨 ERR_ALREADYREGISTERED
-  } else if (_client->getIsRegistered()) {
-    _msg.ErrAlreadyRegistered(_fd);
-    return;
-  }
-  _client->setPassword(_token[1]);
-}
-
+// /join <channel>{,<channel>} [<key>{,<key>}]
 void RequestHandler::join() {
   // 인자가 없을 때
   if (_token.size() < 2) {
@@ -102,7 +10,6 @@ void RequestHandler::join() {
   if (_token[1] == " ") {
     return;
   }
-  // /join <channel>{,<channel>} [<key>{,<key>}]
   std::stringstream ss1(_token[1]), ss2(_token[2]);
   std::string channel, password;
   std::map<std::string, std::string> keys;
@@ -178,31 +85,5 @@ void RequestHandler::join() {
     }
   }
 
-  _msg.sendToClient(_fd);
-}
-
-void RequestHandler::privmsg() {
-  const std::string response =
-      "Hello from the server!";  // client connection test
-  _msg.sendToClient(_fd);
-}
-
-void RequestHandler::kick() {}
-
-void RequestHandler::invite() {}
-
-void RequestHandler::topic() {}
-
-void RequestHandler::pong() {
-  if (_token.size() < 2) {
-    _msg.ErrNeedMoreParams(_fd, "PONG");
-    return;
-  } else if (_token[1].empty()) {
-    _msg.ErrNoOrigin(_fd);
-    return;
-  }
-  _msg.setPrefix(SERVER);
-  _msg.setParam("PONG " + SERVER);
-  _msg.setTrailing(_token[1]);
   _msg.sendToClient(_fd);
 }
