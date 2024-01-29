@@ -46,11 +46,13 @@ void Messenger::ErrNoOrigin(int fd) {
   sendToClient(fd);
 }
 
+// 추후 작업 예정
 void Messenger::ErrNoRecipient(int fd) {
   printRed("ErrNoRecipient");
   sendToClient(fd);
 }
 
+// 추후 작업 예정
 void Messenger::ErrNoTextToSend(int fd) {
   printRed("ErrNoTextToSend");
   sendToClient(fd);
