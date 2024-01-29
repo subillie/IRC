@@ -262,11 +262,15 @@ void Messenger::RplUModeIs(int fd, const std::string& usermode) {
   sendToClient(fd);
 }
 
-// 하는 중
 void Messenger::RplChannelModeIS(int fd, const std::string& channel) {
   _prefix = SERVER;
   _param = RPL_CHANNELMODEIS + " " + Server::_clientFds[fd]->getNickname() +
            " " + channel;
+  std::list<char> chanModes = Server::_channelNames[channel]->getModes();
+  _trailing = "+";
+  for (std::list<char>::iterator it = chanModes.begin(); it != chanModes.end();
+       ++it)
+    _trailing += *it;
   printRed("RplChannelModeIS");
   sendToClient(fd);
 }

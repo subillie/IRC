@@ -39,7 +39,6 @@ class Channel {
   void setName(const std::string& name);
   void setTopic(const std::string& topic);
   void setPassword(const std::string& password);
-  char getMode() const;
   size_t getLimit() const;
   const std::string& getName() const;
   const std::string& getTopic() const;
