@@ -10,7 +10,7 @@
 #include "../../Macros/Characters.hpp"
 #include "../../Server/Server.hpp"
 #include "ErrorMacros.hpp"
-#include "Replies.hpp"
+#include "ReplyMacros.hpp"
 
 class Messenger {
  private:
@@ -25,16 +25,17 @@ class Messenger {
   void ErrNoSuchChannel(int fd, const std::string& channel);   // 403
   void ErrTooManyChannels(int fd);                             // 405
   void ErrNoOrigin(int fd);                                    // 409
-  void ErrUnknownCommand(int fd);                              // 421
+  void ErrUnknownCommand(int fd, const std::string& command);  // 421
   void ErrNoNickNameGiven(int fd);                             // 431
-  void ErrErroneusNickName(int fd);                            // 432
-  void ErrNickNameInUse(int fd);                               // 433
+  void ErrErroneusNickName(int fd, const std::string& nick);   // 432
+  void ErrNickNameInUse(int fd, const std::string& nick);      // 433
+  void ErrNotRegistered(int fd);                               // 451
   void ErrNeedMoreParams(int fd, const std::string& command);  // 461
   void ErrAlreadyRegistered(int fd);                           // 462
   void ErrPasswdMismatch(int fd);                              // 464
-  void ErrChannelIsFull(int fd);                               // 471
-  void ErrInviteOnlyChan(int fd);                              // 473
-  void ErrBadChannelKey(int fd);                               // 475
+  void ErrChannelIsFull(int fd, const std::string& channel);   // 471
+  void ErrInviteOnlyChan(int fd, const std::string& channel);  // 473
+  void ErrBadChannelKey(int fd, const std::string& channel);   // 475
   void ErrBadChanMask(int fd);                                 // 476
   void ErrUModeUnknownFlag(int fd);                            // 501
   void ErrUsersDontMatch(int fd);                              // 502
@@ -47,10 +48,12 @@ class Messenger {
   void RplMyinfo(int fd);                                // 004
   void RplUModeIs(int fd, const std::string& usermode);  // 221
   void RplTopic(int fd, const std::string& channel,
-                const std::string& topic);  // 332
+                const std::string& topic);                 // 332
+  void RplInviteList(int fd, const std::string& channel);  // 336
   void RplNamReply(int fd, const std::string& channel,
                    const std::string& nick);               // 353
   void RplEndOfNames(int fd, const std::string& channel);  // 366
+
   //  make response
   void setPrefix(const std::string& prefix);
   void setParam(const std::string& param);

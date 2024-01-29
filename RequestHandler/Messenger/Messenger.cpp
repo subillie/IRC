@@ -5,6 +5,7 @@ Messenger::Messenger() : _prefix(""), _param(""), _trailing("") {}
 #include "../../Print/Print.hpp"  // for test
 
 // Error functions
+
 void Messenger::ErrNoSuchNick(int fd, const std::string& nick) {
   Client* client = Server::_clientFds[fd];
 
@@ -26,84 +27,120 @@ void Messenger::ErrNoSuchChannel(int fd, const std::string& channel) {
 }
 
 void Messenger::ErrTooManyChannels(int fd) {
+  _prefix = SERVER;
+  _param = ERR_TOOMANYCHANNELS + " " + Server::_clientFds[fd]->getNickname();
+  _trailing = "You have joined too many channels";
   printRed("ErrTooManyChannels");
   sendToClient(fd);
 }
 
-void Messenger::ErrNeedMoreParams(int fd, const std::string& command) {
-  Client* client = Server::_clientFds[fd];
-
+void Messenger::ErrNoOrigin(int fd) {
   _prefix = SERVER;
-  _param = ERR_NEEDMOREPARAMS + " " + client->getNickname() + command;
+  _param = ERR_NOORIGIN + " " + Server::_clientFds[fd]->getNickname();
+  _trailing = "No origin specified";
+  printRed("ErrNoOrigin");
+  sendToClient(fd);
+}
+
+void Messenger::ErrUnknownCommand(int fd, const std::string& command) {
+  _prefix = SERVER;
+  _param = ERR_UNKNOWNCOMMAND + " " + Server::_clientFds[fd]->getNickname() +
+           " " + command;
+  _trailing = "Unknown command";
+  printRed("UnknownCommand");
+  sendToClient(fd);
+}
+
+void Messenger::ErrNoNickNameGiven(int fd) {
+  _prefix = SERVER;
+  _param = ERR_NONICKNAMEGIVEN + " " + Server::_clientFds[fd]->getNickname();
+  _trailing = "No nickname given";
+  printRed("ErrNoNickNameGiven");
+  sendToClient(fd);
+}
+
+void Messenger::ErrErroneusNickName(int fd, const std::string& nick) {
+  _prefix = SERVER;
+  _param = ERR_ERRONEUSNICKNAME + " " + Server::_clientFds[fd]->getNickname() +
+           " " + nick;
+  _trailing = "Erroneus nickname";
+  printRed("ErrErroneusNickName");
+  sendToClient(fd);
+}
+
+void Messenger::ErrNickNameInUse(int fd, const std::string& nick) {
+  _prefix = SERVER;
+  _param = ERR_NICKNAMEINUSE + " " + Server::_clientFds[fd]->getNickname() +
+           " " + nick;
+  _trailing = "Nickname is already in use";
+  printRed("ErrNickNameInUse");
+  sendToClient(fd);
+}
+
+void Messenger::ErrNotRegistered(int fd) {
+  _prefix = SERVER;
+  _param = ERR_NOTREGISTERED + " " + Server::_clientFds[fd]->getNickname();
+  _trailing = "You have not registered";
+  printRed("ErrNotRegistered");
+  sendToClient(fd);
+}
+
+void Messenger::ErrNeedMoreParams(int fd, const std::string& command) {
+  _prefix = SERVER;
+  _param = ERR_NEEDMOREPARAMS + " " + Server::_clientFds[fd]->getNickname() +
+           " " + command;
   _trailing = "Not enough parameters";
   printRed("NeedMoreParams");
   sendToClient(fd);
 }
 
 void Messenger::ErrAlreadyRegistered(int fd) {
-  Client* client = Server::_clientFds[fd];
   _prefix = SERVER;
-  _param = ERR_ALREADYREGISTERED + " " + client->getNickname();
+  _param = ERR_ALREADYREGISTERED + " " + Server::_clientFds[fd]->getNickname();
   _trailing = "You may not reregister";
   printRed("AlreadyRegistered");
   sendToClient(fd);
 }
 
 void Messenger::ErrPasswdMismatch(int fd) {
-  Client* client = Server::_clientFds[fd];
   _prefix = SERVER;
-  _param = ERR_PASSWDMISMATCH + " " + client->getNickname();
+  _param = ERR_PASSWDMISMATCH + " " + Server::_clientFds[fd]->getNickname();
   _trailing = "Password incorrect";
   printRed("ErrPasswdMismatch");
   sendToClient(fd);
 }
 
-void Messenger::ErrNoNickNameGiven(int fd) {
+void Messenger::ErrChannelIsFull(int fd, const std::string& channel) {
   _prefix = SERVER;
-  printRed("ErrNoNickNameGiven");
-  sendToClient(fd);
-}
-
-void Messenger::ErrErroneusNickName(int fd) {
-  _prefix = SERVER;
-  printRed("ErrErroneusNickName");
-  sendToClient(fd);
-}
-
-void Messenger::ErrNickNameInUse(int fd) {
-  _prefix = SERVER;
-  printRed("ErrNickNameInUse");
-  sendToClient(fd);
-}
-
-void Messenger::ErrNoOrigin(int fd) {
-  _prefix = SERVER;
-  printRed("ErrNoOrigin");
-  sendToClient(fd);
-}
-
-void Messenger::ErrUnknownCommand(int fd) {
-  _prefix = SERVER;
-  printRed("UnknownCommand");
-  sendToClient(fd);
-}
-
-void Messenger::ErrChannelIsFull(int fd) {
+  _param = ERR_CHANNELISFULL + " " + Server::_clientFds[fd]->getNickname() +
+           " " + channel;
+  _trailing = "Cannot join channel (+l)";
   printRed("ErrChannelIsFull");
   sendToClient(fd);
 }
 
-void Messenger::ErrInviteOnlyChan(int fd) {
+void Messenger::ErrInviteOnlyChan(int fd, const std::string& channel) {
+  _prefix = SERVER;
+  _param = ERR_INVITEONLYCHAN + " " + Server::_clientFds[fd]->getNickname() +
+           " " + channel;
+  _trailing = "Cannot join channel (+i)";
   printRed("ErrInviteOnlyChan");
   sendToClient(fd);
 }
 
-void Messenger::ErrBadChannelKey(int fd) {
+void Messenger::ErrBadChannelKey(int fd, const std::string& channel) {
+  _prefix = SERVER;
+  _param = ERR_BADCHANNELKEY + " " + Server::_clientFds[fd]->getNickname() +
+           " " + channel;
+  _trailing = "Cannot join channel (+k)";
   printRed("ErrBadChannelKey");
   sendToClient(fd);
 }
 
 void Messenger::ErrBadChanMask(int fd) {
+  _prefix = SERVER;
+  _param = ERR_BADCHANMASK + " " + Server::_clientFds[fd]->getNickname();
+  _trailing = "Bad Channel Mask";
   printRed("ErrBadChanMask");
   sendToClient(fd);
 }
@@ -128,7 +165,7 @@ void Messenger::ErrUsersDontMatch(int fd) {
   sendToClient(fd);
 }
 
-void Messenger::ErrUnexpected(int fd) {
+void Messenger::ErrUnexpected(int fd) {  // TODO: implement
   _prefix = SERVER;
   printRed("Unexpected");
   sendToClient(fd);
@@ -136,8 +173,7 @@ void Messenger::ErrUnexpected(int fd) {
 
 // Reply functions
 void Messenger::RplWelcome(int fd) {
-  Client* client = Server::_clientFds[fd];
-  const std::string& nick = client->getNickname();
+  const std::string& nick = Server::_clientFds[fd]->getNickname();
   // const std::string& username = client->getUsername();
   // const std::string& hostname = client->getHostname();
   const std::string squirtle =
@@ -183,17 +219,25 @@ void Messenger::RplWelcome(int fd) {
 
 void Messenger::RplYourHost(int fd) {
   _prefix = SERVER;
+  _param = RPL_YOURHOST + " " + Server::_clientFds[fd]->getNickname();
+  _trailing = "Your host is " + SERVER + ", running version " + VERSION;
   printRed("RplYourHost");
   sendToClient(fd);
 }
 void Messenger::RplCreated(int fd) {
   _prefix = SERVER;
+  _param = RPL_CREATED + " " + Server::_clientFds[fd]->getNickname();
+  // TODO: time server was created
+  // _trailing = "This server was created " + datetime;
   printRed("RplCreated");
   sendToClient(fd);
 }
 
 void Messenger::RplMyinfo(int fd) {
   _prefix = SERVER;
+  _param = RPL_MYINFO + " " + Server::_clientFds[fd]->getNickname() + " " +
+           SERVER + " " + VERSION + " " + AVAILABLE_USER_MODES + " " +
+           AVAILABLE_CHAN_MODES;
   printRed("RplMyinfo");
   sendToClient(fd);
 }
@@ -209,22 +253,37 @@ void Messenger::RplUModeIs(int fd, const std::string& usermode) {
 
 void Messenger::RplTopic(int fd, const std::string& channel,
                          const std::string& topic) {
-  (void)channel;
-  (void)topic;
+  _prefix = SERVER;
+  _param =
+      RPL_TOPIC + " " + Server::_clientFds[fd]->getNickname() + " " + channel;
+  _trailing = topic;
   printRed("RplTopic");
+  sendToClient(fd);
+}
+
+void Messenger::RplInviteList(int fd, const std::string& channel) {
+  _prefix = SERVER;
+  _param = RPL_INVITELIST + " " + Server::_clientFds[fd]->getNickname() + " " +
+           channel;
+  printRed("RplInviteList");
   sendToClient(fd);
 }
 
 void Messenger::RplNamReply(int fd, const std::string& channel,
                             const std::string& nick) {
-  (void)channel;
-  (void)nick;
+  _prefix = SERVER;
+  _param = RPL_NAMREPLY + " " + Server::_clientFds[fd]->getNickname() + " = " +
+           channel;
+  _trailing = nick;
   printRed("RplNamReply");
   sendToClient(fd);
 }
 
 void Messenger::RplEndOfNames(int fd, const std::string& channel) {
-  (void)channel;
+  _prefix = SERVER;
+  _param = RPL_ENDOFNAMES + " " + Server::_clientFds[fd]->getNickname() + " " +
+           channel;
+  _trailing = "End of /NAMES list";
   printRed("RplEndOfNames");
   sendToClient(fd);
 }
