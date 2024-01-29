@@ -5,6 +5,17 @@
 
 Server::Server(int port, char *password) : _port(port), _password(password) {}
 
+Server::~Server() {
+  // std::map<int, Client *>::iterator iter = _clientFds.begin();
+  // for (; iter != _clientFds.end(); iter++) {
+  //   delete (iter->second);
+  // }
+  std::map<std::string, Channel *>::iterator iter2 = _channelNames.begin();
+  for (; iter2 != _channelNames.end(); iter2++) {
+    delete (iter2->second);
+  }
+}
+
 void Server::init() {
   _serverFd = Socket(PF_INET, SOCK_STREAM, 0);
 
@@ -59,15 +70,15 @@ void Server::run() {
         } else {
           char buffer[512];
           memset(buffer, 0, sizeof(buffer));
-          if (Recv(clientFd, buffer, sizeof(buffer), 0) == 0) {
-            deleteClient(clientFd);
+          if (Recv(i, buffer, sizeof(buffer), 0) == 0) {
+            deleteClient(i);
             continue;
           }
           printDebug("buffer", buffer);  // TODO: delete
           parse(buffer);
           while (!_requests.empty()) {
-            RequestHandler requestHandler(_clientFds[clientFd],
-                                          _requests.front(), _password);
+            RequestHandler requestHandler(_clientFds[i], _requests.front(),
+                                          _password);
             _requests.pop();
             requestHandler.execute();
           }

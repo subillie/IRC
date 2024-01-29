@@ -45,6 +45,8 @@ class RequestHandler {
   void mode();
   void pong();
 
+  void addUser(Channel *chanToJoin);
+
  public:
   RequestHandler(Client *client, const std::string &request,
                  const std::string &password);  // Init map

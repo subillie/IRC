@@ -24,6 +24,12 @@ void Messenger::ErrNoSuchChannel(int fd, const std::string& channel) {
   sendToClient(fd);
 }
 
+// 추후 작업 예정
+void Messenger::ErrCannotSendToChan(int fd) {
+  printRed("ErrCannotSendToChan");
+  sendToClient(fd);
+}
+
 void Messenger::ErrTooManyChannels(int fd) {
   _prefix = SERVER;
   _param = ERR_TOOMANYCHANNELS + " " + Server::_clientFds[fd]->getNickname();
@@ -37,6 +43,18 @@ void Messenger::ErrNoOrigin(int fd) {
   _param = ERR_NOORIGIN + " " + Server::_clientFds[fd]->getNickname();
   _trailing = "No origin specified";
   printRed("ErrNoOrigin");
+  sendToClient(fd);
+}
+
+// 추후 작업 예정
+void Messenger::ErrNoRecipient(int fd) {
+  printRed("ErrNoRecipient");
+  sendToClient(fd);
+}
+
+// 추후 작업 예정
+void Messenger::ErrNoTextToSend(int fd) {
+  printRed("ErrNoTextToSend");
   sendToClient(fd);
 }
 

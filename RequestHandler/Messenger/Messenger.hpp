@@ -23,8 +23,11 @@ class Messenger {
   // Error function
   void ErrNoSuchNick(int fd, const std::string& nick);         // 401
   void ErrNoSuchChannel(int fd, const std::string& channel);   // 403
+  void ErrCannotSendToChan(int fd);                            // 404
   void ErrTooManyChannels(int fd);                             // 405
   void ErrNoOrigin(int fd);                                    // 409
+  void ErrNoRecipient(int fd);                                 // 411
+  void ErrNoTextToSend(int fd);                                // 412
   void ErrUnknownCommand(int fd, const std::string& command);  // 421
   void ErrNoNickNameGiven(int fd);                             // 431
   void ErrErroneusNickName(int fd, const std::string& nick);   // 432
