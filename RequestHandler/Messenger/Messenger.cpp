@@ -10,6 +10,11 @@ void Messenger::ErrNoSuchChannel(int fd) {
   sendToClient(fd);
 }
 
+void Messenger::ErrTooManyChannels(int fd) {
+  printRed("ErrTooManyChannels");
+  sendToClient(fd);
+}
+
 void Messenger::ErrNeedMoreParams(int fd, const std::string& command) {
   Client* client = Server::_clientFds[fd];
 
@@ -68,6 +73,26 @@ void Messenger::ErrUnknownCommand(int fd) {
   sendToClient(fd);
 }
 
+void Messenger::ErrChannelIsFull(int fd) {
+  printRed("ErrChannelIsFull");
+  sendToClient(fd);
+}  // 471
+
+void Messenger::ErrInviteOnlyChan(int fd) {
+  printRed("ErrInviteOnlyChan");
+  sendToClient(fd);
+}  // 473
+
+void Messenger::ErrBadChannelKey(int fd) {
+  printRed("ErrBadChannelKey");
+  sendToClient(fd);
+}  // 475
+
+void Messenger::ErrBadChanMask(int fd) {
+  printRed("ErrBadChanMask");
+  sendToClient(fd);
+}  // 476
+
 void Messenger::ErrUnexpected(int fd) {
   _prefix = SERVER;
   printRed("Unexpected");
@@ -106,18 +131,6 @@ void Messenger::RplWelcome(int fd) {
       "\033[0;34m⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠻⠶⣦⣤⣤⣀⣀⣀⣀⣠⣤⡴⠾⠋⠁⠀⠀⠀\n"
       "\033[0;34m⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀\n";
 
-  // "\033[0;34m⠀⠀⠀⠀⠀⣀⠤⠤⠤⠤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
-  // "\033[0;34m⠀⠀⠀⡰⠋⠀⠀⠀⠀⠀⠀⠡⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
-  // "\033[0;34m⠀⠀⢠⠁⢰⣴⠀⠀⠀⠀⣿⡇⢇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
-  // "\033[0;34m⠀⢀⣸⠀⠈⠙⠃⣀⣀⡀⣤⡄⢸⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
-  // "\033[0;34m⢰⠃⠉⠁⠂⢦⣀⢀⡀⠤⠤⣥⣌⡀⠀⠈⠱⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
-  // "\033[0;34m⠘⠦⡀⠀⠀⠀⠈⡄⠂⠉⠀⣀⠵⢵⡒⠠⢴⡋⠉⢑⠖⠦⢄⠀⠀⠀⠀⠀⠀⠀\n"
-  // "\033[0;34m⠀⠀⠈⠲⢤⣤⣴⡥⢄⡨⠋⠀⠒⢄⡑⣄⠀⠈⠄⠀⠀⠀⠈⡝⢀⣀⠀⠀⠀⠀\n"
-  // "\033[0;34m⠀⠀⠀⠀⠈⢿⣿⣿⣆⡇⠀⠀⠊⠉⠉⡆⠈⠢⣶⣀⡀⢀⡰⠋⠀⠀⠉⠑⡄⠀\n"
-  // "\033[0;34m⠀⠀⠀⠀⠀⠀⢿⣿⣿⣔⠀⠠⡀⠀⢀⡇⠀⠀⠠⣇⠈⢹⠀⠀⡀⠀⠀⠀⠘⡄\n"
-  // "\033[0;34m⠀⠀⠀⠀⠀⠀⠀⠙⠛⢿⣿⣿⣿⣿⣶⣶⢆⠀⠀⠈⠉⠈⢄⠀⠀⠀⠂⠀⢀⠇\n"
-  // "\033[0;34m⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠉⠁⠀⠀⠑⠦⣄⠀⠀⠀⠁⠀⠈⠀⢀⠎⠀\n"
-  // "\033[0;34m⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠓⠒⠲⠖⠒⠊⠁⠀⠀\n";
   const std::string& hello =
       "\033[0;36m _  _ ___ _    _    ___  _ \n"
       "\033[0;36m| || | __| |  | |  / _ \\| |\n"
@@ -150,6 +163,28 @@ void Messenger::RplMyinfo(int fd) {
   printRed("RplMyinfo");
   sendToClient(fd);
 }  // 004
+
+void Messenger::RplTopic(int fd, const std::string& channel,
+                         const std::string& topic) {
+  (void)channel;
+  (void)topic;
+  printRed("RplTopic");
+  sendToClient(fd);
+}  // 332
+
+void Messenger::RplNamReply(int fd, const std::string& channel,
+                            const std::string& nick) {
+  (void)channel;
+  (void)nick;
+  printRed("RplNamReply");
+  sendToClient(fd);
+}  // 353
+
+void Messenger::RplEndOfNames(int fd, const std::string& channel) {
+  (void)channel;
+  printRed("RplEndOfNames");
+  sendToClient(fd);
+}  // 366
 
 void Messenger::setPrefix(const std::string& prefix) { _prefix = prefix; }
 

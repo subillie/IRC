@@ -21,21 +21,31 @@ class Messenger {
  public:
   Messenger();
   // Error function
-  void ErrNoSuchChannel(int fd);
-  void ErrNeedMoreParams(int fd, const std::string& command);
-  void ErrAlreadyRegistered(int fd);
-  void ErrPasswdMismatch(int fd);
-  void ErrNoNickNameGiven(int fd);
-  void ErrErroneusNickName(int fd);
-  void ErrNickNameInUse(int fd);
-  void ErrNoOrigin(int fd);
-  void ErrUnknownCommand(int fd);
+  void ErrNoSuchChannel(int fd);      // 403
+  void ErrTooManyChannels(int fd);    // 405
+  void ErrNoOrigin(int fd);           // 409
+  void ErrUnknownCommand(int fd);     // 421
+  void ErrNoNickNameGiven(int fd);    // 431
+  void ErrErroneusNickName(int fd);   // 432
+  void ErrNickNameInUse(int fd);      // 433
+  void ErrNeedMoreParams(int fd, const std::string& command);     // 461
+  void ErrAlreadyRegistered(int fd);  // 462
+  void ErrPasswdMismatch(int fd);     // 464
+  void ErrChannelIsFull(int fd);      // 471
+  void ErrInviteOnlyChan(int fd);     // 473
+  void ErrBadChannelKey(int fd);      // 475
+  void ErrBadChanMask(int fd);        // 476
   void ErrUnexpected(int fd);  // 에러코드가 정해져 있지 않은 에러
   // Reply function
   void RplWelcome(int fd);   // 001
   void RplYourHost(int fd);  // 002
   void RplCreated(int fd);   // 003
   void RplMyinfo(int fd);    // 004
+  void RplTopic(int fd, const std::string& channel,
+                const std::string& topic);  // 332
+  void RplNamReply(int fd, const std::string& channel,
+                   const std::string& nick);               // 353
+  void RplEndOfNames(int fd, const std::string& channel);  // 366
   //  make response
   void setPrefix(const std::string& prefix);
   void setParam(const std::string& param);
