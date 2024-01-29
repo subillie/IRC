@@ -3,7 +3,9 @@
 Channel::Channel(const char mode, const std::string& name)
     : _mode(mode), _limit(0), _name(name) {}
 
-void Channel::addOperater(int operater) { _operaters.push_back(operater); }
+void Channel::addOperater(const std::string& operater) {
+  _operaters.push_back(operater);
+}
 
 void Channel::addMember(const std::string& member) {
   _members.push_back(member);
@@ -13,7 +15,9 @@ void Channel::addInvitee(const std::string& member) {
   _invitees.push_back(member);
 }
 
-void Channel::removeOperater(int operater) { _operaters.remove(operater); }
+void Channel::removeOperater(const std::string& operater) {
+  _operaters.remove(operater);
+}
 
 void Channel::removeMember(const std::string& member) {
   _members.remove(member);
@@ -43,7 +47,9 @@ const std::string& Channel::getTopic() const { return _topic; }
 
 const std::string& Channel::getPassword() const { return _password; }
 
-const std::list<int>& Channel::getOperaters() const { return _operaters; }
+const std::list<std::string>& Channel::getOperaters() const {
+  return _operaters;
+}
 
 const std::list<std::string>& Channel::getMembers() const { return _members; }
 
