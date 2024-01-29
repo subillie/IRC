@@ -6,8 +6,8 @@
 // TODO: 서버 이름, 버전, 사용자 모드, 채널 모드 바꾸기
 #define SERVER std::string("IRC")
 #define VERSION std::string("1.0")
-#define AVAILABLE_USER_MODES std::string("")
-#define AVAILABLE_CHAN_MODES std::string("")
+#define AVAILABLE_USER_MODES std::string("i")
+#define AVAILABLE_CHAN_MODES std::string("itkl")
 
 #define RPL_WELCOME std::string("001")
 #define RPL_YOURHOST std::string("002")
