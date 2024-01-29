@@ -5,6 +5,8 @@ Messenger::Messenger() : _prefix(""), _param(""), _trailing("") {}
 #include "../../Print/Print.hpp"  // for test
 
 // Error functions
+void Messenger::ErrNoSuchNick(int fd) {}
+
 void Messenger::ErrNoSuchChannel(int fd) {
   printRed("NoSuchChannel");
   sendToClient(fd);
@@ -76,22 +78,26 @@ void Messenger::ErrUnknownCommand(int fd) {
 void Messenger::ErrChannelIsFull(int fd) {
   printRed("ErrChannelIsFull");
   sendToClient(fd);
-}  // 471
+}
 
 void Messenger::ErrInviteOnlyChan(int fd) {
   printRed("ErrInviteOnlyChan");
   sendToClient(fd);
-}  // 473
+}
 
 void Messenger::ErrBadChannelKey(int fd) {
   printRed("ErrBadChannelKey");
   sendToClient(fd);
-}  // 475
+}
 
 void Messenger::ErrBadChanMask(int fd) {
   printRed("ErrBadChanMask");
   sendToClient(fd);
-}  // 476
+}
+
+void ErrUModeUnknownFlag(int fd) {}
+
+void ErrUsersDontMatch(int fd) {}
 
 void Messenger::ErrUnexpected(int fd) {
   _prefix = SERVER;
@@ -150,19 +156,18 @@ void Messenger::RplYourHost(int fd) {
   _prefix = SERVER;
   printRed("RplYourHost");
   sendToClient(fd);
-}  // 002
-
+}
 void Messenger::RplCreated(int fd) {
   _prefix = SERVER;
   printRed("RplCreated");
   sendToClient(fd);
-}  // 003
+}
 
 void Messenger::RplMyinfo(int fd) {
   _prefix = SERVER;
   printRed("RplMyinfo");
   sendToClient(fd);
-}  // 004
+}
 
 void Messenger::RplTopic(int fd, const std::string& channel,
                          const std::string& topic) {
@@ -170,7 +175,7 @@ void Messenger::RplTopic(int fd, const std::string& channel,
   (void)topic;
   printRed("RplTopic");
   sendToClient(fd);
-}  // 332
+}
 
 void Messenger::RplNamReply(int fd, const std::string& channel,
                             const std::string& nick) {
@@ -178,13 +183,13 @@ void Messenger::RplNamReply(int fd, const std::string& channel,
   (void)nick;
   printRed("RplNamReply");
   sendToClient(fd);
-}  // 353
+}
 
 void Messenger::RplEndOfNames(int fd, const std::string& channel) {
   (void)channel;
   printRed("RplEndOfNames");
   sendToClient(fd);
-}  // 366
+}
 
 void Messenger::setPrefix(const std::string& prefix) { _prefix = prefix; }
 

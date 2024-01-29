@@ -21,21 +21,25 @@ class Messenger {
  public:
   Messenger();
   // Error function
-  void ErrNoSuchChannel(int fd);      // 403
-  void ErrTooManyChannels(int fd);    // 405
-  void ErrNoOrigin(int fd);           // 409
-  void ErrUnknownCommand(int fd);     // 421
-  void ErrNoNickNameGiven(int fd);    // 431
-  void ErrErroneusNickName(int fd);   // 432
-  void ErrNickNameInUse(int fd);      // 433
-  void ErrNeedMoreParams(int fd, const std::string& command);     // 461
-  void ErrAlreadyRegistered(int fd);  // 462
-  void ErrPasswdMismatch(int fd);     // 464
-  void ErrChannelIsFull(int fd);      // 471
-  void ErrInviteOnlyChan(int fd);     // 473
-  void ErrBadChannelKey(int fd);      // 475
-  void ErrBadChanMask(int fd);        // 476
+  void ErrNoSuchNick(int fd);                                  // 401
+  void ErrNoSuchChannel(int fd);                               // 403
+  void ErrTooManyChannels(int fd);                             // 405
+  void ErrNoOrigin(int fd);                                    // 409
+  void ErrUnknownCommand(int fd);                              // 421
+  void ErrNoNickNameGiven(int fd);                             // 431
+  void ErrErroneusNickName(int fd);                            // 432
+  void ErrNickNameInUse(int fd);                               // 433
+  void ErrNeedMoreParams(int fd, const std::string& command);  // 461
+  void ErrAlreadyRegistered(int fd);                           // 462
+  void ErrPasswdMismatch(int fd);                              // 464
+  void ErrChannelIsFull(int fd);                               // 471
+  void ErrInviteOnlyChan(int fd);                              // 473
+  void ErrBadChannelKey(int fd);                               // 475
+  void ErrBadChanMask(int fd);                                 // 476
+  void ErrUModeUnknownFlag(int fd);                            // 501
+  void ErrUsersDontMatch(int fd);                              // 502
   void ErrUnexpected(int fd);  // 에러코드가 정해져 있지 않은 에러
+
   // Reply function
   void RplWelcome(int fd);   // 001
   void RplYourHost(int fd);  // 002

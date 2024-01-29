@@ -3,6 +3,7 @@
 
 #include <string>
 // Errors
+#define ERR_NOSUCHNICK std::string("401")
 #define ERR_NOSUCHCHANNEL std::string("403")
 #define ERR_TOOMANYCHANNELS std::string("405")
 
@@ -21,5 +22,10 @@
 #define ERR_INVITEONLYCHAN std::string("473")
 #define ERR_BADCHANNELKEY std::string("475")
 #define ERR_BADCHANMASK std::string("476")
+
+#define ERR_CHANOPRIVSNEEDED std::string("482")
+
+#define ERR_UMODEUNKNOWNFLAG std::string("501")
+#define ERR_USERSDONTMATCH std::string("502")
 
 #endif
