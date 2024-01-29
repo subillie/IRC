@@ -29,7 +29,8 @@ void RequestHandler::userMode(const std::string& target) {
     return;
   }
   // <modestring> 지원하지 않는 모드는 에러 (일단 +i 외에는 다 에러)
-  if (_token[2] == "+i") {
+  if (_token[2].length() > 1 &&
+      AVAILABLE_USER_MODES.find(_token[2][1]) != std::string::npos) {
     _msg.setPrefix(nick + "!" + username + "@" + hostname);
     _msg.setParam("MODE " + nick);
     _msg.setTrailing(_token[2]);

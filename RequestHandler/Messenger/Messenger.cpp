@@ -7,20 +7,18 @@ Messenger::Messenger() : _prefix(""), _param(""), _trailing("") {}
 // Error functions
 
 void Messenger::ErrNoSuchNick(int fd, const std::string& nick) {
-  Client* client = Server::_clientFds[fd];
-
   _prefix = SERVER;
-  _param = ERR_NOSUCHNICK + " " + client->getNickname() + " " + nick;
+  _param =
+      ERR_NOSUCHNICK + " " + Server::_clientFds[fd]->getNickname() + " " + nick;
   _trailing = "No such nick/channel";
   printRed("ErrNoSuchNick");
   sendToClient(fd);
 }
 
 void Messenger::ErrNoSuchChannel(int fd, const std::string& channel) {
-  Client* client = Server::_clientFds[fd];
-
   _prefix = SERVER;
-  _param = ERR_NOSUCHCHANNEL + " " + client->getNickname() + " " + channel;
+  _param = ERR_NOSUCHCHANNEL + " " + Server::_clientFds[fd]->getNickname() +
+           " " + channel;
   _trailing = "No such channel";
   printRed("ErrNoSuchChannel");
   sendToClient(fd);
@@ -174,8 +172,6 @@ void Messenger::ErrUnexpected(int fd) {  // TODO: implement
 // Reply functions
 void Messenger::RplWelcome(int fd) {
   const std::string& nick = Server::_clientFds[fd]->getNickname();
-  // const std::string& username = client->getUsername();
-  // const std::string& hostname = client->getHostname();
   const std::string squirtle =
       "\033[0;34m⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
       "\033[0;34m⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⡶⠞⠛⠛⠉⠉⠛⠛⠳⢦⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
@@ -210,9 +206,7 @@ void Messenger::RplWelcome(int fd) {
 
   _prefix = SERVER;
   _param = RPL_WELCOME + " " + nick;
-  _trailing =
-      squirtle + hello + nick;  //+ "!" + username + "@" + hostname (optional)
-
+  _trailing = squirtle + hello + nick;
   printRed("RplWelcome");
   sendToClient(fd);
 }
@@ -243,10 +237,9 @@ void Messenger::RplMyinfo(int fd) {
 }
 
 void Messenger::RplUModeIs(int fd, const std::string& usermode) {
-  Client* client = Server::_clientFds[fd];
-
   _prefix = SERVER;
-  _param = RPL_UMODEIS + " " + client->getNickname() + " " + usermode;
+  _param = RPL_UMODEIS + " " + Server::_clientFds[fd]->getNickname() + " " +
+           usermode;
   printRed("RplUModeIs");
   sendToClient(fd);
 }

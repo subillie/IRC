@@ -99,7 +99,9 @@ void RequestHandler::join() {
     _msg.ErrNeedMoreParams(_fd, "JOIN");
     return;
   }
-
+  if (_token[1] == " ") {
+    return;
+  }
   // /join <channel>{,<channel>} [<key>{,<key>}]
   std::stringstream ss1(_token[1]), ss2(_token[2]);
   std::string channel, password;
