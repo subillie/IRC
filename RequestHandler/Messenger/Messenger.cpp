@@ -161,20 +161,6 @@ void Messenger::ErrBadChanMask(int fd) {
   sendToClient(fd);
 }
 
-void Messenger::ErrUnknownCommand(int fd, const std::string& command) {
-  _prefix = SERVER;
-  _param = ERR_UNKNOWNCOMMAND + " " + Server::_clientFds[fd]->getNickname() +
-           " " + command;
-  _trailing = "Unknown command";
-  printRed("UnknownCommand");
-  sendToClient(fd);
-}
-
-void Messenger::ErrNoTextToSend(int fd) {
-  printRed("ErrNoTextToSend");
-  sendToClient(fd);
-}
-
 void Messenger::ErrUModeUnknownFlag(int fd) {
   Client* client = Server::_clientFds[fd];
 

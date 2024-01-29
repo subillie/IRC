@@ -42,7 +42,7 @@ void RequestHandler::privmsg() {
       }
     } else {
       if (Server::_clientNicks.find(target) == Server::_clientNicks.end()) {
-        _msg.ErrNoSuchNick(_fd);  // 등록된 닉네임이 없음
+        _msg.ErrNoSuchNick(_fd, target);  // 등록된 닉네임이 없음
         continue;
       }
       _msg.setPrefix("PRIMSG");
