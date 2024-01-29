@@ -283,6 +283,15 @@ void Messenger::RplMyinfo(int fd) {
   sendToClient(fd);
 }
 
+void Messenger::RplISupport(int fd) {
+  _prefix = SERVER;
+  _param = RPL_ISUPPORT + " " + Server::_clientFds[fd]->getNickname() + " " +
+           ISUPPORT_PARAMS;
+  _trailing = "are supported by this server";
+  printRed("RplMyinfo");
+  sendToClient(fd);
+}
+
 void Messenger::RplUModeIs(int fd, const std::string& usermode) {
   _prefix = SERVER;
   _param = RPL_UMODEIS + " " + Server::_clientFds[fd]->getNickname() + " " +

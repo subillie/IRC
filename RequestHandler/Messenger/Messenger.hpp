@@ -54,6 +54,7 @@ class Messenger {
   void RplYourHost(int fd);                                   // 002
   void RplCreated(int fd);                                    // 003
   void RplMyinfo(int fd);                                     // 004
+  void RplISupport(int fd);                                   // 005
   void RplUModeIs(int fd, const std::string& usermode);       // 221
   void RplChannelModeIS(int fd, const std::string& channel);  // 324
   void RplTopic(int fd, const std::string& channel,
