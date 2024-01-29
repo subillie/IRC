@@ -99,42 +99,41 @@ void RequestHandler::pass() {
 }
 
 void RequestHandler::join() {
-  // /join <channel>{,<channel>} [<key>{,<key>}]
-
   // 인자가 없을 때
   if (_token.size() < 2) {
     _msg.ErrNeedMoreParams(_fd, "JOIN");
     return;
   }
 
-  std::stringstream ss;
-  std::vector<std::string> channels;
-  while (getline(ss, _token[1], ',')) {
-    channels.push_back(_token[1]);
-  }
-  std::vector<std::string> passwords;
-  while (getline(ss, _token[2], ',')) {
-    passwords.push_back(_token[2]);
+  // /join <channel>{,<channel>} [<key>{,<key>}]
+  std::stringstream ss1(_token[1]), ss2(_token[2]);
+  std::string channel, password;
+  std::map<std::string, std::string> keys;
+  while (std::getline(ss1, channel, ',')) {
+    std::getline(ss2, password, ',');
+    keys[channel] = password;
+    std::cout << "channel: " << channel << " (" << channel.length()
+              << "), password: " << password << std::endl;  // TODO: debug
   }
 
-  std::vector<std::string>::iterator chanIter = channels.begin();
-  std::vector<std::string>::iterator passIter = passwords.begin();
-  for (; chanIter != channels.end(); chanIter++, passIter++) {
+  std::map<std::string, std::string>::iterator iter = keys.begin();
+  for (; iter != keys.end(); iter++) {
+    // TODO: 비밀번호도 SPECIAL_CHAR 확인하기
     // 채널명이 유효하지 않을 때
-    if (chanIter->empty() || (*chanIter)[0] != '#' ||
-        chanIter->find_first_not_of(LOWERCASE + UPPERCASE + SPECIAL_CHAR +
-                                    DIGIT) != std::string::npos) {
+    if (iter->first.empty() ||
+        iter->first.find(SPECIAL_CHAR) != std::string::npos) {
       _msg.ErrBadChanMask(_fd);
       continue;
     }
     // 채널이 없으면 생성
-    if (Server::_channelNames.find(*chanIter) == Server::_channelNames.end()) {
-      Server::_channelNames[*chanIter] = new Channel('d', *chanIter);
+    if (Server::_channelNames.find(iter->first) ==
+        Server::_channelNames.end()) {
+      Server::_channelNames[iter->first] = new Channel(DEFAULT, iter->first);
     } else {
-      Channel* chanToJoin = Server::_channelNames[*chanIter];
+      Channel* chanToJoin = Server::_channelNames[iter->first];
       std::list<std::string> memberList = chanToJoin->getMembers();
       std::list<std::string>::iterator membIter =
-          std::find(memberList.begin(), memberList.end(), *chanIter);
+          std::find(memberList.begin(), memberList.end(), iter->first);
       // 이미 참가 중인 채널이면 무시
       if (membIter != memberList.end()) {
         continue;
@@ -142,7 +141,7 @@ void RequestHandler::join() {
       } else {
         // 해당 채널이 Key Channel Mode이면 비밀번호 확인
         if (chanToJoin->getMode() == KEY_CHANNEL) {
-          if (chanToJoin->getPassword() != *passIter) {
+          if (chanToJoin->getPassword() != iter->second) {
             _msg.ErrBadChannelKey(_fd);
             continue;
           }
@@ -162,16 +161,16 @@ void RequestHandler::join() {
             continue;
           }
         }
-        chanToJoin->addMember(*chanIter);
+        chanToJoin->addMember(iter->first);
         // 해당 채널에 topic이 존재한다면 topic 전송
         if (!chanToJoin->getTopic().empty()) {
-          _msg.RplTopic(_fd, *chanIter, chanToJoin->getTopic());
+          _msg.RplTopic(_fd, iter->first, chanToJoin->getTopic());
         }
         // 해당 채널의 모든 유저에게 join 메시지 전송
         for (membIter = memberList.begin(); membIter != memberList.end();
              membIter++) {
-          _msg.RplNamReply(_fd, *chanIter, *membIter);
-          _msg.RplEndOfNames(_fd, *chanIter);
+          _msg.RplNamReply(_fd, iter->first, *membIter);
+          _msg.RplEndOfNames(_fd, iter->first);
         }
       }
     }
