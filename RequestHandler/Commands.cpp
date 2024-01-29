@@ -109,7 +109,7 @@ void RequestHandler::join() {
   // /join #채널명 <암호> // 각각 여러 개 들어갈 수 있음
   // 인자가 없으면 ERR_NEEDMOREPARAMS
   if (_token.size() < 2) {
-    msg.ErrNeedMoreParams(_fd);
+    msg.ErrNeedMoreParams(_fd, "JOIN");
     return;
   }
   std::vector<std::string> channels;
