@@ -7,9 +7,7 @@ Channel::Channel(const char& mode, const std::string& name)
 
 void Channel::addMode(const char mode) { _modes.push_back(mode); }
 
-void Channel::addOperater(const std::string& operater) {
-  _operaters.push_back(operater);
-}
+void Channel::addOp(const std::string& op) { _ops.push_back(op); }
 
 void Channel::addMember(const std::string& member) {
   _members.push_back(member);
@@ -19,9 +17,7 @@ void Channel::addInvitee(const std::string& member) {
   _invitees.push_back(member);
 }
 
-void Channel::removeOperater(const std::string& operater) {
-  _operaters.remove(operater);
-}
+void Channel::removeOp(const std::string& op) { _ops.remove(op); }
 
 void Channel::removeMember(const std::string& member) {
   _members.remove(member);
@@ -49,9 +45,7 @@ const std::string& Channel::getPassword() const { return _password; }
 
 const std::list<char>& Channel::getModes() const { return _modes; }
 
-const std::list<std::string>& Channel::getOperaters() const {
-  return _operaters;
-}
+const std::list<std::string>& Channel::getOps() const { return _ops; }
 
 const std::list<std::string>& Channel::getMembers() const { return _members; }
 

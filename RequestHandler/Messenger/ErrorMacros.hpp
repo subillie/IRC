@@ -17,6 +17,9 @@
 #define ERR_ERRONEUSNICKNAME std::string("432")
 #define ERR_NICKNAMEINUSE std::string("433")
 
+#define ERR_NOTONCHANNEL std::string("442")
+#define ERR_USERONCHANNEL std::string("443")
+
 #define ERR_NOTREGISTERED std::string("451")
 
 #define ERR_NEEDMOREPARAMS std::string("461")
