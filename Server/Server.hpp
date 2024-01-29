@@ -45,6 +45,7 @@ class Server {
   static std::map<std::string, Channel *> _channelNames;
 
   Server(int port, char *password);
+  virtual ~Server();
 
   void run();  // event loop
   void addClient(int fd);
