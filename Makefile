@@ -9,6 +9,7 @@ SRCS	=	Channel/Channel.cpp \
 			RequestHandler/RequestHandler.cpp \
 			RequestHandler/Commands.cpp \
 			RequestHandler/Messenger/Messenger.cpp \
+			RequestHandler/Commands/Mode.cpp \
 			Server/Server.cpp \
 			Server/Wrappers.cpp \
 			Print/Print.cpp \

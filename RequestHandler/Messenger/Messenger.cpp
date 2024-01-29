@@ -5,11 +5,22 @@ Messenger::Messenger() : _prefix(""), _param(""), _trailing("") {}
 #include "../../Print/Print.hpp"  // for test
 
 // Error functions
-void Messenger::ErrNoSuchChannel(int fd) {
+
+void Messenger::ErrNoSuchNick(int fd, const std::string& nick) {
   _prefix = SERVER;
-  _param = ERR_NOSUCHCHANNEL + " " + Server::_clientFds[fd]->getNickname();
+  _param =
+      ERR_NOSUCHNICK + " " + Server::_clientFds[fd]->getNickname() + " " + nick;
+  _trailing = "No such nick/channel";
+  printRed("ErrNoSuchNick");
+  sendToClient(fd);
+}
+
+void Messenger::ErrNoSuchChannel(int fd, const std::string& channel) {
+  _prefix = SERVER;
+  _param = ERR_NOSUCHCHANNEL + " " + Server::_clientFds[fd]->getNickname() +
+           " " + channel;
   _trailing = "No such channel";
-  printRed("NoSuchChannel");
+  printRed("ErrNoSuchChannel");
   sendToClient(fd);
 }
 
@@ -132,6 +143,26 @@ void Messenger::ErrBadChanMask(int fd) {
   sendToClient(fd);
 }
 
+void Messenger::ErrUModeUnknownFlag(int fd) {
+  Client* client = Server::_clientFds[fd];
+
+  _prefix = SERVER;
+  _param = ERR_UMODEUNKNOWNFLAG + " " + client->getNickname();
+  _trailing = "Unknown MODE flag";
+  printRed("ErrUModeUnknownFlag");
+  sendToClient(fd);
+}
+
+void Messenger::ErrUsersDontMatch(int fd) {
+  Client* client = Server::_clientFds[fd];
+
+  _prefix = SERVER;
+  _param = ERR_USERSDONTMATCH + " " + client->getNickname();
+  _trailing = "Cant change mode for other users";
+  printRed("ErrUsersDontMatch");
+  sendToClient(fd);
+}
+
 void Messenger::ErrUnexpected(int fd) {  // TODO: implement
   _prefix = SERVER;
   printRed("Unexpected");
@@ -141,8 +172,6 @@ void Messenger::ErrUnexpected(int fd) {  // TODO: implement
 // Reply functions
 void Messenger::RplWelcome(int fd) {
   const std::string& nick = Server::_clientFds[fd]->getNickname();
-  // const std::string& username = client->getUsername();
-  // const std::string& hostname = client->getHostname();
   const std::string squirtle =
       "\033[0;34m⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
       "\033[0;34m⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⡶⠞⠛⠛⠉⠉⠛⠛⠳⢦⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
@@ -177,9 +206,7 @@ void Messenger::RplWelcome(int fd) {
 
   _prefix = SERVER;
   _param = RPL_WELCOME + " " + nick;
-  _trailing =
-      squirtle + hello + nick;  //+ "!" + username + "@" + hostname (optional)
-
+  _trailing = squirtle + hello + nick;
   printRed("RplWelcome");
   sendToClient(fd);
 }
@@ -190,8 +217,7 @@ void Messenger::RplYourHost(int fd) {
   _trailing = "Your host is " + SERVER + ", running version " + VERSION;
   printRed("RplYourHost");
   sendToClient(fd);
-}  // 002
-
+}
 void Messenger::RplCreated(int fd) {
   _prefix = SERVER;
   _param = RPL_CREATED + " " + Server::_clientFds[fd]->getNickname();
@@ -199,7 +225,7 @@ void Messenger::RplCreated(int fd) {
   // _trailing = "This server was created " + datetime;
   printRed("RplCreated");
   sendToClient(fd);
-}  // 003
+}
 
 void Messenger::RplMyinfo(int fd) {
   _prefix = SERVER;
@@ -207,6 +233,14 @@ void Messenger::RplMyinfo(int fd) {
            SERVER + " " + VERSION + " " + AVAILABLE_USER_MODES + " " +
            AVAILABLE_CHAN_MODES;
   printRed("RplMyinfo");
+  sendToClient(fd);
+}
+
+void Messenger::RplUModeIs(int fd, const std::string& usermode) {
+  _prefix = SERVER;
+  _param = RPL_UMODEIS + " " + Server::_clientFds[fd]->getNickname() + " " +
+           usermode;
+  printRed("RplUModeIs");
   sendToClient(fd);
 }
 

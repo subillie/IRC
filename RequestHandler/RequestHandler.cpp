@@ -12,6 +12,7 @@ RequestHandler::RequestHandler(Client* client, const std::string& request,
   _commandMap["USER"] = &RequestHandler::user;
   _commandMap["JOIN"] = &RequestHandler::join;
   _commandMap["PRIVMSG"] = &RequestHandler::privmsg;
+  _commandMap["MODE"] = &RequestHandler::mode;
   _commandMap["PING"] = &RequestHandler::pong;
   // 추후에 명령어 추가될때마다 함수 포인터 추가
 }

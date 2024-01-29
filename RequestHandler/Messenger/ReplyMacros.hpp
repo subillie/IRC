@@ -13,6 +13,7 @@
 #define RPL_YOURHOST std::string("002")
 #define RPL_CREATED std::string("003")
 #define RPL_MYINFO std::string("004")
+#define RPL_UMODEIS std::string("221")
 #define RPL_AWAY std::string("301")
 #define RPL_TOPIC std::string("332")
 #define RPL_INVITELIST std::string("336")

@@ -1,7 +1,9 @@
 
 #include "Client.hpp"
 
-Client::Client(int fd) : _fd(fd), _nickname(""), _isRegistered(false) {}
+Client::Client(int fd) : _fd(fd), _isRegistered(false) {}
+
+void Client::setMode(const std::string &mode) { _mode = mode; }
 
 void Client::setUsername(const std::string &username) { _username = username; }
 
@@ -12,6 +14,8 @@ void Client::setPassword(const std::string &password) { _password = password; }
 void Client::setHostname(const std::string &hostname) { _hostname = hostname; }
 
 const int &Client::getFd() const { return _fd; }
+
+const std::string &Client::getMode() const { return _mode; }
 
 const std::string &Client::getNickname() const { return _nickname; }
 
