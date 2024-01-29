@@ -23,6 +23,8 @@ void Messenger::ErrNoSuchChannel(int fd, const std::string& channel) {
   printRed("ErrNoSuchChannel");
   sendToClient(fd);
 }
+
+// 추후 작업 예정
 void Messenger::ErrCannotSendToChan(int fd) {
   printRed("ErrCannotSendToChan");
   sendToClient(fd);
@@ -41,6 +43,16 @@ void Messenger::ErrNoOrigin(int fd) {
   _param = ERR_NOORIGIN + " " + Server::_clientFds[fd]->getNickname();
   _trailing = "No origin specified";
   printRed("ErrNoOrigin");
+  sendToClient(fd);
+}
+
+void Messenger::ErrNoRecipient(int fd) {
+  printRed("ErrNoRecipient");
+  sendToClient(fd);
+}
+
+void Messenger::ErrNoTextToSend(int fd) {
+  printRed("ErrNoTextToSend");
   sendToClient(fd);
 }
 
@@ -147,22 +159,15 @@ void Messenger::ErrBadChanMask(int fd) {
   sendToClient(fd);
 }
 
-void Messenger::ErrNoRecipient(int fd) {
-  printRed("ErrNoRecipient");
-  sendToClient(fd);
-}
-void Messenger::ErrNoTextToSend(int fd) {
-  printRed("ErrNoTextToSend");
+void Messenger::ErrUnknownCommand(int fd, const std::string& command) {
+  _prefix = SERVER;
+  _param = ERR_UNKNOWNCOMMAND + " " + Server::_clientFds[fd]->getNickname() +
+           " " + command;
+  _trailing = "Unknown command";
+  printRed("UnknownCommand");
   sendToClient(fd);
 }
 
-void Messenger::ErrUnknownCommand(int fd) {
-  _prefix = SERVER;
-  _param = ERR_UMODEUNKNOWNFLAG + " " + client->getNickname();
-  _trailing = "Unknown MODE flag";
-  printRed("ErrUModeUnknownFlag");
-  sendToClient(fd);
-}
 void Messenger::ErrNoTextToSend(int fd) {
   printRed("ErrNoTextToSend");
   sendToClient(fd);
