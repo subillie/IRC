@@ -23,7 +23,7 @@ Internet Relay Chat
 - Channel.hpp -> Channel.cpp
 
 #### Client
-- Client.hpp -> Client.hpp
+- Client.hpp -> Client.cpp
 
 #### Macros
 - Characters.hpp

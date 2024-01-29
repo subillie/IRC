@@ -17,17 +17,17 @@ void RequestHandler::nick() {
     return;
   } else if (Server::_clientNicks.find(_token[1]) !=
              Server::_clientNicks.end()) {
-    _msg.ErrNickNameInUse(_fd);
+    _msg.ErrNickNameInUse(_fd, _token[1]);
     return;
   } else {
     if (std::isdigit(_token[1][0])) {
-      _msg.ErrErroneusNickName(_fd);
+      _msg.ErrErroneusNickName(_fd, _token[1]);
       return;
     }
     size_t pos = _token[1].find_first_not_of(
         LOWERCASE + UPPERCASE + SPECIAL_CHAR + DIGIT, 1);
     if (pos != std::string::npos) {
-      _msg.ErrErroneusNickName(_fd);
+      _msg.ErrErroneusNickName(_fd, _token[1]);
       return;
     }
   }
@@ -114,11 +114,15 @@ void RequestHandler::join() {
 
   std::map<std::string, std::string>::iterator iter = keys.begin();
   for (; iter != keys.end(); iter++) {
-    // TODO: 비밀번호도 SPECIAL_CHAR 확인하기
     // 채널명이 유효하지 않을 때
-    if (iter->first.empty() ||
+    if (iter->first.empty() || iter->first[0] != '#' ||
         iter->first.find(SPECIAL_CHAR) != std::string::npos) {
       _msg.ErrBadChanMask(_fd);
+      continue;
+    }
+    // 비밀번호가 유효하지 않을 때
+    if (iter->second.find(SPECIAL_CHAR) != std::string::npos) {
+      _msg.ErrUnexpected(_fd);
       continue;
     }
     // 채널이 없으면 생성
@@ -138,7 +142,7 @@ void RequestHandler::join() {
         // 해당 채널이 Key Channel Mode이면 비밀번호 확인
         if (chanToJoin->getMode() == KEY_CHANNEL) {
           if (chanToJoin->getPassword() != iter->second) {
-            _msg.ErrBadChannelKey(_fd);
+            _msg.ErrBadChannelKey(_fd, iter->first);
             continue;
           }
           // 해당 채널이 Invite Only Channel Mode이면 초대 리스트에 있는지 확인
@@ -147,7 +151,7 @@ void RequestHandler::join() {
           if (std::find(inviteeList.begin(), inviteeList.end(),
                         _client->getNickname()) ==
               chanToJoin->getInvitees().end()) {
-            _msg.ErrInviteOnlyChan(_fd);
+            _msg.ErrInviteOnlyChan(_fd, iter->first);
             continue;
           }
           // 해당 채널이 Client Limit Channel Mode이면 인원 제한 확인
@@ -157,6 +161,7 @@ void RequestHandler::join() {
             continue;
           }
         }
+        // 채널에 유저 추가
         chanToJoin->addMember(iter->first);
         // 해당 채널에 topic이 존재한다면 topic 전송
         if (!chanToJoin->getTopic().empty()) {

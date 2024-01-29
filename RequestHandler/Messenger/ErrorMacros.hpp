@@ -2,7 +2,7 @@
 #define ERROR_MACROS_HPP
 
 #include <string>
-// Errors
+
 #define ERR_NOSUCHCHANNEL std::string("403")
 #define ERR_TOOMANYCHANNELS std::string("405")
 
@@ -12,6 +12,8 @@
 #define ERR_NONICKNAMEGIVEN std::string("431")
 #define ERR_ERRONEUSNICKNAME std::string("432")
 #define ERR_NICKNAMEINUSE std::string("433")
+
+#define ERR_NOTREGISTERED std::string("451")
 
 #define ERR_NEEDMOREPARAMS std::string("461")
 #define ERR_ALREADYREGISTERED std::string("462")
