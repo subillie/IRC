@@ -2,6 +2,9 @@
 
 Channel::Channel(const char& mode, const std::string& name)
     : _limit(0), _name(name) {
+  time_t now;
+  time(&now);
+  _creationTime = ctime(&now);
   _modes.insert(mode);
 }
 
@@ -40,6 +43,8 @@ const std::string& Channel::getName() const { return _name; }
 const std::string& Channel::getTopic() const { return _topic; }
 
 const std::string& Channel::getPassword() const { return _password; }
+
+const std::string& Channel::getCreationTime() const { return _creationTime; }
 
 const std::set<char>& Channel::getModes() const { return _modes; }
 
