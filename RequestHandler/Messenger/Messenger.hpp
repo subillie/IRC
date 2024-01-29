@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "../../Channel/Channel.hpp"
 #include "../../Client/Client.hpp"
 #include "../../Macros/Characters.hpp"
 #include "../../Server/Server.hpp"

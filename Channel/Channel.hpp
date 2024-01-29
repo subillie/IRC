@@ -1,7 +1,8 @@
 #ifndef CHANNEL_HPP
 #define CHANNEL_HPP
 
-#include <list>
+#include <set>
+// #include <list>
 #include <string>
 #include <vector>
 
@@ -19,10 +20,10 @@ class Channel {
   std::string _name;
   std::string _topic;
   std::string _password;
-  std::list<char> _modes;
-  std::list<std::string> _ops;
-  std::list<std::string> _members;
-  std::list<std::string> _invitees;
+  std::set<char> _modes;
+  std::set<std::string> _ops;
+  std::set<std::string> _members;
+  std::set<std::string> _invitees;
 
  public:
   Channel(const char& mode, const std::string& name);
@@ -43,10 +44,10 @@ class Channel {
   const std::string& getName() const;
   const std::string& getTopic() const;
   const std::string& getPassword() const;
-  const std::list<char>& getModes() const;
-  const std::list<std::string>& getOps() const;
-  const std::list<std::string>& getMembers() const;
-  const std::list<std::string>& getInvitees() const;
+  const std::set<char>& getModes() const;
+  const std::set<std::string>& getOps() const;
+  const std::set<std::string>& getMembers() const;
+  const std::set<std::string>& getInvitees() const;
 };
 
 #endif

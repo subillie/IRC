@@ -9,7 +9,7 @@ void RequestHandler::channelMode(const std::string& target) {
   }
   Channel* channel = Server::_channelNames[target];
   // <modestring> 이 없으면
-  if (_token.size() == 2) {
+  if (_token.size() < 3) {
     _msg.RplChannelModeIS(_fd, channel->getName());
     return;
   }
