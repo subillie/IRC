@@ -3,7 +3,6 @@
 
 #include <string>
 
-// TODO: 서버 이름, 버전, 사용자 모드, 채널 모드 바꾸기
 #define SERVER std::string("IRC")
 #define VERSION std::string("1.0")
 #define AVAILABLE_USER_MODES std::string("i")
@@ -18,6 +17,7 @@
 #define RPL_CHANNELMODEIS std::string("324")
 #define RPL_TOPIC std::string("332")
 #define RPL_INVITELIST std::string("336")
+#define RPL_INVITING std::string("341")
 #define RPL_NAMREPLY std::string("353")
 #define RPL_ENDOFNAMES std::string("366")
 

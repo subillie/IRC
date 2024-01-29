@@ -33,7 +33,7 @@ Internet Relay Chat
 - Print.hpp -> Print.cpp
 
 #### RequestHandler
-- RequestHandler.hpp -> RequestHandler.cpp, Commands.cpp
+- RequestHandler.hpp -> RequestHandler.cpp, Commands/{명령어들}.cpp
 - Messenger
 	- Messenger.hpp -> Messenger.cpp
 	- ErrorMacros.hpp

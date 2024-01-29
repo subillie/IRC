@@ -20,7 +20,7 @@ class Channel {
   std::string _topic;
   std::string _password;
   std::list<char> _modes;
-  std::list<std::string> _operaters;
+  std::list<std::string> _ops;
   std::list<std::string> _members;
   std::list<std::string> _invitees;
 
@@ -28,10 +28,10 @@ class Channel {
   Channel(const char& mode, const std::string& name);
 
   void addMode(const char mode);
-  void addOperater(const std::string& operater);
+  void addOp(const std::string& op);
   void addMember(const std::string& member);
   void addInvitee(const std::string& member);
-  void removeOperater(const std::string& operater);
+  void removeOp(const std::string& op);
   void removeMember(const std::string& member);
   void removeInvitee(const std::string& member);  // TODO: 필요한가?
 
@@ -44,7 +44,7 @@ class Channel {
   const std::string& getTopic() const;
   const std::string& getPassword() const;
   const std::list<char>& getModes() const;
-  const std::list<std::string>& getOperaters() const;
+  const std::list<std::string>& getOps() const;
   const std::list<std::string>& getMembers() const;
   const std::list<std::string>& getInvitees() const;
 };
