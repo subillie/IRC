@@ -7,6 +7,7 @@
 #define VERSION std::string("1.0")
 #define AVAILABLE_USER_MODES std::string("i")
 #define AVAILABLE_CHAN_MODES std::string("itkl")
+// 인자 확인
 #define ISUPPORT_PARAMS                                                   \
   std::string(                                                            \
       "CASEMAPPING=ascii CHANLIMIT=#:10 CHANMODES=,k,l,it CHANNELLEN=32 " \
