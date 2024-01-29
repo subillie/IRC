@@ -26,7 +26,6 @@ void Server::run() {
   init();
 
   int fdCount = _serverFd;
-  printDebug("server Fd", _serverFd);
   int clientFd = -1;
   // TODO: timeout
   struct timeval timeout;
@@ -37,7 +36,7 @@ void Server::run() {
     _readySet = _readSet;
     // TODO : ping
     if (Select(fdCount + 1, &_readySet, 0, 0, &timeout) == 0) {
-      std::cout << "Timeout!" << std::endl;
+      // std::cout << "Timeout!" << std::endl;
       continue;
     }
     // Accept connection and handle client's requirements

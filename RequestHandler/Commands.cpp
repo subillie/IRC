@@ -1,13 +1,14 @@
 #include "RequestHandler.hpp"
 
 void RequestHandler::cap() {
-  if (_token[1] == "LS") {  // CAP LS
+  if (_token[1] == "LS") {
+    _msg.setPrefix(SERVER);
     _msg.setParam("CAP * LS :");
     _msg.sendToClient(_fd);
-  } else if (_token[1] == "END") {  // CAP END
-    _msg.setParam("");
-    _msg.sendToClient(_fd);
   }
+  // else if (_token[1] == "END") {
+  //   // start registration
+  // }
 }
 
 void RequestHandler::nick() {
@@ -46,7 +47,7 @@ void RequestHandler::user() {
   }
   // : 뒤에는 하나로 침
   if (_token.size() != 5) {
-    _msg.ErrNeedMoreParams(_fd);
+    _msg.ErrNeedMoreParams(_fd, "USER");
     return;
   }
   std::string username = _token[1];
@@ -83,12 +84,12 @@ void RequestHandler::user() {
 void RequestHandler::pass() {
   // 인자가 없을 때
   if (_token.size() < 2) {
-    _msg.ErrNeedMoreParams(_fd);
+    _msg.ErrNeedMoreParams(_fd, "PASS");
     return;
     // 비번 틀림 ERR_PASSWDMISMATCH => close connection
   } else if (_token[1] != _password) {
     _msg.ErrPasswdMismatch(_fd);
-    // return;
+    return;
     // 이미 가입 됨 ERR_ALREADYREGISTERED
   } else if (_client->getIsRegistered()) {
     _msg.ErrAlreadyRegistered(_fd);
@@ -102,7 +103,7 @@ void RequestHandler::join() {
 
   // 인자가 없을 때
   if (_token.size() < 2) {
-    _msg.ErrNeedMoreParams(_fd);
+    _msg.ErrNeedMoreParams(_fd, "JOIN");
     return;
   }
 
@@ -195,14 +196,14 @@ void RequestHandler::mode() {}
 
 void RequestHandler::pong() {
   if (_token.size() < 2) {
-    _msg.ErrNeedMoreParams(_fd);
+    _msg.ErrNeedMoreParams(_fd, "PONG");
     return;
   } else if (_token[1].empty()) {
     _msg.ErrNoOrigin(_fd);
     return;
   }
-  _msg.setPrefix("prefix");
-  _msg.setParam("Pong");
-  _msg.setTrailing("??");
+  _msg.setPrefix(SERVER);
+  _msg.setParam("PONG " + SERVER);
+  _msg.setTrailing(_token[1]);
   _msg.sendToClient(_fd);
 }

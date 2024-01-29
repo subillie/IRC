@@ -28,7 +28,7 @@ class Messenger {
   void ErrNoNickNameGiven(int fd);    // 431
   void ErrErroneusNickName(int fd);   // 432
   void ErrNickNameInUse(int fd);      // 433
-  void ErrNeedMoreParams(int fd);     // 461
+  void ErrNeedMoreParams(int fd, const std::string& command);     // 461
   void ErrAlreadyRegistered(int fd);  // 462
   void ErrPasswdMismatch(int fd);     // 464
   void ErrChannelIsFull(int fd);      // 471
