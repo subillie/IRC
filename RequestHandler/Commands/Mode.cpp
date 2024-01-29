@@ -26,6 +26,7 @@ void RequestHandler::userMode(const std::string& target) {
   // <modestring> 이 없으면
   if (_token.size() == 2) {
     _msg.RplUModeIs(_fd, _client->getMode());
+    return;
   }
   // <modestring> 지원하지 않는 모드는 에러 (일단 +i 외에는 다 에러)
   if (_token[2] == "+i") {
