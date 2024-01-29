@@ -7,7 +7,6 @@ void RequestHandler::invite() {
     _msg.ErrNeedMoreParams(_fd, _token[0]);
     return;
   }
-
   std::string nickname = _token[1];
   std::string channel = _token[2];
 
