@@ -70,15 +70,15 @@ void Server::run() {
         } else {
           char buffer[512];
           memset(buffer, 0, sizeof(buffer));
-          if (Recv(clientFd, buffer, sizeof(buffer), 0) == 0) {
-            deleteClient(clientFd);
+          if (Recv(i, buffer, sizeof(buffer), 0) == 0) {
+            deleteClient(i);
             continue;
           }
           printDebug("buffer", buffer);  // TODO: delete
           parse(buffer);
           while (!_requests.empty()) {
-            RequestHandler requestHandler(_clientFds[clientFd],
-                                          _requests.front(), _password);
+            RequestHandler requestHandler(_clientFds[i], _requests.front(),
+                                          _password);
             _requests.pop();
             requestHandler.execute();
           }
