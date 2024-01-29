@@ -1,5 +1,23 @@
 #include "../RequestHandler.hpp"
 
+void RequestHandler::addUser(Channel* chanToJoin) {
+  std::string nickname = _client->getNickname();
+  chanToJoin->addMember(nickname);
+
+  // 해당 채널에 topic이 존재한다면 topic 전송
+  if (!chanToJoin->getTopic().empty()) {
+    _msg.RplTopic(_fd, nickname, chanToJoin->getTopic());
+  }
+  // 해당 채널의 모든 유저에게 join 메시지 전송
+  std::list<std::string> memberList = chanToJoin->getMembers();
+  std::list<std::string>::iterator membIter;
+  for (membIter = memberList.begin(); membIter != memberList.end();
+       membIter++) {
+    _msg.RplNamReply(_fd, nickname, *membIter);
+    _msg.RplEndOfNames(_fd, nickname);
+  }
+}
+
 // /join <channel>{,<channel>} [<key>{,<key>}]
 void RequestHandler::join() {
   // 인자가 없을 때
@@ -16,8 +34,6 @@ void RequestHandler::join() {
   while (std::getline(ss1, channel, ',')) {
     std::getline(ss2, password, ',');
     keys[channel] = password;
-    std::cout << "channel: " << channel << " (" << channel.length()
-              << "), password: " << password << std::endl;  // TODO: debug
   }
 
   std::map<std::string, std::string>::iterator iter = keys.begin();
@@ -37,6 +53,7 @@ void RequestHandler::join() {
     if (Server::_channelNames.find(iter->first) ==
         Server::_channelNames.end()) {
       Server::_channelNames[iter->first] = new Channel(DEFAULT, iter->first);
+      addUser(Server::_channelNames[iter->first]);
     } else {
       Channel* chanToJoin = Server::_channelNames[iter->first];
       std::list<std::string> memberList = chanToJoin->getMembers();
@@ -70,19 +87,21 @@ void RequestHandler::join() {
           }
         }
         // 채널에 유저 추가
-        chanToJoin->addMember(iter->first);
-        // 해당 채널에 topic이 존재한다면 topic 전송
-        if (!chanToJoin->getTopic().empty()) {
-          _msg.RplTopic(_fd, iter->first, chanToJoin->getTopic());
-        }
-        // 해당 채널의 모든 유저에게 join 메시지 전송
-        for (membIter = memberList.begin(); membIter != memberList.end();
-             membIter++) {
-          _msg.RplNamReply(_fd, iter->first, *membIter);
-          _msg.RplEndOfNames(_fd, iter->first);
-        }
+        addUser(chanToJoin);
       }
     }
+  }
+
+  std::map<std::string, Channel*>::iterator it = Server::_channelNames.begin();
+  for (; it != Server::_channelNames.end(); it++) {
+    std::cout << "channel: " << it->first << std::endl;
+    std::cout << "members: ";
+    std::list<std::string> members = it->second->getMembers();
+    std::list<std::string>::iterator mIter = members.begin();
+    for (; mIter != members.end(); mIter++) {
+      std::cout << *mIter << " ";
+    }
+    std::cout << std::endl;
   }
 
   _msg.sendToClient(_fd);
