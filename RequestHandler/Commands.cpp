@@ -52,13 +52,9 @@ void RequestHandler::user() {
   }
   std::string username = _token[1];
   std::string hostname = _token[4];
-  // std::map<int, Client*>::iterator iter = Server::_clientFds.begin();
-  for (std::map<int, Client*>::iterator iter = Server::_clientFds.begin();
-       iter != Server::_clientFds.end(); iter++) {
-    if (iter->second->getUsername() == username) {
-      _msg.ErrAlreadyRegistered(_fd);
-      return;
-    }
+  if (_client->getIsRegistered()) {
+    _msg.ErrAlreadyRegistered(_fd);
+    return;
   }
   // max 길이 정해야 함
   bool isOutOfLen = (username.length() < 1 || username.length() > 12);
