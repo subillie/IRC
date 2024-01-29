@@ -15,6 +15,7 @@
 #define RPL_MYINFO std::string("004")
 #define RPL_UMODEIS std::string("221")
 #define RPL_AWAY std::string("301")
+#define RPL_CHANNELMODEIS std::string("324")
 #define RPL_TOPIC std::string("332")
 #define RPL_INVITELIST std::string("336")
 #define RPL_NAMREPLY std::string("353")

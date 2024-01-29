@@ -15,26 +15,26 @@ class Client;
 
 class Channel {
  private:
-  char _mode;
   size_t _limit;
   std::string _name;
   std::string _topic;
   std::string _password;
-  std::list<int> _operaters;
+  std::list<char> _modes;
+  std::list<std::string> _operaters;
   std::list<std::string> _members;
   std::list<std::string> _invitees;
 
  public:
-  Channel(const char, const std::string& name);
+  Channel(const char& mode, const std::string& name);
 
-  void addOperater(int operater);
+  void addMode(const char mode);
+  void addOperater(const std::string& operater);
   void addMember(const std::string& member);
   void addInvitee(const std::string& member);
-  void removeOperater(int operater);
+  void removeOperater(const std::string& operater);
   void removeMember(const std::string& member);
   void removeInvitee(const std::string& member);  // TODO: 필요한가?
 
-  void setMode(const char mode);
   void setLimit(size_t limit);
   void setName(const std::string& name);
   void setTopic(const std::string& topic);
@@ -44,7 +44,8 @@ class Channel {
   const std::string& getName() const;
   const std::string& getTopic() const;
   const std::string& getPassword() const;
-  const std::list<int>& getOperaters() const;
+  const std::list<char>& getModes() const;
+  const std::list<std::string>& getOperaters() const;
   const std::list<std::string>& getMembers() const;
   const std::list<std::string>& getInvitees() const;
 };
