@@ -3,6 +3,8 @@
 void RequestHandler::addUser(Channel* chanToJoin) {
   std::string nickname = _client->getNickname();
   chanToJoin->addMember(nickname);
+  _client->addChannel(
+      chanToJoin->getName());  // 클라이언트가 가입한 채널목록에도 추가
 
   // 해당 채널에 topic이 존재한다면 topic 전송
   if (!chanToJoin->getTopic().empty()) {
@@ -51,6 +53,11 @@ void RequestHandler::join() {
     if (channelKey.find(SPECIAL_CHAR) != std::string::npos) {
       _msg.ErrUnexpected(_fd);
       continue;
+    }
+    // 이미 가입한 채널 수가 최대치면
+    if (_client->isMaxJoined()) {
+      _msg.ErrTooManyChannels(_fd, channelName);
+      break;
     }
     // 채널이 없으면 생성
     if (Server::_channelNames.find(channelName) ==

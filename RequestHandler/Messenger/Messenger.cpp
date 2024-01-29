@@ -30,9 +30,10 @@ void Messenger::ErrCannotSendToChan(int fd) {
   sendToClient(fd);
 }
 
-void Messenger::ErrTooManyChannels(int fd) {
+void Messenger::ErrTooManyChannels(int fd, const std::string& channel) {
   _prefix = SERVER;
-  _param = ERR_TOOMANYCHANNELS + " " + Server::_clientFds[fd]->getNickname();
+  _param = ERR_TOOMANYCHANNELS + " " + Server::_clientFds[fd]->getNickname() +
+           " " + channel;
   _trailing = "You have joined too many channels";
   printRed("ErrTooManyChannels");
   sendToClient(fd);

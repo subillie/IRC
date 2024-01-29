@@ -2,7 +2,10 @@
 #define CLIENT_HPP
 
 #include <iostream>
+#include <set>
 #include <string>
+
+#define MAX_CHANNEL 10;
 
 class Client {
  private:
@@ -12,6 +15,7 @@ class Client {
   std::string _nickname;
   std::string _password;
   std::string _hostname;
+  std::set<std::string> _channels;
   bool _isRegistered;
 
  public:
@@ -21,12 +25,16 @@ class Client {
   void setNickname(const std::string &nickname);
   void setPassword(const std::string &password);
   void setHostname(const std::string &hostname);
+  void addChannel(const std::string &channel);
+  void removeChannel(const std::string &channel);
   const int &getFd() const;
   const std::string &getMode() const;
   const std::string &getUsername() const;
   const std::string &getNickname() const;
   const std::string &getPassword() const;
   const std::string &getHostname() const;
+  const std::set<std::string> &getChannels() const;
+  bool isMaxJoined() const;
   bool getIsRegistered() const;
   void setIsRegisterd(bool val);
 };
