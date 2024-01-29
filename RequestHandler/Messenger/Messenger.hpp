@@ -32,16 +32,20 @@ class Messenger {
   void ErrNoNickNameGiven(int fd);                             // 431
   void ErrErroneusNickName(int fd, const std::string& nick);   // 432
   void ErrNickNameInUse(int fd, const std::string& nick);      // 433
-  void ErrNotRegistered(int fd);                               // 451
-  void ErrNeedMoreParams(int fd, const std::string& command);  // 461
-  void ErrAlreadyRegistered(int fd);                           // 462
-  void ErrPasswdMismatch(int fd);                              // 464
-  void ErrChannelIsFull(int fd, const std::string& channel);   // 471
-  void ErrInviteOnlyChan(int fd, const std::string& channel);  // 473
-  void ErrBadChannelKey(int fd, const std::string& channel);   // 475
-  void ErrBadChanMask(int fd);                                 // 476
-  void ErrUModeUnknownFlag(int fd);                            // 501
-  void ErrUsersDontMatch(int fd);                              // 502
+  void ErrNotOnChannel(int fd, const std::string& channel);    // 442
+  void ErrUserOnChannel(int fd, const std::string& nick,
+                        const std::string& channel);             // 443
+  void ErrNotRegistered(int fd);                                 // 451
+  void ErrNeedMoreParams(int fd, const std::string& command);    // 461
+  void ErrAlreadyRegistered(int fd);                             // 462
+  void ErrPasswdMismatch(int fd);                                // 464
+  void ErrChannelIsFull(int fd, const std::string& channel);     // 471
+  void ErrInviteOnlyChan(int fd, const std::string& channel);    // 473
+  void ErrBadChannelKey(int fd, const std::string& channel);     // 475
+  void ErrBadChanMask(int fd);                                   // 476
+  void ErrChanOPrivsNeeded(int fd, const std::string& channel);  // 482
+  void ErrUModeUnknownFlag(int fd);                              // 501
+  void ErrUsersDontMatch(int fd);                                // 502
   void ErrUnexpected(int fd);  // 에러코드가 정해져 있지 않은 에러
 
   // Reply function
@@ -53,6 +57,8 @@ class Messenger {
   void RplTopic(int fd, const std::string& channel,
                 const std::string& topic);                 // 332
   void RplInviteList(int fd, const std::string& channel);  // 336
+  void RplInviting(int fd, const std::string& nick,
+                   const std::string& channel);  // 341
   void RplNamReply(int fd, const std::string& channel,
                    const std::string& nick);               // 353
   void RplEndOfNames(int fd, const std::string& channel);  // 366
