@@ -93,6 +93,25 @@ void Messenger::ErrNickNameInUse(int fd, const std::string& nick) {
   sendToClient(fd);
 }
 
+void Messenger::ErrNotOnChannel(int fd, const std::string& channel) {
+  _prefix = SERVER;
+  _param = ERR_NOTONCHANNEL + " " + Server::_clientFds[fd]->getNickname() +
+           " " + channel;
+  _trailing = "You're not on that channel";
+  printRed("ErrNotOnChannel");
+  sendToClient(fd);
+}
+
+void Messenger::ErrUserOnChannel(int fd, const std::string& nick,
+                                 const std::string& channel) {
+  _prefix = SERVER;
+  _param = ERR_USERONCHANNEL + " " + Server::_clientFds[fd]->getNickname() +
+           " " + nick + " " + channel;
+  _trailing = "is already on channel";
+  printRed("ErrUserOnChannel");
+  sendToClient(fd);
+}
+
 void Messenger::ErrNotRegistered(int fd) {
   _prefix = SERVER;
   _param = ERR_NOTREGISTERED + " " + Server::_clientFds[fd]->getNickname();
@@ -161,6 +180,15 @@ void Messenger::ErrBadChanMask(int fd) {
   sendToClient(fd);
 }
 
+void Messenger::ErrChanOPrivsNeeded(int fd, const std::string& channel) {
+  _prefix = SERVER;
+  _param = ERR_CHANOPRIVSNEEDED + " " + Server::_clientFds[fd]->getNickname() +
+           " " + channel;
+  _trailing = "You're not channel operator";
+  printRed("ErrChanOPrivsNeeded");
+  sendToClient(fd);
+}
+
 void Messenger::ErrUModeUnknownFlag(int fd) {
   Client* client = Server::_clientFds[fd];
 
@@ -181,7 +209,8 @@ void Messenger::ErrUsersDontMatch(int fd) {
   sendToClient(fd);
 }
 
-void Messenger::ErrUnexpected(int fd) {  // TODO: implement
+// TODO: 추후 작업 예정
+void Messenger::ErrUnexpected(int fd) {
   _prefix = SERVER;
   printRed("Unexpected");
   sendToClient(fd);
@@ -286,6 +315,15 @@ void Messenger::RplInviteList(int fd, const std::string& channel) {
   _param = RPL_INVITELIST + " " + Server::_clientFds[fd]->getNickname() + " " +
            channel;
   printRed("RplInviteList");
+  sendToClient(fd);
+}
+
+void Messenger::RplInviting(int fd, const std::string& nick,
+                            const std::string& channel) {
+  _prefix = SERVER;
+  _param = RPL_INVITING + " " + Server::_clientFds[fd]->getNickname() + " " +
+           nick + " " + channel;
+  printRed("RplInviting");
   sendToClient(fd);
 }
 
