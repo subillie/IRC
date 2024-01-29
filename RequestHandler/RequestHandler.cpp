@@ -39,7 +39,7 @@ void RequestHandler::execute() {
   std::map<std::string, RequestHandler::CommandFunction>::iterator found =
       _commandMap.find(_command);
   if (found == _commandMap.end()) {
-    msg.ErrUnknownCommand(_fd);
+    msg.ErrUnknownCommand(_fd, _command);
     return;
   }
   (this->*(found->second))();
