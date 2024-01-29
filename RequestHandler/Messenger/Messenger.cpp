@@ -23,6 +23,10 @@ void Messenger::ErrNoSuchChannel(int fd, const std::string& channel) {
   printRed("ErrNoSuchChannel");
   sendToClient(fd);
 }
+void Messenger::ErrCannotSendToChan(int fd) {
+  printRed("ErrCannotSendToChan");
+  sendToClient(fd);
+}
 
 void Messenger::ErrTooManyChannels(int fd) {
   _prefix = SERVER;
@@ -140,6 +144,27 @@ void Messenger::ErrBadChanMask(int fd) {
   _param = ERR_BADCHANMASK + " " + Server::_clientFds[fd]->getNickname();
   _trailing = "Bad Channel Mask";
   printRed("ErrBadChanMask");
+  sendToClient(fd);
+}
+
+void Messenger::ErrNoRecipient(int fd) {
+  printRed("ErrNoRecipient");
+  sendToClient(fd);
+}
+void Messenger::ErrNoTextToSend(int fd) {
+  printRed("ErrNoTextToSend");
+  sendToClient(fd);
+}
+
+void Messenger::ErrUnknownCommand(int fd) {
+  _prefix = SERVER;
+  _param = ERR_UMODEUNKNOWNFLAG + " " + client->getNickname();
+  _trailing = "Unknown MODE flag";
+  printRed("ErrUModeUnknownFlag");
+  sendToClient(fd);
+}
+void Messenger::ErrNoTextToSend(int fd) {
+  printRed("ErrNoTextToSend");
   sendToClient(fd);
 }
 

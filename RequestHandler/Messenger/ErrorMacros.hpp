@@ -3,12 +3,15 @@
 
 #include <string>
 // Errors
+
 #define ERR_NOSUCHNICK std::string("401")
 #define ERR_NOSUCHCHANNEL std::string("403")
+#define ERR_CANNOTSENDTOCHAN std::string("404")
 #define ERR_TOOMANYCHANNELS std::string("405")
 
 #define ERR_NOORIGIN std::string("409")
-
+#define ERR_NORECIPIENT std::string("411")
+#define ERR_NOTEXTTOSEND std::string("412")
 #define ERR_UNKNOWNCOMMAND std::string("421")
 #define ERR_NONICKNAMEGIVEN std::string("431")
 #define ERR_ERRONEUSNICKNAME std::string("432")
