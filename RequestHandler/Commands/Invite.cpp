@@ -7,7 +7,7 @@ void RequestHandler::invite() {
     _msg.ErrNeedMoreParams(_fd, _token[0]);
     return;
   }
-<<<<<<< HEAD
+
   std::string nickname = _token[1];
   std::string channel = _token[2];
 
@@ -35,7 +35,6 @@ void RequestHandler::invite() {
     _msg.ErrChanOPrivsNeeded(_fd, channel);
     return;
   }
-<<<<<<< HEAD
 
   // 초대하려는 유저가 이미 채널에 있을 때
   if (std::find(membList.begin(), membList.end(), nickname) != membList.end()) {
@@ -47,9 +46,4 @@ void RequestHandler::invite() {
   chanToInvite->addInvitee(nickname);
   int fdToInvite = Server::_clientNicks[nickname]->getFd();
   _msg.RplInviting(fdToInvite, nickname, channel);
-=======
->>>>>>> d897747 (feat: error handling 중)
-=======
-  // 채널이 존재하지 않을 때
->>>>>>> 2e5c0ab (feat: start implementing invite)
 }
