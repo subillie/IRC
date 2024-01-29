@@ -297,4 +297,7 @@ void Messenger::sendToClient(int fd) {
   if (send(fd, response.c_str(), response.length(), 0) == -1) {
     throw std::runtime_error("Send error");
   }
+  _prefix.clear();
+  _param.clear();
+  _trailing.clear();
 }
