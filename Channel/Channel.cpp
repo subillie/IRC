@@ -2,29 +2,27 @@
 
 Channel::Channel(const char& mode, const std::string& name)
     : _limit(0), _name(name) {
-  _modes.push_back(mode);
+  _modes.insert(mode);
 }
 
-void Channel::addMode(const char mode) { _modes.push_back(mode); }
+void Channel::addMode(const char mode) { _modes.insert(mode); }
 
-void Channel::addOp(const std::string& op) { _ops.push_back(op); }
+void Channel::addOp(const std::string& op) { _ops.insert(op); }
 
-void Channel::addMember(const std::string& member) {
-  _members.push_back(member);
-}
+void Channel::addMember(const std::string& member) { _members.insert(member); }
 
 void Channel::addInvitee(const std::string& member) {
-  _invitees.push_back(member);
+  _invitees.insert(member);
 }
 
-void Channel::removeOp(const std::string& op) { _ops.remove(op); }
+void Channel::removeOp(const std::string& op) { _ops.erase(op); }
 
 void Channel::removeMember(const std::string& member) {
-  _members.remove(member);
+  _members.erase(member);
 }
 
 void Channel::removeInvitee(const std::string& member) {
-  _invitees.remove(member);
+  _invitees.erase(member);
 }
 
 void Channel::setLimit(size_t limit) { _limit = limit; }
@@ -43,10 +41,10 @@ const std::string& Channel::getTopic() const { return _topic; }
 
 const std::string& Channel::getPassword() const { return _password; }
 
-const std::list<char>& Channel::getModes() const { return _modes; }
+const std::set<char>& Channel::getModes() const { return _modes; }
 
-const std::list<std::string>& Channel::getOps() const { return _ops; }
+const std::set<std::string>& Channel::getOps() const { return _ops; }
 
-const std::list<std::string>& Channel::getMembers() const { return _members; }
+const std::set<std::string>& Channel::getMembers() const { return _members; }
 
-const std::list<std::string>& Channel::getInvitees() const { return _invitees; }
+const std::set<std::string>& Channel::getInvitees() const { return _invitees; }

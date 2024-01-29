@@ -25,16 +25,15 @@ void RequestHandler::privmsg() {
         continue;
       }
       Channel* chanToSend = Server::_channelNames[target];
-      std::list<std::string> memberList = chanToSend->getMembers();
-      if (std::find(memberList.begin(), memberList.end(),
-                    _client->getNickname()) == memberList.end()) {
+      std::set<std::string> memberList = chanToSend->getMembers();
+      if (memberList.find(_client->getNickname()) == memberList.end()) {
         _msg.ErrCannotSendToChan(_fd);  // 본인 속한 채널이 아님
         continue;
       }
-      std::list<std::string>::const_iterator it;
+      std::set<std::string>::const_iterator it;
       for (it = memberList.begin(); it != memberList.end(); ++it) {
         if (*it != _client->getNickname()) {
-          _msg.setPrefix("PRIMSG");
+          _msg.setPrefix("PRIVMSG");
           _msg.setParam(_client->getNickname());
           _msg.setTrailing(_token[2]);
           _msg.sendToClient(Server::_clientNicks[*it]->getFd());
@@ -45,7 +44,7 @@ void RequestHandler::privmsg() {
         _msg.ErrNoSuchNick(_fd, target);  // 등록된 닉네임이 없음
         continue;
       }
-      _msg.setPrefix("PRIMSG");
+      _msg.setPrefix("PRIVMSG");
       _msg.setParam(_client->getNickname());
       _msg.setTrailing(_token[2]);
       _msg.sendToClient(Server::_clientNicks[_token[1]]->getFd());

@@ -9,8 +9,8 @@ void RequestHandler::addUser(Channel* chanToJoin) {
     _msg.RplTopic(_fd, nickname, chanToJoin->getTopic());
   }
   // 해당 채널의 모든 유저에게 join 메시지 전송
-  std::list<std::string> memberList = chanToJoin->getMembers();
-  std::list<std::string>::iterator membIter;
+  std::set<std::string> memberList = chanToJoin->getMembers();
+  std::set<std::string>::iterator membIter;
   for (membIter = memberList.begin(); membIter != memberList.end();
        membIter++) {
     _msg.RplNamReply(_fd, nickname, *membIter);
@@ -57,26 +57,24 @@ void RequestHandler::join() {
       addUser(Server::_channelNames[iter->first]);
     } else {
       Channel* chanToJoin = Server::_channelNames[iter->first];
-      std::list<std::string> memberList = chanToJoin->getMembers();
-      std::list<std::string>::iterator membIter =
+      std::set<std::string> memberList = chanToJoin->getMembers();
+      std::set<std::string>::iterator membIter =
           std::find(memberList.begin(), memberList.end(), iter->first);
       // 이미 참가 중인 채널이면 무시
       if (membIter != memberList.end()) {
         continue;
         // 채널이 존재하고 멤버 명단에 없으면 참가
       } else {
-        std::list<char> modeList = chanToJoin->getModes();
+        std::set<char> modeList = chanToJoin->getModes();
         // 해당 채널이 Key Channel Mode이면 비밀번호 확인
-        if (std::find(modeList.begin(), modeList.end(), KEY_CHANNEL) !=
-            modeList.end()) {
+        if (modeList.find(KEY_CHANNEL) != modeList.end()) {
           if (chanToJoin->getPassword() != iter->second) {
             _msg.ErrBadChannelKey(_fd, iter->first);
             continue;
           }
           // 해당 채널이 Invite Only Channel Mode이면 초대 리스트에 있는지 확인
-        } else if (std::find(modeList.begin(), modeList.end(),
-                             INVITE_ONLY_CHANNEL) != modeList.end()) {
-          std::list<std::string> inviteeList = chanToJoin->getInvitees();
+        } else if (modeList.find(INVITE_ONLY_CHANNEL) != modeList.end()) {
+          std::set<std::string> inviteeList = chanToJoin->getInvitees();
           if (std::find(inviteeList.begin(), inviteeList.end(),
                         _client->getNickname()) ==
               chanToJoin->getInvitees().end()) {
@@ -84,8 +82,7 @@ void RequestHandler::join() {
             continue;
           }
           // 해당 채널이 Client Limit Channel Mode이면 인원 제한 확인
-        } else if (std::find(modeList.begin(), modeList.end(),
-                             CLIENT_LIMIT_CHANNEL) != modeList.end()) {
+        } else if (modeList.find(CLIENT_LIMIT_CHANNEL) != modeList.end()) {
           if (chanToJoin->getLimit() < chanToJoin->getMembers().size()) {
             _msg.ErrTooManyChannels(_fd);
             continue;
@@ -102,8 +99,8 @@ void RequestHandler::join() {
   // it++) {
   //   std::cout << "channel: " << it->first << std::endl;
   //   std::cout << "members: ";
-  //   std::list<std::string> members = it->second->getMembers();
-  //   std::list<std::string>::iterator mIter = members.begin();
+  //   std::set<std::string> members = it->second->getMembers();
+  //   std::set<std::string>::iterator mIter = members.begin();
   //   for (; mIter != members.end(); mIter++) {
   //     std::cout << *mIter << " ";
   //   }
