@@ -27,6 +27,7 @@
 #define ERR_PASSWDMISMATCH std::string("464")
 
 #define ERR_CHANNELISFULL std::string("471")
+#define ERR_UNKNOWNMODE std::string("472")
 #define ERR_INVITEONLYCHAN std::string("473")
 #define ERR_BADCHANNELKEY std::string("475")
 #define ERR_BADCHANMASK std::string("476")
@@ -35,5 +36,6 @@
 
 #define ERR_UMODEUNKNOWNFLAG std::string("501")
 #define ERR_USERSDONTMATCH std::string("502")
+#define ERR_INVALIDMODEPARAM std::string("696")
 
 #endif

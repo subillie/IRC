@@ -41,12 +41,15 @@ class Messenger {
   void ErrAlreadyRegistered(int fd);                             // 462
   void ErrPasswdMismatch(int fd);                                // 464
   void ErrChannelIsFull(int fd, const std::string& channel);     // 471
+  void ErrUnknownMode(int fd, const char& mode);                 // 472
   void ErrInviteOnlyChan(int fd, const std::string& channel);    // 473
   void ErrBadChannelKey(int fd, const std::string& channel);     // 475
   void ErrBadChanMask(int fd);                                   // 476
   void ErrChanOPrivsNeeded(int fd, const std::string& channel);  // 482
   void ErrUModeUnknownFlag(int fd);                              // 501
   void ErrUsersDontMatch(int fd);                                // 502
+  void ErrInvalidModeParam(int fd, const std::string& channel,
+                           const char& mode);  // 696
   void ErrUnexpected(int fd);  // 에러코드가 정해져 있지 않은 에러
 
   // Reply function

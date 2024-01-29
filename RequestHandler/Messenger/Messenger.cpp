@@ -154,6 +154,14 @@ void Messenger::ErrChannelIsFull(int fd, const std::string& channel) {
   sendToClient(fd);
 }
 
+void Messenger::ErrUnknownMode(int fd, const char& mode) {
+  _prefix = SERVER;
+  _param = ERR_UNKNOWNMODE + " " + mode;
+  _trailing = "is unknown mode char to our server";
+  printRed("ErrUnknownMode");
+  sendToClient(fd);
+}
+
 void Messenger::ErrInviteOnlyChan(int fd, const std::string& channel) {
   _prefix = SERVER;
   _param = ERR_INVITEONLYCHAN + " " + Server::_clientFds[fd]->getNickname() +
@@ -206,6 +214,15 @@ void Messenger::ErrUsersDontMatch(int fd) {
   _param = ERR_USERSDONTMATCH + " " + client->getNickname();
   _trailing = "Cant change mode for other users";
   printRed("ErrUsersDontMatch");
+  sendToClient(fd);
+}
+
+void Messenger::ErrInvalidModeParam(int fd, const std::string& channel,
+                                    const char& mode) {
+  _prefix = SERVER;
+  _param = ERR_INVALIDMODEPARAM + " " + channel + " " + mode + " *";
+  _trailing = "You must specify a parameter for this mode";
+  printRed("ErrInvalidModeParam");
   sendToClient(fd);
 }
 

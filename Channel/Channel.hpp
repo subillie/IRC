@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 
-#define DEFAULT 'd'
 #define INVITE_ONLY_CHANNEL 'i'
 #define PROTECTED_TOPIC 't'
 #define KEY_CHANNEL 'k'
