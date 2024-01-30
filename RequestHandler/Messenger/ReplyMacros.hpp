@@ -1,16 +1,16 @@
-#ifndef REPLIES_HPP
-#define REPLIES_HPP
+#ifndef REPLYMACROS_HPP
+#define REPLYMACROS_HPP
 
 #include <string>
 
 #define SERVER std::string("IRC")
 #define VERSION std::string("1.0")
 #define AVAILABLE_USER_MODES std::string("i")
-#define AVAILABLE_CHAN_MODES std::string("itkl")
+#define AVAILABLE_CHAN_MODES std::string("klit")
 // 인자 확인
 #define ISUPPORT_PARAMS                                                   \
   std::string(                                                            \
-      "CASEMAPPING=ascii CHANLIMIT=#:10 CHANMODES=,k,l,it CHANNELLEN=32 " \
+      "CASEMAPPING=ascii CHANLIMIT=#:10 CHANMODES=k,l,i,t CHANNELLEN=32 " \
       "CHANTYPES=# KICKLEN=307 NICKLEN=31 PREFIX=(o)@ TOPICLEN=307 "      \
       "USERLEN=12")
 #define RPL_WELCOME std::string("001")
