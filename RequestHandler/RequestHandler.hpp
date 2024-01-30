@@ -53,8 +53,8 @@ class RequestHandler {
   // bool inviteMode();
   // bool topicMode();
   // bool keyMode();
-  // void limitMode();
-  bool handleOpMode(Channel *channel);
+  void limitMode(Channel *channel);
+  void handleOpMode(Channel *channel);
   bool addModeToChannel(Channel *channel, const char &mode);
   bool removeModeFromChannel(Channel *channel, const char &mode);
 
