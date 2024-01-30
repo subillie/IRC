@@ -44,7 +44,7 @@ bool RequestHandler::removeModeFromChannel(Channel* channel, const char& mode) {
       // MODE #hi :-l
       // two!root@127.0.0.1 MODE #hi :-l
     case CLIENT_LIMIT_CHANNEL:
-      _msg.setParam("");
+      _msg.setParam("MODE " + channel->getName());
       _msg.setTrailing("-l");
       channel->setLimit(0);
       break;
