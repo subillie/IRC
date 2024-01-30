@@ -33,8 +33,31 @@ bool RequestHandler::addModeToChannel(Channel* channel, const char& mode) {
       break;
     case KEY_CHANNEL:
       break;
-    case 'o':
-      break;
+      // MODE +o
+    case 'o': {
+      std::set<std::string> memberList = channel->getMembers();
+      std::set<std::string> opsList = channel->getOps();
+      // 인자 없을 때
+      if (_token.size() < 4) {
+        _msg.setTrailing("You must specify a parameter for mode o");
+        _msg.ErrInvalidModeParam(_fd, channel->getName(), mode);
+        return false;
+      }
+      const std::string& nick = _token[3];
+      // 방에 없는 닉네임이면 401
+      if (memberList.find(nick) == memberList.end()) {
+        _msg.ErrNoSuchNick(_fd, nick);
+        return false;
+      }
+      // op 목록에 있으면 무시(응답 안 보냄)
+      if (opsList.find(nick) != memberList.end()) {
+        return false;
+      }
+      _msg.setParam(_msg.getParam() + "+o");
+      _msg.setTrailing(nick);
+      channel->addOp(nick);
+      return true;
+    }
     default:
       _msg.ErrUModeUnknownFlag(_fd);
       return false;
@@ -57,8 +80,31 @@ bool RequestHandler::removeModeFromChannel(Channel* channel, const char& mode) {
       break;
     case KEY_CHANNEL:
       break;
-    case 'o':
-      break;
+    // TODO: +o, -o 함수 하나로 합치기
+    case 'o': {
+      std::set<std::string> memberList = channel->getMembers();
+      std::set<std::string> opsList = channel->getOps();
+      // 인자 없을 때
+      if (_token.size() < 4) {
+        _msg.setTrailing("You must specify a parameter for mode o");
+        _msg.ErrInvalidModeParam(_fd, channel->getName(), mode);
+        return false;
+      }
+      const std::string& nick = _token[3];
+      // 방에 없는 닉네임이면 401
+      if (memberList.find(nick) == memberList.end()) {
+        _msg.ErrNoSuchNick(_fd, nick);
+        return false;
+      }
+      // op 목록에 있으면 무시(응답 안 보냄)
+      if (opsList.find(nick) != memberList.end()) {
+        return false;
+      }
+      _msg.setParam(_msg.getParam() + "-o");
+      _msg.setTrailing(nick);
+      channel->removeOp(nick);
+      return true;
+    }
     default:
       _msg.ErrUModeUnknownFlag(_fd);
       return false;

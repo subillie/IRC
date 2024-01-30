@@ -4,7 +4,7 @@ void Messenger::ErrNoSuchNick(int fd, const std::string& nick) {
   _prefix = SERVER;
   _param =
       ERR_NOSUCHNICK + " " + Server::_clientFds[fd]->getNickname() + " " + nick;
-  _trailing = "No such nick/channel";
+  _trailing = "No such nick";
   printRed("ErrNoSuchNick");
   sendToClient(fd);
 }
