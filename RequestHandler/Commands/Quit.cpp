@@ -24,4 +24,6 @@ void RequestHandler::quit() {
   }
   Server::_clientNicks.erase(_client->getNickname());
   delete _client;
+
+  // TODO: FD_CLR해야 함 (Server.cpp의 deleteChlient 함수)
 }
