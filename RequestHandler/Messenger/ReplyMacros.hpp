@@ -10,7 +10,7 @@
 // 인자 확인
 #define ISUPPORT_PARAMS                                                   \
   std::string(                                                            \
-      "CASEMAPPING=ascii CHANLIMIT=#:10 CHANMODES=k,l,i,t CHANNELLEN=32 " \
+      "CASEMAPPING=ascii CHANLIMIT=#:10 CHANMODES=,k,l,it CHANNELLEN=32 " \
       "CHANTYPES=# KICKLEN=307 NICKLEN=31 PREFIX=(o)@ TOPICLEN=307 "      \
       "USERLEN=12")
 #define RPL_WELCOME std::string("001")
