@@ -19,13 +19,13 @@ void RequestHandler::privmsg() {
   while (std::getline(ss, target, ',')) {
     if (target[0] == '#') {
       if (Server::_channelNames.find(target) == Server::_channelNames.end()) {
-        _msg.ErrCannotSendToChan(_fd);  // target에 해당하는 채널이 없음
+        _msg.ErrCannotSendToChan(_fd, target);  // target에 해당하는 채널이 없음
         continue;
       }
       Channel* chanToSend = Server::_channelNames[target];
       std::set<std::string> memberList = chanToSend->getMembers();
       if (memberList.find(_client->getNickname()) == memberList.end()) {
-        _msg.ErrCannotSendToChan(_fd);  // 본인 속한 채널이 아님
+        _msg.ErrCannotSendToChan(_fd, target);  // 본인 속한 채널이 아님
         continue;
       }
       std::set<std::string>::const_iterator it;
