@@ -244,11 +244,3 @@ void Messenger::ErrUnexpected(int fd) {
   printRed("Unexpected");
   sendToClient(fd);
 }
-
-void Messenger::Error(int fd, const std::string& reason) {
-  _param = ERROR;
-  _trailing = "Closing link: (" + Server::_clientFds[fd]->getHostname() +
-              ") [Quit: " + reason + "]";
-  printRed("Error");
-  sendToClient(fd);
-}
