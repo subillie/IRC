@@ -1,5 +1,7 @@
 #include "../RequestHandler.hpp"
 
+// /topic <channel> [<topic>]
+
 void RequestHandler::topic() {
   // parameter가 없을 경우
   if (_token.size() == 1) {

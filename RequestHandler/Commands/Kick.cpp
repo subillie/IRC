@@ -1,5 +1,7 @@
 #include "../RequestHandler.hpp"
 
+// /kick <channel> <user> *( "," <user> ) [<comment>]
+
 void RequestHandler::kick() {
   // parameter가 없을 경우
   if (_token.size() < 3) {
