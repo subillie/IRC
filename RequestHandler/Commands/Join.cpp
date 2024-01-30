@@ -26,8 +26,19 @@ void RequestHandler::join() {
 
     // 채널명이 유효하지 않을 때
     if (channelName.empty() || channelName[0] != '#' ||
+<<<<<<< HEAD
         channelName.length() > MAX_CHANNEL_LEN) {
       _msg.ErrNoSuchChannel(_fd, channelName);
+=======
+        channelName.find_first_not_of(SPECIAL_CHAR) != std::string::npos ||
+        channelName.length() > 32) {
+      _msg.ErrBadChanMask(_fd);
+      continue;
+    }
+    // 비밀번호가 유효하지 않을 때
+    if (channelKey.find_first_not_of(SPECIAL_CHAR) != std::string::npos) {
+      _msg.ErrUnexpected(_fd);
+>>>>>>> a3bb3b66250f4c18b59df537afcc725120546007
       continue;
     }
 
