@@ -18,8 +18,11 @@ void Messenger::ErrNoSuchChannel(int fd, const std::string& channel) {
   sendToClient(fd);
 }
 
-// TODO: 추후 작업 예정
-void Messenger::ErrCannotSendToChan(int fd) {
+void Messenger::ErrCannotSendToChan(int fd, const std::string& channel) {
+  _prefix = SERVER;
+  _param = ERR_CANNOTSENDTOCHAN + " " + Server::_clientFds[fd]->getNickname() +
+           channel;
+  _trailing = "Cannot send to channel";
   printRed("ErrCannotSendToChan");
   sendToClient(fd);
 }
@@ -41,14 +44,18 @@ void Messenger::ErrNoOrigin(int fd) {
   sendToClient(fd);
 }
 
-// TODO: 추후 작업 예정
 void Messenger::ErrNoRecipient(int fd) {
+  _prefix = SERVER;
+  _param = ERR_NORECIPIENT + " " + Server::_clientFds[fd]->getNickname();
+  _trailing = "No recipient given";
   printRed("ErrNoRecipient");
   sendToClient(fd);
 }
 
-// TODO: 추후 작업 예정
 void Messenger::ErrNoTextToSend(int fd) {
+  _prefix = SERVER;
+  _param = ERR_NOTEXTTOSEND + " " + Server::_clientFds[fd]->getNickname();
+  _trailing = "No text to send";
   printRed("ErrNoTextToSend");
   sendToClient(fd);
 }
@@ -204,7 +211,7 @@ void Messenger::ErrUsersDontMatch(int fd) {
   sendToClient(fd);
 }
 
-// TODO: 추후 작업 예정
+// Unexpected result
 void Messenger::ErrUnexpected(int fd) {
   _prefix = SERVER;
   printRed("Unexpected");
