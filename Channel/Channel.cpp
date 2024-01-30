@@ -56,12 +56,10 @@ const std::set<std::string>& Channel::getMembers() const { return _members; }
 
 const std::set<std::string>& Channel::getInvitees() const { return _invitees; }
 
-#include <iostream>
 void Channel::sendToAll(Messenger& msg) const {
   for (std::set<std::string>::const_iterator it = _members.begin();
        it != _members.end(); it++) {
     Messenger copy = msg;
-    std::cout << "member: " << *it << "\n";
     copy.sendToClient(Server::_clientNicks[*it]->getFd());
   }
 }
