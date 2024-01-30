@@ -64,6 +64,18 @@ bool Channel::isOp(const std::string& nick) const {
   return _ops.find(nick) != _ops.end();
 }
 
+bool Channel::isMember(const std::string& nick) const {
+  return _members.find(nick) != _members.end();
+}
+
+bool Channel::isInvitee(const std::string& nick) const {
+  return _invitees.find(nick) != _invitees.end();
+}
+
+bool Channel::isMode(const char& mode) const {
+  return _modes.find(mode) != _modes.end();
+}
+
 void Channel::sendToAll(Messenger& msg) const {
   for (std::set<std::string>::const_iterator it = _members.begin();
        it != _members.end(); it++) {
