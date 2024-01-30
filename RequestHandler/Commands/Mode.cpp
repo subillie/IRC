@@ -39,6 +39,7 @@ bool RequestHandler::addModeToChannel(Channel* channel, const char& mode) {
       _msg.ErrUModeUnknownFlag(_fd);
       return false;
   }
+  channel->addMode(mode);
   return true;
 }
 
@@ -62,6 +63,7 @@ bool RequestHandler::removeModeFromChannel(Channel* channel, const char& mode) {
       _msg.ErrUModeUnknownFlag(_fd);
       return false;
   }
+  channel->removeMode(mode);
   return true;
 }
 

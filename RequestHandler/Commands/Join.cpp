@@ -76,7 +76,7 @@ void RequestHandler::join() {
           }
           // 해당 채널이 Client Limit Channel Mode이면 인원 제한 확인
         } else if (modeList.find(CLIENT_LIMIT_CHANNEL) != modeList.end()) {
-          if (chanToJoin->getLimit() < chanToJoin->getMembers().size()) {
+          if (chanToJoin->isFull()) {
             _msg.ErrChannelIsFull(_fd, channelName);
             continue;
           }

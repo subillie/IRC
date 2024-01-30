@@ -20,6 +20,8 @@ void Channel::addInvitee(const std::string& member) {
   _invitees.insert(member);
 }
 
+void Channel::removeMode(const char& mode) { _modes.erase(mode); }
+
 void Channel::removeOp(const std::string& op) { _ops.erase(op); }
 
 void Channel::removeMember(const std::string& member) {
@@ -55,6 +57,8 @@ const std::set<std::string>& Channel::getOps() const { return _ops; }
 const std::set<std::string>& Channel::getMembers() const { return _members; }
 
 const std::set<std::string>& Channel::getInvitees() const { return _invitees; }
+
+bool Channel::isFull() const { return _limit == _members.size(); }
 
 void Channel::sendToAll(Messenger& msg) const {
   for (std::set<std::string>::const_iterator it = _members.begin();
