@@ -51,6 +51,7 @@ void RequestHandler::kick() {
       }
       chanToKick->removeMember(target);
       chanToKick->removeOp(target);
+      chanToKick->removeInvitee(target);
     }
   }
 }
