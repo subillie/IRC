@@ -96,6 +96,16 @@ void Messenger::RplChannelModeIS(int fd, const std::string& channel) {
   sendToClient(fd);
 }
 
+void Messenger::RplCreationTime(int fd, const std::string& channel) {
+  _prefix = SERVER;
+  _param = RPL_CREATIONTIME + " " + Server::_clientFds[fd]->getNickname() +
+           " " + channel + " " +
+           Server::_channelNames[channel]->getCreationTime();
+  printRed("RplCreationTime");
+  sendToClient(fd);
+  RplCreated(fd);
+}
+
 void Messenger::RplTopic(int fd, const std::string& channel,
                          const std::string& topic) {
   _prefix = SERVER;

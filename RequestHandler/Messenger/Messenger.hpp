@@ -44,12 +44,15 @@ class Messenger {
   void ErrAlreadyRegistered(int fd);                             // 462
   void ErrPasswdMismatch(int fd);                                // 464
   void ErrChannelIsFull(int fd, const std::string& channel);     // 471
+  void ErrUnknownMode(int fd, const std::string& mode);          // 472
   void ErrInviteOnlyChan(int fd, const std::string& channel);    // 473
   void ErrBadChannelKey(int fd, const std::string& channel);     // 475
   void ErrBadChanMask(int fd);                                   // 476
   void ErrChanOPrivsNeeded(int fd, const std::string& channel);  // 482
   void ErrUModeUnknownFlag(int fd);                              // 501
   void ErrUsersDontMatch(int fd);                                // 502
+  void ErrInvalidModeParam(int fd, const std::string& channel,
+                           const char& mode);  // 696
   void ErrUnexpected(int fd);  // 에러코드가 정해져 있지 않은 에러
 
   // Reply function
@@ -60,6 +63,7 @@ class Messenger {
   void RplISupport(int fd);                                   // 005
   void RplUModeIs(int fd, const std::string& usermode);       // 221
   void RplChannelModeIS(int fd, const std::string& channel);  // 324
+  void RplCreationTime(int fd, const std::string& channel);   // 324
   void RplTopic(int fd, const std::string& channel,
                 const std::string& topic);                 // 332
   void RplInviteList(int fd, const std::string& channel);  // 336
@@ -74,6 +78,11 @@ class Messenger {
   void setParam(const std::string& param);
   void setTrailing(const std::string& trailing);
   void sendToClient(int fd);
+
+  // getter
+  const std::string& getPrefix() const;
+  const std::string& getParam() const;
+  const std::string& getTrailing() const;
 };
 
 #endif

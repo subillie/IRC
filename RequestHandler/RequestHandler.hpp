@@ -36,18 +36,21 @@ class RequestHandler {
   void pass();
 
   void join();
+  void addUser(Channel *chanToJoin);
+
   void privmsg();
   void kick();
   void invite();
   void topic();
   void part();
 
+  void mode();
   void userMode(const std::string &target);
   void channelMode(const std::string &target);
-  void mode();
-  void pong();
+  bool addModeToChannel(Channel *channel, const char &mode);
+  bool removeModeFromChannel(Channel *channel, const char &mode);
 
-  void addUser(Channel *chanToJoin);
+  void pong();
 
  public:
   RequestHandler(Client *client, const std::string &request,
