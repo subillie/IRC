@@ -1,5 +1,7 @@
 #include "Channel.hpp"
 
+#include "../RequestHandler/Messenger/Messenger.hpp"
+
 Channel::Channel(const char& mode, const std::string& name)
     : _limit(0), _name(name) {
   time_t now;
@@ -53,3 +55,10 @@ const std::set<std::string>& Channel::getOps() const { return _ops; }
 const std::set<std::string>& Channel::getMembers() const { return _members; }
 
 const std::set<std::string>& Channel::getInvitees() const { return _invitees; }
+
+void Channel::sendToAll(Messenger& msg) const {
+  for (std::set<std::string>::const_iterator it = _members.begin();
+       it != _members.end(); it++) {
+    msg.sendToClient(Server::_clientNicks[*it]->getFd());
+  }
+}

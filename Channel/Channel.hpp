@@ -6,12 +6,15 @@
 #include <string>
 #include <vector>
 
+#include "../Server/Server.hpp"
+
 #define INVITE_ONLY_CHANNEL 'i'
 #define PROTECTED_TOPIC 't'
 #define KEY_CHANNEL 'k'
 #define CLIENT_LIMIT_CHANNEL 'l'
 
 class Client;
+class Messenger;
 
 class Channel {
  private:
@@ -49,6 +52,8 @@ class Channel {
   const std::set<std::string>& getOps() const;
   const std::set<std::string>& getMembers() const;
   const std::set<std::string>& getInvitees() const;
+
+  void sendToAll(Messenger& msg) const;
 };
 
 #endif
