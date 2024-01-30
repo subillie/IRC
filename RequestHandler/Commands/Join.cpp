@@ -23,31 +23,30 @@ void RequestHandler::join() {
   for (; iter != keys.end(); iter++) {
     const std::string& channelName = iter->first;
     const std::string& channelKey = iter->second;
+
     // 채널명이 유효하지 않을 때
     if (channelName.empty() || channelName[0] != '#' ||
-        channelName.find_first_not_of(SPECIAL_CHAR) != std::string::npos ||
-        channelName.length() > 32) {
-      _msg.ErrBadChanMask(_fd);
+        channelName.length() > MAX_CHANNEL_LEN) {
+      _msg.ErrNoSuchChannel(_fd, channelName);
       continue;
     }
-    // 비밀번호가 유효하지 않을 때
-    if (channelKey.find_first_not_of(SPECIAL_CHAR) != std::string::npos) {
-      _msg.ErrUnexpected(_fd);
-      continue;
-    }
+
     // 이미 가입한 채널 수가 최대치일 때
     if (_client->isMaxJoined()) {
       _msg.ErrTooManyChannels(_fd, channelName);
       break;
     }
+
     // 채널이 없으면 생성
     if (Server::_channelNames.find(channelName) ==
         Server::_channelNames.end()) {
+      printGreen("join: " + channelName + " created\n");
       Server::_channelNames[channelName] =
           new Channel(PROTECTED_TOPIC, channelName);
       addUser(Server::_channelNames[channelName]);
       Server::_channelNames[channelName]->addOp(_client->getNickname());
     } else {
+      printGreen("join: " + channelName + " already exists\n");
       Channel* chanToJoin = Server::_channelNames[channelName];
       std::set<std::string> memberList = chanToJoin->getMembers();
       std::set<std::string>::iterator membIter =

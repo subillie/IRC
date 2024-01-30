@@ -18,6 +18,8 @@
 #include "../Server/Server.hpp"
 #include "Messenger/Messenger.hpp"
 
+#define MAX_CHANNEL_LEN 32
+
 class RequestHandler {
  private:
   int _fd;
