@@ -3,16 +3,13 @@
 // /quit [<reason>]
 void RequestHandler::quit() {
   std::string reason = "";
-  if (_token.size() == 1) {
-    reason = "leaving";
-  } else {
+  if (_token[1] != "leaving  ") {
     for (size_t i = 1; i < _token.size(); i++) {
       reason += _token[i];
-      if (i != _token.size() - 1) {
-        reason += " ";
-      }
+      reason += " ";
     }
   }
+  reason.erase(reason.find_last_not_of(' ') + 1);
 
   // client가 참여 중인 모든 채널에 대해
   std::string nickname = _client->getNickname();
@@ -27,7 +24,7 @@ void RequestHandler::quit() {
     std::set<std::string>::iterator membIter = members.begin();
     for (; membIter != members.end(); membIter++) {
       int fd = Server::_clientNicks[*membIter]->getFd();
-      _msg.setPrefix(prefix + "QUIT");
+      _msg.setPrefix(prefix + " QUIT");
       _msg.setParam("Quit");
       _msg.setTrailing(reason);
       _msg.sendToClient(fd);
