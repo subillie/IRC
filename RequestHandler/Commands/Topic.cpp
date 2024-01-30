@@ -8,30 +8,32 @@ void RequestHandler::topic() {
     _msg.ErrNeedMoreParams(_fd, _token[0]);
     return;
   }
+  const std::string& channel = _token[1];
   // 해당하는 채널이 없을 경우
-  if (Server::_channelNames.find(_token[1]) == Server::_channelNames.end()) {
-    _msg.ErrNoSuchChannel(_fd, _token[1]);
+  if (Server::_channelNames.find(channel) == Server::_channelNames.end()) {
+    _msg.ErrNoSuchChannel(_fd, channel);
     return;
   }
-  Channel *chanToTopic = Server::_channelNames[_token[1]];
+  Channel* chanToTopic = Server::_channelNames[channel];
   std::set<std::string> memberList = chanToTopic->getMembers();
   std::set<std::string> opList = chanToTopic->getOps();
+  const std::string& nick = _client->getNickname();
   // Topic을 설정한 사용자가 해당 채널에 없을 경우
-  if (memberList.find(_client->getNickname()) == memberList.end()) {
-    _msg.ErrNotOnChannel(_fd, _client->getNickname());
+  if (!chanToTopic->isMember(nick)) {
+    _msg.ErrNotOnChannel(_fd, nick);
     return;
-    // Topic을 설정한 사용자가 권한이 없을 경우
-  } else if (opList.find(_client->getNickname()) == opList.end()) {
-    _msg.ErrChanOPrivsNeeded(_fd, chanToTopic->getName());
+    // Topic을 설정한 사용자가 권한이 없을 경우 (모드 +t일 경우만 확인)
+  } else if (chanToTopic->isMode('t') && !chanToTopic->isOp(nick)) {
+    _msg.ErrChanOPrivsNeeded(_fd, channel);
     return;
   }
   // check topic
   if (_token.size() == 2) {
     if (chanToTopic->getTopic().empty()) {
-      _msg.RplNoTopic(_fd, chanToTopic->getName());
+      _msg.RplNoTopic(_fd, channel);
       return;
     }
-    _msg.RplTopic(_fd, chanToTopic->getName(), chanToTopic->getTopic());
+    _msg.RplTopic(_fd, channel, chanToTopic->getTopic());
     // Rpl_TopicWhoTime(_fd);
     return;
   }
@@ -45,13 +47,9 @@ void RequestHandler::topic() {
   // 전에 있던 topic과 동일한 경우 무시
   if (newtopic == chanToTopic->getTopic()) return;
   // 채널 member에 topic 전송
-  std::set<std::string>::const_iterator it;
-  for (it = memberList.begin(); it != memberList.end(); ++it) {
-    _msg.setPrefix(_client->getNickname() + "!" + _client->getUsername() + "@" +
-                   _client->getHostname());
-    _msg.setParam("TOPIC " + _token[1]);
-    _msg.setTrailing(newtopic);
-    _msg.sendToClient(Server::_clientNicks[*it]->getFd());
-  }
+  _msg.setPrefix(_client->getPrefix());
+  _msg.setParam("TOPIC " + channel);
+  _msg.setTrailing(newtopic);
+  chanToTopic->sendToAll(_msg);
   chanToTopic->setTopic(newtopic);
 }
