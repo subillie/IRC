@@ -13,7 +13,7 @@
 
 #include "../Channel/Channel.hpp"
 #include "../Client/Client.hpp"
-#include "../Macros/Character.hpp"
+#include "../Macros/Characters.hpp"
 #include "../Print/Print.hpp"
 #include "../Server/Server.hpp"
 #include "Messenger/Messenger.hpp"

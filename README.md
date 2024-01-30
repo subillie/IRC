@@ -26,10 +26,10 @@ Internet Relay Chat
 - Client.hpp -> Client.cpp
 
 #### Macros
-- Character.hpp
-- Color.hpp
-- Error.hpp
-- Reply.hpp
+- Characters.hpp
+- Colors.hpp
+- Errors.hpp
+- Replies.hpp
 
 #### Print
 - Print.hpp -> Print.cpp

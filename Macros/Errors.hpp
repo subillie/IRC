@@ -1,5 +1,5 @@
-#ifndef ERROR_MACROS_HPP
-#define ERROR_MACROS_HPP
+#ifndef ERRORS_HPP
+#define ERRORS_HPP
 
 #include <string>
 

@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "../Macros/Color.hpp"
+#include "../Macros/Colors.hpp"
 
 template <typename T>
 void printBlack(const T& val) {
