@@ -156,7 +156,7 @@ void Messenger::ErrChannelIsFull(int fd, const std::string& channel) {
   sendToClient(fd);
 }
 
-void Messenger::ErrUnknownMode(int fd, const char& mode) {
+void Messenger::ErrUnknownMode(int fd, const std::string& mode) {
   _prefix = SERVER;
   _param = ERR_UNKNOWNMODE + " " + mode;
   _trailing = "is unknown mode char to our server";
@@ -223,7 +223,7 @@ void Messenger::ErrInvalidModeParam(int fd, const std::string& channel,
                                     const char& mode) {
   _prefix = SERVER;
   _param = ERR_INVALIDMODEPARAM + " " + channel + " " + mode + " *";
-  _trailing = "You must specify a parameter for this mode";
+  // _trailing = "You must specify a parameter for this mode";
   printRed("ErrInvalidModeParam");
   sendToClient(fd);
 }

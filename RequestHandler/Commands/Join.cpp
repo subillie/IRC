@@ -66,7 +66,7 @@ void RequestHandler::join() {
           new Channel(PROTECTED_TOPIC, channelName);
       addUser(Server::_channelNames[channelName]);
       // 채널 생성한 클라이언트 오퍼레이터에 추가
-      Server::_channelNames[iter->first]->addOp(_client->getNickname());
+      Server::_channelNames[channelName]->addOp(_client->getNickname());
     } else {
       Channel* chanToJoin = Server::_channelNames[channelName];
       std::set<std::string> memberList = chanToJoin->getMembers();
