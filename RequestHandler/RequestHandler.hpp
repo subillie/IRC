@@ -45,6 +45,7 @@ class RequestHandler {
   void invite();
   void topic();
   void part();
+  void quit();
 
   void mode();
   void userMode(const std::string &target);

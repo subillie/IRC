@@ -40,13 +40,11 @@ void RequestHandler::join() {
     // 채널이 없으면 생성
     if (Server::_channelNames.find(channelName) ==
         Server::_channelNames.end()) {
-      printGreen("join: " + channelName + " created\n");
       Server::_channelNames[channelName] =
           new Channel(PROTECTED_TOPIC, channelName);
       Server::_channelNames[channelName]->addOp(_client->getNickname());
       addUser(Server::_channelNames[channelName]);
     } else {
-      printGreen("join: " + channelName + " already exists\n");
       Channel* chanToJoin = Server::_channelNames[channelName];
       std::set<std::string> memberList = chanToJoin->getMembers();
       std::set<std::string>::iterator membIter =
