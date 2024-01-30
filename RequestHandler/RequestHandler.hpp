@@ -40,6 +40,7 @@ class RequestHandler {
   void kick();
   void invite();
   void topic();
+  void part();
 
   void userMode(const std::string &target);
   void channelMode(const std::string &target);
