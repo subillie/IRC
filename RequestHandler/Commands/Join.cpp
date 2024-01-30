@@ -26,19 +26,8 @@ void RequestHandler::join() {
 
     // 채널명이 유효하지 않을 때
     if (channelName.empty() || channelName[0] != '#' ||
-<<<<<<< HEAD
         channelName.length() > MAX_CHANNEL_LEN) {
       _msg.ErrNoSuchChannel(_fd, channelName);
-=======
-        channelName.find_first_not_of(SPECIAL_CHAR) != std::string::npos ||
-        channelName.length() > 32) {
-      _msg.ErrBadChanMask(_fd);
-      continue;
-    }
-    // 비밀번호가 유효하지 않을 때
-    if (channelKey.find_first_not_of(SPECIAL_CHAR) != std::string::npos) {
-      _msg.ErrUnexpected(_fd);
->>>>>>> a3bb3b66250f4c18b59df537afcc725120546007
       continue;
     }
 
@@ -115,12 +104,13 @@ void RequestHandler::join() {
 void RequestHandler::addUser(Channel* chanToJoin) {
   // 채널의 멤버 목록에 유저 추가, 클라이언트의 채널 목록에 채널 추가
   std::string nickname = _client->getNickname();
+  std::string channelName = chanToJoin->getName();
   chanToJoin->addMember(nickname);
-  _client->addChannel(chanToJoin->getName());
+  _client->addChannel(channelName);
 
   // 해당 채널에 topic이 존재한다면 topic 전송
   if (!chanToJoin->getTopic().empty()) {
-    _msg.RplTopic(_fd, nickname, chanToJoin->getTopic());
+    _msg.RplTopic(_fd, channelName, chanToJoin->getTopic());
   }
 
   // 해당 채널의 모든 유저에게 join 메시지 전송
