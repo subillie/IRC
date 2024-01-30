@@ -37,6 +37,4 @@
 #define ERR_USERSDONTMATCH std::string("502")
 #define ERR_INVALIDMODEPARAM std::string("696")
 
-#define ERROR std::string("ERROR")
-
 #endif
