@@ -95,6 +95,16 @@ void Messenger::ErrNickNameInUse(int fd, const std::string& nick) {
   sendToClient(fd);
 }
 
+void Messenger::ErrUserNotInChannel(int fd, const std::string& nick,
+                                    const std::string& channel) {
+  _prefix = SERVER;
+  _param = ERR_USERNOTINCHANNEL + " " + Server::_clientFds[fd]->getNickname() +
+           " " + nick + " " + channel;
+  _trailing = "They aren't on that channel";
+  printRed("ErrUserNotInChannel");
+  sendToClient(fd);
+}
+
 void Messenger::ErrNotOnChannel(int fd, const std::string& channel) {
   _prefix = SERVER;
   _param = ERR_NOTONCHANNEL + " " + Server::_clientFds[fd]->getNickname() +
