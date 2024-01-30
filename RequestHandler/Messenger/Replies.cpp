@@ -96,6 +96,15 @@ void Messenger::RplChannelModeIS(int fd, const std::string& channel) {
   sendToClient(fd);
 }
 
+void Messenger::RplNoTopic(int fd, const std::string& channel) {
+  _prefix = SERVER;
+  _param =
+      RPL_NOTOPIC + " " + Server::_clientFds[fd]->getNickname() + " " + channel;
+  _trailing = "No topic is set";
+  printRed("RplNoTopic");
+  sendToClient(fd);
+}
+
 void Messenger::RplCreationTime(int fd, const std::string& channel) {
   _prefix = SERVER;
   _param = RPL_CREATIONTIME + " " + Server::_clientFds[fd]->getNickname() +

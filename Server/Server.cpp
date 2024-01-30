@@ -45,7 +45,6 @@ void Server::run() {
 
   while (true) {
     _readySet = _readSet;
-    // TODO : ping
     if (Select(fdCount + 1, &_readySet, 0, 0, &timeout) == 0) {
       // std::cout << "Timeout!" << std::endl;
       continue;

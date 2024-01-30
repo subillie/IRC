@@ -64,6 +64,7 @@ class Messenger {
   void RplUModeIs(int fd, const std::string& usermode);       // 221
   void RplChannelModeIS(int fd, const std::string& channel);  // 324
   void RplCreationTime(int fd, const std::string& channel);   // 324
+  void RplNoTopic(int fd, const std::string& channel);        // 331
   void RplTopic(int fd, const std::string& channel,
                 const std::string& topic);                 // 332
   void RplInviteList(int fd, const std::string& channel);  // 336

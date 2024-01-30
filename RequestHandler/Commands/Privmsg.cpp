@@ -1,5 +1,7 @@
 #include "../RequestHandler.hpp"
 
+// /msg <channel>/<nick>,... <text to be sent>
+
 void RequestHandler::privmsg() {
   // parameter가 없음
   if (_token.size() == 1) {
