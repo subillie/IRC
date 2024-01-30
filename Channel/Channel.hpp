@@ -35,6 +35,7 @@ class Channel {
   void addOp(const std::string& op);
   void addMember(const std::string& member);
   void addInvitee(const std::string& member);
+  void removeMode(const char& mode);
   void removeOp(const std::string& op);
   void removeMember(const std::string& member);
   void removeInvitee(const std::string& member);  // TODO: 필요한가?
@@ -52,6 +53,7 @@ class Channel {
   const std::set<std::string>& getOps() const;
   const std::set<std::string>& getMembers() const;
   const std::set<std::string>& getInvitees() const;
+  bool isFull() const;
 
   void sendToAll(Messenger& msg) const;
 };
