@@ -1,12 +1,12 @@
-#ifndef REPLIES_HPP
-#define REPLIES_HPP
+#ifndef REPLYMACROS_HPP
+#define REPLYMACROS_HPP
 
 #include <string>
 
 #define SERVER std::string("IRC")
 #define VERSION std::string("1.0")
 #define AVAILABLE_USER_MODES std::string("i")
-#define AVAILABLE_CHAN_MODES std::string("itkl")
+#define AVAILABLE_CHAN_MODES std::string("klit")
 // 인자 확인
 #define ISUPPORT_PARAMS                                                      \
   std::string(                                                               \

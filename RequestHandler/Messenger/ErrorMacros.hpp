@@ -1,5 +1,5 @@
-#ifndef ERRORS_HPP
-#define ERRORS_HPP
+#ifndef ERRORMACROS_HPP
+#define ERRORMACROS_HPP
 
 #include <string>
 
@@ -15,7 +15,7 @@
 #define ERR_NONICKNAMEGIVEN std::string("431")
 #define ERR_ERRONEUSNICKNAME std::string("432")
 #define ERR_NICKNAMEINUSE std::string("433")
-
+#define ERR_USERNOTINCHANNEL std::string("441")
 #define ERR_NOTONCHANNEL std::string("442")
 #define ERR_USERONCHANNEL std::string("443")
 

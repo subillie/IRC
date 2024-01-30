@@ -1,25 +1,5 @@
 #include "../RequestHandler.hpp"
 
-void RequestHandler::addUser(Channel* chanToJoin) {
-  std::string nickname = _client->getNickname();
-  chanToJoin->addMember(nickname);
-  _client->addChannel(
-      chanToJoin->getName());  // 클라이언트가 가입한 채널목록에도 추가
-
-  // 해당 채널에 topic이 존재한다면 topic 전송
-  if (!chanToJoin->getTopic().empty()) {
-    _msg.RplTopic(_fd, nickname, chanToJoin->getTopic());
-  }
-  // 해당 채널의 모든 유저에게 join 메시지 전송
-  std::set<std::string> memberList = chanToJoin->getMembers();
-  std::set<std::string>::iterator membIter;
-  for (membIter = memberList.begin(); membIter != memberList.end();
-       membIter++) {
-    _msg.RplNamReply(_fd, nickname, *membIter);
-    _msg.RplEndOfNames(_fd, nickname);
-  }
-}
-
 // /join <channel>{,<channel>} [<key>{,<key>}]
 void RequestHandler::join() {
   // 인자가 없을 때
@@ -30,6 +10,7 @@ void RequestHandler::join() {
   if (_token[1] == " ") {
     return;
   }
+
   std::stringstream ss1(_token[1]), ss2(_token[2]);
   std::string channel, password;
   std::map<std::string, std::string> keys;
@@ -54,7 +35,7 @@ void RequestHandler::join() {
       _msg.ErrUnexpected(_fd);
       continue;
     }
-    // 이미 가입한 채널 수가 최대치면
+    // 이미 가입한 채널 수가 최대치일 때
     if (_client->isMaxJoined()) {
       _msg.ErrTooManyChannels(_fd, channelName);
       break;
@@ -93,7 +74,7 @@ void RequestHandler::join() {
             _msg.ErrInviteOnlyChan(_fd, channelName);
             continue;
           }
-          // 해당 채널이 Client Limit Channel Mode이면 인원 제한 확인 ->
+          // 해당 채널이 Client Limit Channel Mode이면 인원 제한 확인
         } else if (modeList.find(CLIENT_LIMIT_CHANNEL) != modeList.end()) {
           if (chanToJoin->getLimit() < chanToJoin->getMembers().size()) {
             _msg.ErrChannelIsFull(_fd, channelName);
@@ -120,4 +101,25 @@ void RequestHandler::join() {
   // }
 
   _msg.sendToClient(_fd);
+}
+
+void RequestHandler::addUser(Channel* chanToJoin) {
+  // 채널의 멤버 목록에 유저 추가, 클라이언트의 채널 목록에 채널 추가
+  std::string nickname = _client->getNickname();
+  chanToJoin->addMember(nickname);
+  _client->addChannel(chanToJoin->getName());
+
+  // 해당 채널에 topic이 존재한다면 topic 전송
+  if (!chanToJoin->getTopic().empty()) {
+    _msg.RplTopic(_fd, nickname, chanToJoin->getTopic());
+  }
+
+  // 해당 채널의 모든 유저에게 join 메시지 전송
+  std::set<std::string> memberList = chanToJoin->getMembers();
+  std::set<std::string>::iterator membIter;
+  for (membIter = memberList.begin(); membIter != memberList.end();
+       membIter++) {
+    _msg.RplNamReply(_fd, nickname, *membIter);
+    _msg.RplEndOfNames(_fd, nickname);
+  }
 }
