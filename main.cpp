@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include "Macros/Characters.hpp"
+#include "Macros/Character.hpp"
 #include "Server/Server.hpp"
 
 std::map<int, Client *> Server::_clientFds;

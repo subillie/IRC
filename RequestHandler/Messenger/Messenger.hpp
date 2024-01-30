@@ -8,10 +8,11 @@
 
 #include "../../Channel/Channel.hpp"
 #include "../../Client/Client.hpp"
-#include "../../Macros/Characters.hpp"
+#include "../../Macros/Character.hpp"
+#include "../../Print/Print.hpp"  // TODO: delete
 #include "../../Server/Server.hpp"
-#include "ErrorMacros.hpp"
-#include "ReplyMacros.hpp"
+#include "../../Macros/Error.hpp"
+#include "../../Macros/Reply.hpp"
 
 class Messenger {
  private:
