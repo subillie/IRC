@@ -96,8 +96,8 @@ bool RequestHandler::removeModeFromChannel(Channel* channel, const char& mode) {
         _msg.ErrNoSuchNick(_fd, nick);
         return false;
       }
-      // op 목록에 있으면 무시(응답 안 보냄)
-      if (opsList.find(nick) != memberList.end()) {
+      // op 목록에 없으면 무시(응답 안 보냄)
+      if (opsList.find(nick) == memberList.end()) {
         return false;
       }
       _msg.setParam(_msg.getParam() + "-o");
@@ -115,8 +115,6 @@ bool RequestHandler::removeModeFromChannel(Channel* channel, const char& mode) {
 
 void RequestHandler::channelMode(const std::string& target) {
   const std::string& nick = _client->getNickname();
-  const std::string& username = _client->getUsername();
-  const std::string& hostname = _client->getHostname();
 
   if (Server::_channelNames.find(target) == Server::_channelNames.end()) {
     _msg.ErrNoSuchChannel(_fd, target);
@@ -144,7 +142,7 @@ void RequestHandler::channelMode(const std::string& target) {
     return;
   }
   // <nickname>!<username>@<hostname>
-  _msg.setPrefix(nick + "!" + username + "@" + hostname);
+  _msg.setPrefix(_client->getPrefix());
   //  MODE <channel>
   _msg.setParam("MODE " + target + " ");
   if (modestring[0] == '+') {
@@ -158,8 +156,7 @@ void RequestHandler::channelMode(const std::string& target) {
 
 void RequestHandler::userMode(const std::string& target) {
   const std::string& nick = _client->getNickname();
-  const std::string& username = _client->getUsername();
-  const std::string& hostname = _client->getHostname();
+
   // 존재하지 않는 닉네임이면
   if (Server::_clientNicks.find(target) == Server::_clientNicks.end()) {
     _msg.ErrNoSuchNick(_fd, target);
@@ -178,7 +175,7 @@ void RequestHandler::userMode(const std::string& target) {
   // <modestring> 지원하지 않는 모드는 에러 (일단 +i 외에는 다 에러)
   if (_token[2].length() > 1 &&
       AVAILABLE_USER_MODES.find(_token[2][1]) != std::string::npos) {
-    _msg.setPrefix(nick + "!" + username + "@" + hostname);
+    _msg.setPrefix(_client->getPrefix());
     _msg.setParam("MODE " + nick);
     _msg.setTrailing(_token[2]);
     _msg.sendToClient(_fd);
