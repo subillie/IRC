@@ -42,7 +42,7 @@ class Messenger {
   void ErrAlreadyRegistered(int fd);                             // 462
   void ErrPasswdMismatch(int fd);                                // 464
   void ErrChannelIsFull(int fd, const std::string& channel);     // 471
-  void ErrUnknownMode(int fd, const char& mode);                 // 472
+  void ErrUnknownMode(int fd, const std::string& mode);          // 472
   void ErrInviteOnlyChan(int fd, const std::string& channel);    // 473
   void ErrBadChannelKey(int fd, const std::string& channel);     // 475
   void ErrBadChanMask(int fd);                                   // 476
@@ -76,6 +76,11 @@ class Messenger {
   void setParam(const std::string& param);
   void setTrailing(const std::string& trailing);
   void sendToClient(int fd);
+
+  // getter
+  const std::string& getPrefix() const;
+  const std::string& getParam() const;
+  const std::string& getTrailing() const;
 };
 
 #endif

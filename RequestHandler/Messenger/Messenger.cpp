@@ -22,3 +22,9 @@ void Messenger::sendToClient(int fd) {
   _param.clear();
   _trailing.clear();
 }
+
+const std::string& Messenger::getPrefix() const { return _prefix; }
+
+const std::string& Messenger::getParam() const { return _param; }
+
+const std::string& Messenger::getTrailing() const { return _trailing; }
