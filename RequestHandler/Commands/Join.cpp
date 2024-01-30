@@ -25,13 +25,13 @@ void RequestHandler::join() {
     const std::string& channelKey = iter->second;
     // 채널명이 유효하지 않을 때
     if (channelName.empty() || channelName[0] != '#' ||
-        channelName.find(SPECIAL_CHAR) != std::string::npos ||
+        channelName.find_first_not_of(SPECIAL_CHAR) != std::string::npos ||
         channelName.length() > 32) {
       _msg.ErrBadChanMask(_fd);
       continue;
     }
     // 비밀번호가 유효하지 않을 때
-    if (channelKey.find(SPECIAL_CHAR) != std::string::npos) {
+    if (channelKey.find_first_not_of(SPECIAL_CHAR) != std::string::npos) {
       _msg.ErrUnexpected(_fd);
       continue;
     }
