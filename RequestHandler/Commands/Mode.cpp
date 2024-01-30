@@ -22,7 +22,6 @@ bool RequestHandler::addModeToChannel(Channel* channel, const char& mode) {
         _msg.ErrInvalidModeParam(_fd, channel->getName(), mode);
         return false;
       }
-      _msg.setParam(_msg.getParam() + "+l");
       _msg.setTrailing(_token[3]);
       channel->setLimit(limit);
       break;
@@ -33,34 +32,8 @@ bool RequestHandler::addModeToChannel(Channel* channel, const char& mode) {
       break;
     case KEY_CHANNEL:
       break;
-      // MODE +o
-    case 'o': {
-      std::set<std::string> memberList = channel->getMembers();
-      std::set<std::string> opsList = channel->getOps();
-      // 인자 없을 때
-      if (_token.size() < 4) {
-        _msg.setTrailing("You must specify a parameter for mode o");
-        _msg.ErrInvalidModeParam(_fd, channel->getName(), mode);
-        return false;
-      }
-      const std::string& nick = _token[3];
-      // 방에 없는 닉네임이면 401
-      if (memberList.find(nick) == memberList.end()) {
-        _msg.ErrNoSuchNick(_fd, nick);
-        return false;
-      }
-      // op 목록에 있으면 무시(응답 안 보냄)
-      if (opsList.find(nick) != memberList.end()) {
-        return false;
-      }
-      _msg.setParam(_msg.getParam() + "+o");
-      _msg.setTrailing(nick);
-      channel->addOp(nick);
-      return true;
-    }
-    default:
-      _msg.ErrUModeUnknownFlag(_fd);
-      return false;
+    case 'o':
+      return handleOpMode(channel);  // o는 채널모드에는 add하지 않음
   }
   channel->addMode(mode);
   return true;
@@ -71,6 +44,7 @@ bool RequestHandler::removeModeFromChannel(Channel* channel, const char& mode) {
       // MODE #hi :-l
       // two!root@127.0.0.1 MODE #hi :-l
     case CLIENT_LIMIT_CHANNEL:
+      _msg.setParam("");
       _msg.setTrailing("-l");
       channel->setLimit(0);
       break;
@@ -80,34 +54,8 @@ bool RequestHandler::removeModeFromChannel(Channel* channel, const char& mode) {
       break;
     case KEY_CHANNEL:
       break;
-    // TODO: +o, -o 함수 하나로 합치기
-    case 'o': {
-      std::set<std::string> memberList = channel->getMembers();
-      std::set<std::string> opsList = channel->getOps();
-      // 인자 없을 때
-      if (_token.size() < 4) {
-        _msg.setTrailing("You must specify a parameter for mode o");
-        _msg.ErrInvalidModeParam(_fd, channel->getName(), mode);
-        return false;
-      }
-      const std::string& nick = _token[3];
-      // 방에 없는 닉네임이면 401
-      if (memberList.find(nick) == memberList.end()) {
-        _msg.ErrNoSuchNick(_fd, nick);
-        return false;
-      }
-      // op 목록에 없으면 무시(응답 안 보냄)
-      if (opsList.find(nick) == memberList.end()) {
-        return false;
-      }
-      _msg.setParam(_msg.getParam() + "-o");
-      _msg.setTrailing(nick);
-      channel->removeOp(nick);
-      return true;
-    }
-    default:
-      _msg.ErrUModeUnknownFlag(_fd);
-      return false;
+    case 'o':
+      return handleOpMode(channel);
   }
   channel->removeMode(mode);
   return true;
@@ -141,10 +89,9 @@ void RequestHandler::channelMode(const std::string& target) {
     _msg.ErrUnknownMode(_fd, modestring);
     return;
   }
-  // <nickname>!<username>@<hostname>
   _msg.setPrefix(_client->getPrefix());
   //  MODE <channel>
-  _msg.setParam("MODE " + target + " ");
+  _msg.setParam("MODE " + target + " " + modestring);
   if (modestring[0] == '+') {
     if (!addModeToChannel(channel, modestring[1])) return;
   } else if ((modestring[0]) == '-') {
@@ -193,4 +140,30 @@ void RequestHandler::mode() {
   }
   // 채널모드인지 유저모드인지 확인
   _token[1][0] == '#' ? channelMode(_token[1]) : userMode(_token[1]);
+}
+
+// MODE +o <nick> || MODE -o <nick>
+bool RequestHandler::handleOpMode(Channel* channel) {
+  const std::string& modestring = _token[2];
+
+  // 인자 없을 때
+  if (_token.size() < 4) {
+    _msg.setTrailing("You must specify a parameter for mode " + modestring);
+    _msg.ErrInvalidModeParam(_fd, channel->getName(), modestring[1]);
+    return false;
+  }
+  const std::string& nick = _token[3];
+  // 방에 없는 닉네임이면 401
+  if (!channel->isMember(nick)) {
+    _msg.ErrNoSuchNick(_fd, nick);
+    return false;
+  }
+  // +o 인데 op 목록에 이미 있거나 -o 인데 op 목록에 없으면 무시 (응답 안 보냄)
+  if ((modestring == "+o" && channel->isOp(nick)) ||
+      (modestring == "-o" && !channel->isOp(nick))) {
+    return false;
+  }
+  _msg.setTrailing(nick);
+  modestring == "+o" ? channel->addOp(nick) : channel->removeOp(nick);
+  return true;
 }
