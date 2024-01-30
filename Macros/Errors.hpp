@@ -1,8 +1,7 @@
-#ifndef ERROR_MACROS_HPP
-#define ERROR_MACROS_HPP
+#ifndef ERRORS_HPP
+#define ERRORS_HPP
 
 #include <string>
-// Errors
 
 #define ERR_NOSUCHNICK std::string("401")
 #define ERR_NOSUCHCHANNEL std::string("403")

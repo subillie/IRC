@@ -28,6 +28,8 @@ Internet Relay Chat
 #### Macros
 - Characters.hpp
 - Colors.hpp
+- Errors.hpp
+- Replies.hpp
 
 #### Print
 - Print.hpp -> Print.cpp
@@ -35,9 +37,7 @@ Internet Relay Chat
 #### RequestHandler
 - RequestHandler.hpp -> RequestHandler.cpp, Commands/{명령어들}.cpp
 - Messenger
-	- Messenger.hpp -> Messenger.cpp
-	- ErrorMacros.hpp
-	- Replies.hpp
+	- Messenger.hpp -> Messenger.cpp, Errors.cpp, Replies.cpp
 
 #### Server
 - Server.hpp -> Server.cpp, Wrappers.cpp
