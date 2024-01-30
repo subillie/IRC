@@ -1,7 +1,7 @@
 #include "../RequestHandler.hpp"
 
 void RequestHandler::kick() {
-   // parameter가 없을 경우
+  // parameter가 없을 경우
   if (_token.size() < 3) {
     _msg.ErrNeedMoreParams(_fd, _token[0]);
     return;
@@ -23,9 +23,9 @@ void RequestHandler::kick() {
   if (memberList.find(_client->getNickname()) == memberList.end()) {
     _msg.ErrNotOnChannel(_fd, _client->getNickname());
     return;
-  // Kick을 요청한 사용자가 권한이 없을 경우
+    // Kick을 요청한 사용자가 권한이 없을 경우
   } else if (opList.find(_client->getNickname()) == opList.end()) {
-    _msg.ErrChanOPrivsNeeded(_fd, _client->getNickname());
+    _msg.ErrChanOPrivsNeeded(_fd, chanToKick->getName());
     return;
   }
   std::stringstream ss(_token[2]);

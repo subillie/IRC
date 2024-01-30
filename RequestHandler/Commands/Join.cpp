@@ -110,7 +110,7 @@ void RequestHandler::addUser(Channel* chanToJoin) {
 
   // 해당 채널에 topic이 존재한다면 topic 전송
   if (!chanToJoin->getTopic().empty()) {
-    _msg.RplTopic(_fd, nickname, chanToJoin->getTopic());
+    _msg.RplTopic(_fd, chanToJoin->getName(), chanToJoin->getTopic());
   }
 
   // 해당 채널의 모든 유저에게 join 메시지 전송

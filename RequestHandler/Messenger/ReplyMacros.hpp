@@ -21,6 +21,7 @@
 #define RPL_UMODEIS std::string("221")
 #define RPL_AWAY std::string("301")
 #define RPL_CHANNELMODEIS std::string("324")
+#define RPL_NOTOPIC std::string("331")
 #define RPL_TOPIC std::string("332")
 #define RPL_INVITELIST std::string("336")
 #define RPL_INVITING std::string("341")
