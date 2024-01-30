@@ -7,7 +7,7 @@
 bool RequestHandler::addModeToChannel(Channel* channel, const char& mode) {
   switch (mode) {
     // MODE +l <number>
-    case CLIENT_LIMIT_CHANNEL:
+    case CLIENT_LIMIT_CHANNEL: {
       // 인자가 없으면
       if (_token.size() < 4) {
         _msg.setTrailing("You must specify a parameter for mode l");
@@ -16,14 +16,17 @@ bool RequestHandler::addModeToChannel(Channel* channel, const char& mode) {
       }
       // MODE #hi +l :10
       size_t limit = atoi(_token[3].c_str());
-      if (limit < 1) {
+      if (_token[3].find_first_not_of(DIGIT) != std::string::npos ||
+          limit < 1) {
         _msg.setTrailing("Invalid parameter for mode l");
         _msg.ErrInvalidModeParam(_fd, channel->getName(), mode);
         return false;
       }
       _msg.setParam(_msg.getParam() + "+l");
       _msg.setTrailing(_token[3]);
+      channel->setLimit(limit);
       break;
+    }
     case INVITE_ONLY_CHANNEL:
       break;
     case PROTECTED_TOPIC:
@@ -45,6 +48,7 @@ bool RequestHandler::removeModeFromChannel(Channel* channel, const char& mode) {
       // two!root@127.0.0.1 MODE #hi :-l
     case CLIENT_LIMIT_CHANNEL:
       _msg.setTrailing("-l");
+      channel->setLimit(0);
       break;
     case INVITE_ONLY_CHANNEL:
       break;
@@ -100,7 +104,8 @@ void RequestHandler::channelMode(const std::string& target) {
   } else if ((modestring[0]) == '-') {
     if (!removeModeFromChannel(channel, modestring[1])) return;
   }
-  // 채널 모든 멤버에게 MODE 전송 -> channel에 sendToAll 구현하기
+  // 채널 모든 멤버에게 MODE 전송
+  channel->sendToAll(_msg);
 }
 
 void RequestHandler::userMode(const std::string& target) {
