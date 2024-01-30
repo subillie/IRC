@@ -54,6 +54,7 @@ class Channel {
   const std::set<std::string>& getMembers() const;
   const std::set<std::string>& getInvitees() const;
   bool isFull() const;
+  bool isOp(const std::string& nick) const;
 
   void sendToAll(Messenger& msg) const;
 };

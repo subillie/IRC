@@ -33,6 +33,10 @@ const std::string &Client::getUsername() const { return _username; }
 
 const std::string &Client::getHostname() const { return _hostname; }
 
+const std::string Client::getPrefix() const {
+  return _nickname + "!" + _username + "@" + _hostname;
+}
+
 const std::set<std::string> &Client::getChannels() const { return _channels; }
 
 bool Client::isMaxJoined() const { return _channels.size() == MAX_CHANNEL; }

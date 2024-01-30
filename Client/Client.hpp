@@ -33,6 +33,7 @@ class Client {
   const std::string &getNickname() const;
   const std::string &getPassword() const;
   const std::string &getHostname() const;
+  const std::string getPrefix() const;
   const std::set<std::string> &getChannels() const;
   bool isMaxJoined() const;
   bool getIsRegistered() const;

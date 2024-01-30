@@ -43,8 +43,8 @@ void RequestHandler::join() {
       printGreen("join: " + channelName + " created\n");
       Server::_channelNames[channelName] =
           new Channel(PROTECTED_TOPIC, channelName);
-      addUser(Server::_channelNames[channelName]);
       Server::_channelNames[channelName]->addOp(_client->getNickname());
+      addUser(Server::_channelNames[channelName]);
     } else {
       printGreen("join: " + channelName + " already exists\n");
       Channel* chanToJoin = Server::_channelNames[channelName];
@@ -115,10 +115,25 @@ void RequestHandler::addUser(Channel* chanToJoin) {
 
   // 해당 채널의 모든 유저에게 join 메시지 전송
   std::set<std::string> memberList = chanToJoin->getMembers();
-  std::set<std::string>::iterator membIter;
+  std::set<std::string>::const_iterator membIter;
+
+  // one_!root@127.0.0.1 JOIN :#bbbbb
+  Messenger joinMsg;
+  joinMsg.setPrefix(_client->getPrefix());
+  joinMsg.setParam("JOIN");
+  joinMsg.setTrailing(channelName);
+  chanToJoin->sendToAll(joinMsg);
+  // 채널 모든 멤버를 trailing에 담아서 보냄
+  std::string trailing;
   for (membIter = memberList.begin(); membIter != memberList.end();
        membIter++) {
-    _msg.RplNamReply(_fd, nickname, *membIter);
+    if (chanToJoin->isOp(*membIter)) trailing += "@";
+    trailing += *membIter + " ";
+  }
+  for (membIter = memberList.begin(); membIter != memberList.end();
+       membIter++) {
+    _msg.setTrailing(trailing);
+    _msg.RplNamReply(_fd, channelName);
     _msg.RplEndOfNames(_fd, nickname);
   }
 }
