@@ -20,6 +20,7 @@ SRCS	=	Channel/Channel.cpp \
 			RequestHandler/Commands/Pass.cpp \
 			RequestHandler/Commands/Pong.cpp \
 			RequestHandler/Commands/Privmsg.cpp \
+			RequestHandler/Commands/Quit.cpp \
 			RequestHandler/Commands/Topic.cpp \
 			RequestHandler/Commands/User.cpp \
 			Server/Server.cpp \
