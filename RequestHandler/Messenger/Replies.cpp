@@ -142,12 +142,10 @@ void Messenger::RplInviting(int fd, const std::string& nick,
   sendToClient(fd);
 }
 
-void Messenger::RplNamReply(int fd, const std::string& channel,
-                            const std::string& nick) {
+void Messenger::RplNamReply(int fd, const std::string& channel) {
   _prefix = SERVER;
   _param = RPL_NAMREPLY + " " + Server::_clientFds[fd]->getNickname() + " = " +
            channel;
-  _trailing = nick;
   printRed("RplNamReply");
   sendToClient(fd);
 }

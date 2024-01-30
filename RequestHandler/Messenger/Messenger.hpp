@@ -69,9 +69,8 @@ class Messenger {
                 const std::string& topic);                 // 332
   void RplInviteList(int fd, const std::string& channel);  // 336
   void RplInviting(int fd, const std::string& nick,
-                   const std::string& channel);  // 341
-  void RplNamReply(int fd, const std::string& channel,
-                   const std::string& nick);               // 353
+                   const std::string& channel);            // 341
+  void RplNamReply(int fd, const std::string& channel);    // 353
   void RplEndOfNames(int fd, const std::string& channel);  // 366
 
   //  make response
