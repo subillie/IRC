@@ -30,9 +30,10 @@ void Messenger::ErrCannotSendToChan(int fd) {
   sendToClient(fd);
 }
 
-void Messenger::ErrTooManyChannels(int fd) {
+void Messenger::ErrTooManyChannels(int fd, const std::string& channel) {
   _prefix = SERVER;
-  _param = ERR_TOOMANYCHANNELS + " " + Server::_clientFds[fd]->getNickname();
+  _param = ERR_TOOMANYCHANNELS + " " + Server::_clientFds[fd]->getNickname() +
+           " " + channel;
   _trailing = "You have joined too many channels";
   printRed("ErrTooManyChannels");
   sendToClient(fd);
@@ -279,6 +280,15 @@ void Messenger::RplMyinfo(int fd) {
   _param = RPL_MYINFO + " " + Server::_clientFds[fd]->getNickname() + " " +
            SERVER + " " + VERSION + " " + AVAILABLE_USER_MODES + " " +
            AVAILABLE_CHAN_MODES;
+  printRed("RplMyinfo");
+  sendToClient(fd);
+}
+
+void Messenger::RplISupport(int fd) {
+  _prefix = SERVER;
+  _param = RPL_ISUPPORT + " " + Server::_clientFds[fd]->getNickname() + " " +
+           ISUPPORT_PARAMS;
+  _trailing = "are supported by this server";
   printRed("RplMyinfo");
   sendToClient(fd);
 }

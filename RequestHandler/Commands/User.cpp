@@ -34,4 +34,8 @@ void RequestHandler::user() {
   }
   std::cout << *_client;  // debug
   _msg.RplWelcome(_fd);
+  _msg.RplYourHost(_fd);
+  _msg.RplCreated(_fd);
+  _msg.RplMyinfo(_fd);
+  _msg.RplISupport(_fd);
 }

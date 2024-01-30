@@ -22,18 +22,18 @@ class Messenger {
  public:
   Messenger();
   // Error function
-  void ErrNoSuchNick(int fd, const std::string& nick);         // 401
-  void ErrNoSuchChannel(int fd, const std::string& channel);   // 403
-  void ErrCannotSendToChan(int fd);                            // 404
-  void ErrTooManyChannels(int fd);                             // 405
-  void ErrNoOrigin(int fd);                                    // 409
-  void ErrNoRecipient(int fd);                                 // 411
-  void ErrNoTextToSend(int fd);                                // 412
-  void ErrUnknownCommand(int fd, const std::string& command);  // 421
-  void ErrNoNickNameGiven(int fd);                             // 431
-  void ErrErroneusNickName(int fd, const std::string& nick);   // 432
-  void ErrNickNameInUse(int fd, const std::string& nick);      // 433
-  void ErrNotOnChannel(int fd, const std::string& channel);    // 442
+  void ErrNoSuchNick(int fd, const std::string& nick);          // 401
+  void ErrNoSuchChannel(int fd, const std::string& channel);    // 403
+  void ErrCannotSendToChan(int fd);                             // 404
+  void ErrTooManyChannels(int fd, const std::string& channel);  // 405
+  void ErrNoOrigin(int fd);                                     // 409
+  void ErrNoRecipient(int fd);                                  // 411
+  void ErrNoTextToSend(int fd);                                 // 412
+  void ErrUnknownCommand(int fd, const std::string& command);   // 421
+  void ErrNoNickNameGiven(int fd);                              // 431
+  void ErrErroneusNickName(int fd, const std::string& nick);    // 432
+  void ErrNickNameInUse(int fd, const std::string& nick);       // 433
+  void ErrNotOnChannel(int fd, const std::string& channel);     // 442
   void ErrUserOnChannel(int fd, const std::string& nick,
                         const std::string& channel);             // 443
   void ErrNotRegistered(int fd);                                 // 451
@@ -54,6 +54,7 @@ class Messenger {
   void RplYourHost(int fd);                                   // 002
   void RplCreated(int fd);                                    // 003
   void RplMyinfo(int fd);                                     // 004
+  void RplISupport(int fd);                                   // 005
   void RplUModeIs(int fd, const std::string& usermode);       // 221
   void RplChannelModeIS(int fd, const std::string& channel);  // 324
   void RplTopic(int fd, const std::string& channel,

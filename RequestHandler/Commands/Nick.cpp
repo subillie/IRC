@@ -16,7 +16,8 @@ void RequestHandler::nick() {
     }
     size_t pos = _token[1].find_first_not_of(
         LOWERCASE + UPPERCASE + SPECIAL_CHAR + DIGIT, 1);
-    if (pos != std::string::npos) {
+    // 닉네임이 규칙에 맞지 않는 경우
+    if (_token[1].length() > 31 || pos != std::string::npos) {
       _msg.ErrErroneusNickName(_fd, _token[1]);
       return;
     }
