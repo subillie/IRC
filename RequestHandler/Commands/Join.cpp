@@ -65,6 +65,7 @@ void RequestHandler::join() {
       Server::_channelNames[channelName] =
           new Channel(PROTECTED_TOPIC, channelName);
       addUser(Server::_channelNames[channelName]);
+      Server::_channelNames[channelName]->addOp(_client->getNickname());
     } else {
       Channel* chanToJoin = Server::_channelNames[channelName];
       std::set<std::string> memberList = chanToJoin->getMembers();

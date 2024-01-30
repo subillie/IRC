@@ -34,7 +34,9 @@ class Messenger {
   void ErrNoNickNameGiven(int fd);                               // 431
   void ErrErroneusNickName(int fd, const std::string& nick);     // 432
   void ErrNickNameInUse(int fd, const std::string& nick);        // 433
-  void ErrNotOnChannel(int fd, const std::string& channel);      // 442
+  void ErrUserNotInChannel(int fd, const std::string& nick,
+                           const std::string& channel);      // 441
+  void ErrNotOnChannel(int fd, const std::string& channel);  // 442
   void ErrUserOnChannel(int fd, const std::string& nick,
                         const std::string& channel);             // 443
   void ErrNotRegistered(int fd);                                 // 451
