@@ -3,11 +3,9 @@
 // /quit [<reason>]
 void RequestHandler::quit() {
   std::string reason = "";
-  if (_token[1] != "leaving  ") {
-    for (size_t i = 1; i < _token.size(); i++) {
-      reason += _token[i];
-      reason += " ";
-    }
+  for (size_t i = 1; i < _token.size(); i++) {
+    reason += _token[i];
+    reason += " ";
   }
   reason.erase(reason.find_last_not_of(' ') + 1);
 
