@@ -8,10 +8,10 @@
 #define AVAILABLE_USER_MODES std::string("i")
 #define AVAILABLE_CHAN_MODES std::string("itkl")
 // 인자 확인
-#define ISUPPORT_PARAMS                                                   \
-  std::string(                                                            \
-      "CASEMAPPING=ascii CHANLIMIT=#:10 CHANMODES=,k,l,it CHANNELLEN=32 " \
-      "CHANTYPES=# KICKLEN=307 NICKLEN=31 PREFIX=(o)@ TOPICLEN=307 "      \
+#define ISUPPORT_PARAMS                                                      \
+  std::string(                                                               \
+      "CASEMAPPING=ascii CHANLIMIT=#:10 CHANMODES=,k,l,it CHANNELLEN=32 "    \
+      "CHANTYPES=# MODES=1 KICKLEN=307 NICKLEN=31 PREFIX=(o)@ TOPICLEN=307 " \
       "USERLEN=12")
 #define RPL_WELCOME std::string("001")
 #define RPL_YOURHOST std::string("002")
