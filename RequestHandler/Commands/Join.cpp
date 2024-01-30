@@ -23,31 +23,30 @@ void RequestHandler::join() {
   for (; iter != keys.end(); iter++) {
     const std::string& channelName = iter->first;
     const std::string& channelKey = iter->second;
+
     // 채널명이 유효하지 않을 때
     if (channelName.empty() || channelName[0] != '#' ||
-        channelName.find(SPECIAL_CHAR) != std::string::npos ||
-        channelName.length() > 32) {
-      _msg.ErrBadChanMask(_fd);
+        channelName.length() > MAX_CHANNEL_LEN) {
+      _msg.ErrNoSuchChannel(_fd, channelName);
       continue;
     }
-    // 비밀번호가 유효하지 않을 때
-    if (channelKey.find(SPECIAL_CHAR) != std::string::npos) {
-      _msg.ErrUnexpected(_fd);
-      continue;
-    }
+
     // 이미 가입한 채널 수가 최대치일 때
     if (_client->isMaxJoined()) {
       _msg.ErrTooManyChannels(_fd, channelName);
       break;
     }
+
     // 채널이 없으면 생성
     if (Server::_channelNames.find(channelName) ==
         Server::_channelNames.end()) {
+      printGreen("join: " + channelName + " created\n");
       Server::_channelNames[channelName] =
           new Channel(PROTECTED_TOPIC, channelName);
       addUser(Server::_channelNames[channelName]);
       Server::_channelNames[channelName]->addOp(_client->getNickname());
     } else {
+      printGreen("join: " + channelName + " already exists\n");
       Channel* chanToJoin = Server::_channelNames[channelName];
       std::set<std::string> memberList = chanToJoin->getMembers();
       std::set<std::string>::iterator membIter =
@@ -105,12 +104,13 @@ void RequestHandler::join() {
 void RequestHandler::addUser(Channel* chanToJoin) {
   // 채널의 멤버 목록에 유저 추가, 클라이언트의 채널 목록에 채널 추가
   std::string nickname = _client->getNickname();
+  std::string channelName = chanToJoin->getName();
   chanToJoin->addMember(nickname);
-  _client->addChannel(chanToJoin->getName());
+  _client->addChannel(channelName);
 
   // 해당 채널에 topic이 존재한다면 topic 전송
   if (!chanToJoin->getTopic().empty()) {
-    _msg.RplTopic(_fd, nickname, chanToJoin->getTopic());
+    _msg.RplTopic(_fd, channelName, chanToJoin->getTopic());
   }
 
   // 해당 채널의 모든 유저에게 join 메시지 전송
