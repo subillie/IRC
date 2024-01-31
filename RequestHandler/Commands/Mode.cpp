@@ -136,12 +136,16 @@ void RequestHandler::limitMode(Channel* channel,
       _msg.ErrInvalidModeParam(_fd, channelName, 'l');
       return;
     }
+    // 이미 설정된 제한인원과 동일하면 리턴
+    if (limit == channel->getLimit()) return;
     // MODE #hi +l :10
     _msg.setTrailing(limitStr);
     channel->setLimit(limit);
     channel->addMode('l');
     // MODE -l
   } else if (modestring == "-l") {
+    // 해당 모드 없으면 리턴
+    if (!channel->isMode('l')) return;
     // MODE #hi :-l
     _msg.setParam("MODE " + channelName);
     _msg.setTrailing("-l");
@@ -157,7 +161,7 @@ void RequestHandler::topicMode(Channel* channel,
                                const std::string& modestring) {
   // 이미 해당 모드가 있거나 없으면 응답 없이 리턴
   if ((modestring == "+t" && channel->isMode('t')) ||
-      (modestring == "t" && !channel->isMode('t')))
+      (modestring == "-t" && !channel->isMode('t')))
     return;
   modestring == "+t" ? channel->addMode('t') : channel->removeMode('t');
   _msg.setParam("MODE " + channel->getName());
