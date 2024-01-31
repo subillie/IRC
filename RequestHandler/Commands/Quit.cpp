@@ -35,6 +35,12 @@ void RequestHandler::quit() {
     channel->removeMember(nickname);
     channel->removeOp(nickname);
     channel->removeInvitee(nickname);
+
+    // 채널에 멤버가 없으면 채널 삭제
+    if (channel->getMembers().empty()) {
+      Server::_channelNames.erase(*chanIter);
+      delete channel;
+    }
   }
 
   _msg.setParam("ERROR");
@@ -50,5 +56,4 @@ void RequestHandler::quit() {
   delete _client;
 
   // TODO: FD_CLR해야 함 (Server.cpp의 deleteChlient 함수)
-  // TODO: 채널에 유저가 한 명도 없을 때 채널 삭제
 }
