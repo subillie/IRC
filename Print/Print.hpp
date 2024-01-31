@@ -58,7 +58,7 @@ void printDebug(const std::string& key, const T& val) {
 template <typename T>
 void printSet(std::set<T> s) {
   std::cout << "=============\n";
-  for (std::set<T>::iterator it = s.begin(); it != s.end(); it++) {
+  for (typename std::set<T>::iterator it = s.begin(); it != s.end(); it++) {
     std::cout << *it << " ";
   }
   std::cout << std::endl;
@@ -68,7 +68,7 @@ void printSet(std::set<T> s) {
 template <typename T>
 void printVector(std::vector<T> v) {
   std::cout << "=============\n";
-  for (std::vector<T>::iterator it = v.begin(); it != v.end(); it++) {
+  for (typename std::vector<T>::iterator it = v.begin(); it != v.end(); it++) {
     std::cout << *it << " ";
   }
   std::cout << std::endl;
