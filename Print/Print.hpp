@@ -55,10 +55,20 @@ void printDebug(const std::string& key, const T& val) {
   std::cout << "=============\n";
 }
 
-template <typename Container, typename T>
-void printContainer(Container c) {
+template <typename T>
+void printSet(std::set<T> s) {
   std::cout << "=============\n";
-  for (typename Container::iterator it = c.begin(); it != c.end(); it++) {
+  for (std::set<T>::iterator it = s.begin(); it != s.end(); it++) {
+    std::cout << *it << " ";
+  }
+  std::cout << std::endl;
+  std::cout << "=============\n";
+}
+
+template <typename T>
+void printVector(std::vector<T> v) {
+  std::cout << "=============\n";
+  for (std::vector<T>::iterator it = v.begin(); it != v.end(); it++) {
     std::cout << *it << " ";
   }
   std::cout << std::endl;
