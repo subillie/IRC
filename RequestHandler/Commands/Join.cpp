@@ -134,4 +134,5 @@ void RequestHandler::addUser(Channel* chanToJoin) {
     _msg.RplNamReply(_fd, channelName);
     _msg.RplEndOfNames(_fd, nickname);
   }
+  std::cout << YELLOW << *chanToJoin << RESET;  // TODO: remove
 }

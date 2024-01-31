@@ -62,4 +62,6 @@ class Channel {
   void sendToAll(Messenger& msg) const;
 };
 
+std::ostream& operator<<(std::ostream& os, const Channel& channel);
+
 #endif
