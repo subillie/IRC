@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -55,14 +56,14 @@ void printDebug(const std::string& key, const T& val) {
   std::cout << "=============\n";
 }
 
-template <typename Container, typename T>
-void printContainer(Container c) {
+template <typename T>
+void printSet(const std::set<T>& set) {
   std::cout << "=============\n";
-  for (typename Container::iterator it = c.begin(); it != c.end(); it++) {
+  for (typename std::set<T>::const_iterator it = set.begin(); it != set.end();
+       it++) {
     std::cout << *it << " ";
   }
-  std::cout << std::endl;
-  std::cout << "=============\n";
+  std::cout << "\n=============\n";
 }
 
 void printPikachu();
