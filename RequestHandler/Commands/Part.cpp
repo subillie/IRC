@@ -34,10 +34,9 @@ void RequestHandler::part() {
     }
     Channel *chanToLeave = Server::_channelNames[channelName];
     channelName = chanToLeave->getName();
-    std::set<std::string> membList = chanToLeave->getMembers();
 
     // client가 해당 채널 멤버가 아닐 경우
-    if (membList.find(_client->getNickname()) == membList.end()) {
+    if (!chanToLeave->isMember(_client->getNickname())) {
       _msg.ErrNotOnChannel(_fd, channelName);
       continue;
       // 멤버일 경우 채널에서 client 퇴장
@@ -53,13 +52,13 @@ void RequestHandler::part() {
       if (!reason.empty()) {
         _msg.setTrailing(reason);
       }
+      chanToLeave->sendToAll(_msg);
 
-      std::set<std::string>::const_iterator member;
-      for (member = membList.begin(); member != membList.end(); ++member) {
-        _msg.sendToClient(Server::_clientNicks[*member]->getFd());
+      // 채널에 멤버가 없으면 채널 삭제
+      if (chanToLeave->getMembers().empty()) {
+        Server::_channelNames.erase(channelName);
+        delete chanToLeave;
       }
     }
   }
 }
-
-// TODO: 채널에 멤버가 없으면 채널 삭제

@@ -16,10 +16,8 @@ void RequestHandler::invite() {
     return;
   }
 
-  // 채널이 존재하지 않거나 채널에 유저가 한 명도 없을 때 => 채널이 존재하지
-  // 않을 때로 수정하기
-  if (Server::_channelNames.find(channel) == Server::_channelNames.end() ||
-      Server::_channelNames[channel]->getMembers().empty()) {
+  // 채널이 존재하지 않을 때 (= 채널에 아무도 없을 때)
+  if (Server::_channelNames.find(channel) == Server::_channelNames.end()) {
     _msg.ErrNoSuchChannel(_fd, channel);
     return;
   }
