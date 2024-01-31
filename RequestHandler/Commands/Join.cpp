@@ -46,32 +46,28 @@ void RequestHandler::join() {
       addUser(Server::_channelNames[channelName]);
     } else {
       Channel* chanToJoin = Server::_channelNames[channelName];
-      std::set<std::string> memberList = chanToJoin->getMembers();
-      std::set<std::string>::iterator membIter =
-          std::find(memberList.begin(), memberList.end(), channelName);
       // 이미 참가 중인 채널이면 무시
-      if (membIter != memberList.end()) {
+      if (chanToJoin->isMember(_client->getNickname())) {
         continue;
         // 채널이 존재하고 멤버 명단에 없으면 참가
       } else {
-        std::set<char> modeList = chanToJoin->getModes();
+        printSet(chanToJoin->getModes());
+        printRed(chanToJoin->isMode(INVITE_ONLY_CHANNEL));
         // 해당 채널이 Key Channel Mode이면 비밀번호 확인
-        if (modeList.find(KEY_CHANNEL) != modeList.end()) {
+        if (chanToJoin->isMode(KEY_CHANNEL)) {
           if (chanToJoin->getPassword() != channelKey) {
             _msg.ErrBadChannelKey(_fd, channelName);
             continue;
           }
           // 해당 채널이 Invite Only Channel Mode이면 초대 리스트에 있는지 확인
-        } else if (modeList.find(INVITE_ONLY_CHANNEL) != modeList.end()) {
-          std::set<std::string> inviteeList = chanToJoin->getInvitees();
-          if (std::find(inviteeList.begin(), inviteeList.end(),
-                        _client->getNickname()) ==
-              chanToJoin->getInvitees().end()) {
+        } else if (chanToJoin->isMode(INVITE_ONLY_CHANNEL)) {
+          // std::set<std::string> inviteeList = chanToJoin->getInvitees();
+          if (!chanToJoin->isInvitee(_client->getNickname())) {
             _msg.ErrInviteOnlyChan(_fd, channelName);
             continue;
           }
           // 해당 채널이 Client Limit Channel Mode이면 인원 제한 확인
-        } else if (modeList.find(CLIENT_LIMIT_CHANNEL) != modeList.end()) {
+        } else if (chanToJoin->isMode(CLIENT_LIMIT_CHANNEL)) {
           if (chanToJoin->isFull()) {
             _msg.ErrChannelIsFull(_fd, channelName);
             continue;
@@ -96,7 +92,7 @@ void RequestHandler::join() {
   //   std::cout << std::endl;
   // }
 
-  _msg.sendToClient(_fd);
+  _msg.sendToClient(_fd);  // ?? 없어도 되는지 확인
 }
 
 void RequestHandler::addUser(Channel* chanToJoin) {
