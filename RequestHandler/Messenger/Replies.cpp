@@ -133,11 +133,11 @@ void Messenger::RplInviteList(int fd, const std::string& channel) {
   sendToClient(fd);
 }
 
-void Messenger::RplInviting(int fd, const std::string& nick,
+void Messenger::RplInviting(int fd, const std::string& invitee,
                             const std::string& channel) {
   _prefix = SERVER;
   _param = RPL_INVITING + " " + Server::_clientFds[fd]->getNickname() + " " +
-           nick + " " + channel;
+           invitee + " " + channel;
   printRed("RplInviting");
   sendToClient(fd);
 }
