@@ -2,7 +2,6 @@
 
 // k 는 항상 인자 존재 (그런데 지울 땐 없어도 되는듯..???)
 // l은 set할 때만 인자 존재
-// i, t는 항상 인자 없음
 // para가 있어야하는데 없으면 ERR_INVALIDMODEPARAM
 void RequestHandler::channelMode(const std::string& target) {
   const std::string& nick = _client->getNickname();
@@ -17,13 +16,11 @@ void RequestHandler::channelMode(const std::string& target) {
     _msg.RplChannelModeIS(_fd, target);
     return;
   }
-  std::set<std::string> channelOps = channel->getOps();
   // operator가 아니면
-  if (channelOps.find(nick) == channelOps.end()) {
+  if (!channel->isOp(nick)) {
     _msg.ErrChanOPrivsNeeded(_fd, target);
     return;
   }
-  // std::string param = "MODE " + target;
   const std::string& modestring = _token[2];
   // i, t, k, l, o 외엔 모두 에러
   if (modestring.length() > 2 ||
@@ -36,16 +33,19 @@ void RequestHandler::channelMode(const std::string& target) {
   _msg.setParam("MODE " + target + " " + modestring);
   switch (modestring[1]) {
     case CLIENT_LIMIT_CHANNEL:
-      limitMode(channel);
+      limitMode(channel, modestring);
       break;
     case INVITE_ONLY_CHANNEL:
+      // inviteMode(channel, modestring);
       break;
     case PROTECTED_TOPIC:
+      topicMode(channel, modestring);
       break;
     case KEY_CHANNEL:
+      // keyMode(channel, modestring);
       break;
     case 'o':
-      handleOpMode(channel);
+      handleOpMode(channel, modestring);
       break;
   }
 }
@@ -92,12 +92,11 @@ void RequestHandler::mode() {
 }
 
 // MODE +o <nick> || MODE -o <nick>
-void RequestHandler::handleOpMode(Channel* channel) {
-  const std::string& modestring = _token[2];
-
+void RequestHandler::handleOpMode(Channel* channel,
+                                  const std::string& modestring) {
   // 인자 없을 때
   if (_token.size() < 4) {
-    _msg.setTrailing("You must specify a parameter for mode " + modestring);
+    _msg.setTrailing("You must specify a parameter for mode o");
     _msg.ErrInvalidModeParam(_fd, channel->getName(), modestring[1]);
     return;
   }
@@ -107,18 +106,18 @@ void RequestHandler::handleOpMode(Channel* channel) {
     _msg.ErrNoSuchNick(_fd, nick);
     return;
   }
+  // 이미 오퍼레이터인 유저 추가하거나 오퍼레이터가 아닌 유저 빼려고 할 때 리턴
+  if ((modestring == "+o" && channel->isOp(nick)) ||
+      (modestring == "-o" && !channel->isOp(nick)))
+    return;
+  // MODE <channelname> <modestring> :<nick>
   _msg.setTrailing(nick);
-  if (modestring == "+o" && !channel->isOp(nick)) {
-    channel->addOp(nick);
-    channel->sendToAll(_msg);
-  } else if (modestring == "-o" && channel->isOp(nick)) {
-    channel->removeOp(nick);
-    channel->sendToAll(_msg);
-  }
+  modestring == "+o" ? channel->addOp(nick) : channel->removeOp(nick);
+  channel->sendToAll(_msg);
 }
 
-void RequestHandler::limitMode(Channel* channel) {
-  const std::string& modestring = _token[2];
+void RequestHandler::limitMode(Channel* channel,
+                               const std::string& modestring) {
   const std::string& channelName = channel->getName();
   // MODE +l <number>
   if (modestring == "+l") {
@@ -129,13 +128,13 @@ void RequestHandler::limitMode(Channel* channel) {
       return;
     }
     const std::string& limitStr = _token[3];
-    // MODE #hi +l :10
     size_t limit = atoi(limitStr.c_str());
     if (limitStr.find_first_not_of(DIGIT) != std::string::npos || limit < 1) {
       _msg.setTrailing("Invalid parameter for mode l");
       _msg.ErrInvalidModeParam(_fd, channelName, 'l');
       return;
     }
+    // MODE #hi +l :10
     _msg.setTrailing(limitStr);
     channel->setLimit(limit);
     channel->addMode('l');
@@ -149,3 +148,23 @@ void RequestHandler::limitMode(Channel* channel) {
   }
   channel->sendToAll(_msg);
 }
+
+// i, t는 항상 인자 없음
+// 응답 메시지 :one!root@127.0.0.1 MODE <channel> :<modestring>
+void RequestHandler::topicMode(Channel* channel,
+                               const std::string& modestring) {
+  // 이미 해당 모드가 있거나 없으면 응답 없이 리턴
+  if ((modestring == "+t" && channel->isMode('t')) ||
+      (modestring == "t" && !channel->isMode('t')))
+    return;
+  modestring == "+t" ? channel->addMode('t') : channel->removeMode('t');
+  _msg.setParam("MODE " + channel->getName());
+  _msg.setTrailing(modestring);
+  channel->sendToAll(_msg);
+}
+
+// void RequestHandler::inviteMode(Channel* channel, const std::string&
+// modestring) {}
+
+// void RequestHandler::keyMode(Channel* channel, const std::string&
+// modestring) {}
