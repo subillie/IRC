@@ -229,11 +229,12 @@ void Messenger::ErrUsersDontMatch(int fd) {
   sendToClient(fd);
 }
 
+// :<server> 696 <nick> <channel> <mode> * : <description>
 void Messenger::ErrInvalidModeParam(int fd, const std::string& channel,
                                     const char& mode) {
   _prefix = SERVER;
-  _param = ERR_INVALIDMODEPARAM + " " + channel + " " + mode + " *";
-  // _trailing = "You must specify a parameter for this mode";
+  _param = ERR_INVALIDMODEPARAM + " " + Server::_clientFds[fd]->getNickname() +
+           channel + " " + mode + " *";
   printRed("ErrInvalidModeParam");
   sendToClient(fd);
 }
