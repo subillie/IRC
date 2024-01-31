@@ -51,27 +51,22 @@ void RequestHandler::join() {
         continue;
         // 채널이 존재하고 멤버 명단에 없으면 참가
       } else {
-        printSet(chanToJoin->getModes());
-        printRed(chanToJoin->isMode(INVITE_ONLY_CHANNEL));
         // 해당 채널이 Key Channel Mode이면 비밀번호 확인
-        if (chanToJoin->isMode(KEY_CHANNEL)) {
-          if (chanToJoin->getPassword() != channelKey) {
-            _msg.ErrBadChannelKey(_fd, channelName);
-            continue;
-          }
-          // 해당 채널이 Invite Only Channel Mode이면 초대 리스트에 있는지 확인
-        } else if (chanToJoin->isMode(INVITE_ONLY_CHANNEL)) {
-          // std::set<std::string> inviteeList = chanToJoin->getInvitees();
-          if (!chanToJoin->isInvitee(_client->getNickname())) {
-            _msg.ErrInviteOnlyChan(_fd, channelName);
-            continue;
-          }
-          // 해당 채널이 Client Limit Channel Mode이면 인원 제한 확인
-        } else if (chanToJoin->isMode(CLIENT_LIMIT_CHANNEL)) {
-          if (chanToJoin->isFull()) {
-            _msg.ErrChannelIsFull(_fd, channelName);
-            continue;
-          }
+        if (chanToJoin->isMode(KEY_CHANNEL) &&
+            chanToJoin->getPassword() != channelKey) {
+          _msg.ErrBadChannelKey(_fd, channelName);
+          continue;
+        }
+        // 해당 채널이 Invite Only Channel Mode이면 초대 리스트에 있는지 확인
+        if (chanToJoin->isMode(INVITE_ONLY_CHANNEL) &&
+            !chanToJoin->isInvitee(_client->getNickname())) {
+          _msg.ErrInviteOnlyChan(_fd, channelName);
+          continue;
+        }
+        // 해당 채널이 Client Limit Channel Mode이면 인원 제한 확인
+        if (chanToJoin->isMode(CLIENT_LIMIT_CHANNEL) && chanToJoin->isFull()) {
+          _msg.ErrChannelIsFull(_fd, channelName);
+          continue;
         }
         // 채널에 유저 추가
         addUser(chanToJoin);
@@ -92,7 +87,7 @@ void RequestHandler::join() {
   //   std::cout << std::endl;
   // }
 
-  _msg.sendToClient(_fd);  // ?? 없어도 되는지 확인
+  // _msg.sendToClient(_fd);  // ?? 없어도 되는지 확인
 }
 
 void RequestHandler::addUser(Channel* chanToJoin) {
