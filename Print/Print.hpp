@@ -55,7 +55,15 @@ void printDebug(const std::string& key, const T& val) {
   std::cout << "=============\n";
 }
 
-void printV(std::vector<std::string> v);
+template <typename Container, typename T>
+void printContainer(Container c) {
+  std::cout << "=============\n";
+  for (typename Container::iterator it = c.begin(); it != c.end(); it++) {
+    std::cout << *it << " ";
+  }
+  std::cout << std::endl;
+  std::cout << "=============\n";
+}
 
 void printPikachu();
 

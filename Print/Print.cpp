@@ -1,16 +1,5 @@
 #include "Print.hpp"
 
-static void print(std::string s) { std::cout << s << " "; }
-
-void printV(std::vector<std::string> v) {
-  std::cout << "=================\n";
-  for (std::vector<std::string>::iterator it = v.begin(); it < v.end(); it++) {
-    print(*it);
-  }
-  // for_each(v.begin(), v.end(), print);
-  std::cout << "\n=================" << std::endl;
-}
-
 void printPikachu() {
   std::cout << YELLOW
             << "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣴⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\n"
