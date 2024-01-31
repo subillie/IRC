@@ -50,4 +50,5 @@ void RequestHandler::quit() {
   delete _client;
 
   // TODO: FD_CLR해야 함 (Server.cpp의 deleteChlient 함수)
+  // TODO: 채널에 유저가 한 명도 없을 때 채널 삭제
 }

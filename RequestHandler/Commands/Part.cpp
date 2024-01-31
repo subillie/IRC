@@ -61,3 +61,5 @@ void RequestHandler::part() {
     }
   }
 }
+
+// TODO: 채널에 멤버가 없으면 채널 삭제
