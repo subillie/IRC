@@ -42,18 +42,10 @@ void RequestHandler::quit() {
       delete channel;
     }
   }
-
   _msg.setParam("ERROR");
   _msg.setTrailing("Closing link: (" + Server::_clientFds[_fd]->getHostname() +
                    ") [Quit: " + reason + "]");
   _msg.sendToClient(_fd);
 
-  Server::_clientFds.erase(_fd);
-  if (close(_fd) < 0) {
-    throw std::runtime_error("Close error");
-  }
-  Server::_clientNicks.erase(_client->getNickname());
-  delete _client;
-
-  // TODO: FD_CLR해야 함 (Server.cpp의 deleteChlient 함수)
+  throw "Client quit";
 }
