@@ -10,10 +10,10 @@ Server::~Server() {
   // for (; iter != _clientFds.end(); iter++) {
   //   delete (iter->second);
   // }
-  std::map<std::string, Channel *>::iterator iter2 = _channelNames.begin();
-  for (; iter2 != _channelNames.end(); iter2++) {
-    delete (iter2->second);
-  }
+  //   std::map<std::string, Channel *>::iterator iter2 = _channelNames.begin();
+  //   for (; iter2 != _channelNames.end(); iter2++) {
+  //     delete (iter2->second);
+  //   }
 }
 
 void Server::init() {
@@ -70,16 +70,24 @@ void Server::run() {
           char buffer[512];
           memset(buffer, 0, sizeof(buffer));
           if (Recv(i, buffer, sizeof(buffer), 0) == 0) {
+            printRed("Client closed");
             deleteClient(i);
+            --fdCount;
             continue;
           }
           printDebug("buffer", buffer);  // TODO: delete
           parse(buffer);
-          while (!_requests.empty()) {
-            RequestHandler requestHandler(_clientFds[i], _requests.front(),
-                                          _password);
-            _requests.pop();
-            requestHandler.execute();
+          try {
+            while (!_requests.empty()) {
+              RequestHandler requestHandler(_clientFds[i], _requests.front(),
+                                            _password);
+              _requests.pop();
+              requestHandler.execute();
+            }
+          } catch (const char *quit) {
+            printRed(quit);
+            deleteClient(i);
+            --fdCount;
           }
           memset(buffer, 0, sizeof(buffer));
         }

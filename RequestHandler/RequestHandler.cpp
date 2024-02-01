@@ -31,7 +31,10 @@ void RequestHandler::parse() {
       str.erase(0, 1);
       std::string remainer;
       getline(ss, remainer);
-      _token.push_back(str + " " + remainer);
+      if (!remainer.empty())
+        _token.push_back(str + " " + remainer);
+      else
+        _token.push_back(str);
       break;
     }
     _token.push_back(str);
