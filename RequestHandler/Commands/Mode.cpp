@@ -195,10 +195,18 @@ void RequestHandler::keyMode(Channel* channel, const std::string& modestring) {
     _msg.ErrInvalidKey(_fd, channel->getName());
     return;
   }
+
   if (modestring == "+k") {
+    // 같은 키로 바꾸려고 하면 그냥 리턴
+    if (channel->getPassword() == key) return;
     channel->addMode(KEY_CHANNEL);
     channel->setPassword(key);
   } else if (modestring == "-k") {
+    // -k 인데 키가 다르면 에러
+    if (channel->getPassword() != key) {
+      _msg.ErrKeySet(_fd, channel->getName());
+      return;
+    }
     channel->removeMode(KEY_CHANNEL);
     channel->setPassword("");
   }

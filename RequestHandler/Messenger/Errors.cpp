@@ -157,6 +157,14 @@ void Messenger::ErrPasswdMismatch(int fd) {
   sendToClient(fd);
 }
 
+void Messenger::ErrKeySet(int fd, const std::string& channel) {
+  _prefix = SERVER;
+  _param = ERR_KEYSET + " " + Server::_clientFds[fd]->getNickname() + channel;
+  _trailing = "Channel key already set";
+  printRed("ErrKeySet");
+  sendToClient(fd);
+}
+
 void Messenger::ErrChannelIsFull(int fd, const std::string& channel) {
   _prefix = SERVER;
   _param = ERR_CHANNELISFULL + " " + Server::_clientFds[fd]->getNickname() +

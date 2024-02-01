@@ -24,7 +24,7 @@
 #define ERR_NEEDMOREPARAMS std::string("461")
 #define ERR_ALREADYREGISTERED std::string("462")
 #define ERR_PASSWDMISMATCH std::string("464")
-
+#define ERR_KEYSET std::string("467")
 #define ERR_CHANNELISFULL std::string("471")
 #define ERR_UNKNOWNMODE std::string("472")
 #define ERR_INVITEONLYCHAN std::string("473")

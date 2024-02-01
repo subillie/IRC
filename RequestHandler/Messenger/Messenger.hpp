@@ -43,6 +43,7 @@ class Messenger {
   void ErrNeedMoreParams(int fd, const std::string& command);    // 461
   void ErrAlreadyRegistered(int fd);                             // 462
   void ErrPasswdMismatch(int fd);                                // 464
+  void ErrKeySet(int fd, const std::string& channel);            // 467
   void ErrChannelIsFull(int fd, const std::string& channel);     // 471
   void ErrUnknownMode(int fd, const std::string& mode);          // 472
   void ErrInviteOnlyChan(int fd, const std::string& channel);    // 473
