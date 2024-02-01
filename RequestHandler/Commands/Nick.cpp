@@ -12,8 +12,9 @@ void RequestHandler::nick() {
   if (_token.size() != 2) {
     _msg.ErrNoNickNameGiven(_fd);
     return;
-  } else if (Server::_clientNicks.find(_token[1]) !=
-             Server::_clientNicks.end()) {
+  }  // else if (Server::_clientNicks.find(_token[1]) !=
+     // Server::_clientNicks.end())
+  else if (isExistClient(_token[1])) {
     _msg.ErrNickNameInUse(_fd, _token[1]);
     return;
   } else {
@@ -35,4 +36,19 @@ void RequestHandler::nick() {
   }
   _client->setNickname(_token[1]);
   Server::_clientNicks[_token[1]] = _client;
+}
+
+// 대소문자 구분 없이 중복일 경우 확인
+bool RequestHandler::isExistClient(const std::string& client) {
+  std::map<std::string, Client*>::iterator it;
+  for (it = Server::_clientNicks.begin(); it != Server::_clientNicks.end();
+       it++) {
+    std::string existClient = it->second->getNickname();
+    if (client.length() != existClient.length()) continue;
+    for (size_t i = 0; i <= client.length(); i++) {
+      if (i == client.length()) return true;
+      if (tolower(client[i]) != tolower(existClient[i])) break;
+    }
+  }
+  return false;
 }
