@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "Client/Client.hpp"
 #include "Macros/Characters.hpp"
 #include "Server/Server.hpp"
 
@@ -35,6 +36,23 @@ void isValidPassword(const std::string &pw) {
   }
 }
 
+void deleteMap(void) {
+  std::map<int, Client *>::iterator client;
+  for (client = Server::_clientFds.begin(); client != Server::_clientFds.end();
+       ++client) {
+    close(client->second->getFd());
+    delete (client->second);
+  }
+  Server::_clientFds.clear();
+  Server::_clientNicks.clear();
+  std::map<std::string, Channel *>::iterator channel;
+  for (channel = Server::_channelNames.begin();
+       channel != Server::_channelNames.end(); ++channel) {
+    delete (channel->second);
+  }
+  Server::_channelNames.clear();
+}
+
 int main(int ac, char **av) {
   if (ac != 3) {
     std::cerr << RED << "Usage: ./ircserver <port> <password>" << std::endl;
@@ -47,7 +65,7 @@ int main(int ac, char **av) {
     server.run();
   } catch (std::exception &e) {
     std::cerr << RED << e.what() << std::endl;
-    // TODO : free all
   }
+  deleteMap();
   return 0;
 }
