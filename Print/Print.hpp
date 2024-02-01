@@ -63,6 +63,16 @@ void printSet(const std::set<T>& set) {
        it++) {
     std::cout << *it << " ";
   }
+  std::cout << std::endl;
+  std::cout << "=============\n";
+}
+
+template <typename T>
+void printVector(std::vector<T> v) {
+  std::cout << "=============\n";
+  for (typename std::vector<T>::iterator it = v.begin(); it != v.end(); it++) {
+    std::cout << *it << " ";
+  }
   std::cout << "\n=============\n";
 }
 
