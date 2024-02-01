@@ -4,9 +4,10 @@
 void RequestHandler::quit() {
   std::string reason = "";
   if (_token.size() == 1) {
-    reason = "leaving"
+    reason = "leaving";
   }
-  // TODO: 인자 없을 때(_token[1] == "leaving  "일 때) 제대로 후행 공백 없이 출력되는지 확인
+  // TODO: 인자 없을 때(_token[1] == "leaving  "일 때) 제대로 후행 공백 없이
+  // 출력되는지 확인
   for (size_t i = 1; i < _token.size(); i++) {
     reason += _token[i];
     reason += " ";

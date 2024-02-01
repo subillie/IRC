@@ -1,159 +1,16 @@
 #include "../RequestHandler.hpp"
 
-// k 는 항상 인자 존재 (그런데 지울 땐 없어도 되는듯..???)
-// l은 set할 때만 인자 존재
-// i, t는 항상 인자 없음
-// para가 있어야하는데 없으면 ERR_INVALIDMODEPARAM
-bool RequestHandler::addModeToChannel(Channel* channel, const char& mode) {
-  switch (mode) {
-    // MODE +l <number>
-    case CLIENT_LIMIT_CHANNEL: {
-      // 인자가 없으면
-      if (_token.size() < 4) {
-        _msg.setTrailing("You must specify a parameter for mode l");
-        _msg.ErrInvalidModeParam(_fd, channel->getName(), mode);
-        return false;
-      }
-      // MODE #hi +l :10
-      size_t limit = atoi(_token[3].c_str());
-      if (_token[3].find_first_not_of(DIGIT) != std::string::npos ||
-          limit < 1) {
-        _msg.setTrailing("Invalid parameter for mode l");
-        _msg.ErrInvalidModeParam(_fd, channel->getName(), mode);
-        return false;
-      }
-      _msg.setParam(_msg.getParam() + "+l");
-      _msg.setTrailing(_token[3]);
-      channel->setLimit(limit);
-      break;
-    }
-    case INVITE_ONLY_CHANNEL:
-      break;
-    case PROTECTED_TOPIC:
-      break;
-    case KEY_CHANNEL:
-      break;
-      // MODE +o
-    case 'o': {
-      std::set<std::string> memberList = channel->getMembers();
-      std::set<std::string> opsList = channel->getOps();
-      // 인자 없을 때
-      if (_token.size() < 4) {
-        _msg.setTrailing("You must specify a parameter for mode o");
-        _msg.ErrInvalidModeParam(_fd, channel->getName(), mode);
-        return false;
-      }
-      const std::string& nick = _token[3];
-      // 방에 없는 닉네임이면 401
-      if (memberList.find(nick) == memberList.end()) {
-        _msg.ErrNoSuchNick(_fd, nick);
-        return false;
-      }
-      // op 목록에 있으면 무시(응답 안 보냄)
-      if (opsList.find(nick) != memberList.end()) {
-        return false;
-      }
-      _msg.setParam(_msg.getParam() + "+o");
-      _msg.setTrailing(nick);
-      channel->addOp(nick);
-      return true;
-    }
-    default:
-      _msg.ErrUModeUnknownFlag(_fd);
-      return false;
+// MODE <target> [<modestring> [<mode arguments>...]]
+void RequestHandler::mode() {
+  if (_token.size() < 2) {
+    _msg.ErrUnexpected(_fd);
+    return;  // 이런 경우는 없을 것 같긴 하지만 일단 예외처리
   }
-  channel->addMode(mode);
-  return true;
+  // 채널모드인지 유저모드인지 확인
+  _token[1][0] == '#' ? channelMode(_token[1]) : userMode(_token[1]);
 }
 
-bool RequestHandler::removeModeFromChannel(Channel* channel, const char& mode) {
-  switch (mode) {
-      // MODE #hi :-l
-      // two!root@127.0.0.1 MODE #hi :-l
-    case CLIENT_LIMIT_CHANNEL:
-      _msg.setTrailing("-l");
-      channel->setLimit(0);
-      break;
-    case INVITE_ONLY_CHANNEL:
-      break;
-    case PROTECTED_TOPIC:
-      break;
-    case KEY_CHANNEL:
-      break;
-    // TODO: +o, -o 함수 하나로 합치기
-    case 'o': {
-      std::set<std::string> memberList = channel->getMembers();
-      std::set<std::string> opsList = channel->getOps();
-      // 인자 없을 때
-      if (_token.size() < 4) {
-        _msg.setTrailing("You must specify a parameter for mode o");
-        _msg.ErrInvalidModeParam(_fd, channel->getName(), mode);
-        return false;
-      }
-      const std::string& nick = _token[3];
-      // 방에 없는 닉네임이면 401
-      if (memberList.find(nick) == memberList.end()) {
-        _msg.ErrNoSuchNick(_fd, nick);
-        return false;
-      }
-      // op 목록에 없으면 무시(응답 안 보냄)
-      if (opsList.find(nick) == memberList.end()) {
-        return false;
-      }
-      _msg.setParam(_msg.getParam() + "-o");
-      _msg.setTrailing(nick);
-      channel->removeOp(nick);
-      return true;
-    }
-    default:
-      _msg.ErrUModeUnknownFlag(_fd);
-      return false;
-  }
-  channel->removeMode(mode);
-  return true;
-}
-
-void RequestHandler::channelMode(const std::string& target) {
-  const std::string& nick = _client->getNickname();
-
-  if (Server::_channelNames.find(target) == Server::_channelNames.end()) {
-    _msg.ErrNoSuchChannel(_fd, target);
-    return;
-  }
-  Channel* channel = Server::_channelNames[target];
-  // <modestring> 이 없으면
-  if (_token.size() < 3) {
-    _msg.RplChannelModeIS(_fd, target);
-    return;
-  }
-  std::set<std::string> channelOps = channel->getOps();
-  // operator가 아니면
-  if (channelOps.find(nick) == channelOps.end()) {
-    _msg.ErrChanOPrivsNeeded(_fd, target);
-    return;
-  }
-  // std::string param = "MODE " + target;
-  const std::string& modestring = _token[2];
-  // i, t, k, l, o 외엔 모두 에러
-  if (modestring.length() > 2 ||
-      modestring.find_first_not_of(AVAILABLE_CHAN_MODES + "o", 1) !=
-          std::string::npos) {
-    _msg.ErrUnknownMode(_fd, modestring);
-    return;
-  }
-  // <nickname>!<username>@<hostname>
-  _msg.setPrefix(_client->getPrefix());
-  //  MODE <channel>
-  _msg.setParam("MODE " + target + " ");
-  if (modestring[0] == '+') {
-    if (!addModeToChannel(channel, modestring[1])) return;
-  } else if ((modestring[0]) == '-') {
-    if (!removeModeFromChannel(channel, modestring[1])) return;
-  }
-  // 채널 모든 멤버에게 MODE 전송
-  channel->sendToAll(_msg);
-}
-
+// USER MODE
 void RequestHandler::userMode(const std::string& target) {
   const std::string& nick = _client->getNickname();
 
@@ -185,12 +42,135 @@ void RequestHandler::userMode(const std::string& target) {
   }
 }
 
-// MODE <target> [<modestring> [<mode arguments>...]]
-void RequestHandler::mode() {
-  if (_token.size() < 2) {
-    _msg.ErrUnexpected(_fd);
-    return;  // 이런 경우는 없을 것 같긴 하지만 일단 예외처리
+// CHANNEL MODE
+// k 는 항상 인자 존재 (그런데 지울 땐 없어도 되는듯..???)
+// l은 set할 때만 인자 존재
+// para가 있어야하는데 없으면 ERR_INVALIDMODEPARAM
+void RequestHandler::channelMode(const std::string& target) {
+  const std::string& nick = _client->getNickname();
+
+  if (Server::_channelNames.find(target) == Server::_channelNames.end()) {
+    _msg.ErrNoSuchChannel(_fd, target);
+    return;
   }
-  // 채널모드인지 유저모드인지 확인
-  _token[1][0] == '#' ? channelMode(_token[1]) : userMode(_token[1]);
+  Channel* channel = Server::_channelNames[target];
+  // <modestring> 이 없으면
+  if (_token.size() < 3) {
+    _msg.RplChannelModeIS(_fd, target);
+    return;
+  }
+  // operator가 아니면
+  if (!channel->isOp(nick)) {
+    _msg.ErrChanOPrivsNeeded(_fd, target);
+    return;
+  }
+  const std::string& modestring = _token[2];
+  // i, t, k, l, o 외엔 모두 에러
+  if (modestring.length() > 2 ||
+      modestring.find_first_not_of(AVAILABLE_CHAN_MODES + "o", 1) !=
+          std::string::npos) {
+    _msg.ErrUnknownMode(_fd, modestring);
+    return;
+  }
+  _msg.setPrefix(_client->getPrefix());
+  _msg.setParam("MODE " + target + " " + modestring);
+  switch (modestring[1]) {
+    case CLIENT_LIMIT_CHANNEL:
+      limitMode(channel, modestring);
+      break;
+    case INVITE_ONLY_CHANNEL:
+      // inviteMode(channel, modestring);
+      break;
+    case PROTECTED_TOPIC:
+      topicMode(channel, modestring);
+      break;
+    case KEY_CHANNEL:
+      // keyMode(channel, modestring);
+      break;
+    case 'o':
+      handleOpMode(channel, modestring);
+      break;
+  }
 }
+
+// MODE +o <nick> || MODE -o <nick>
+void RequestHandler::handleOpMode(Channel* channel,
+                                  const std::string& modestring) {
+  // 인자 없을 때
+  if (_token.size() < 4) {
+    _msg.setTrailing("You must specify a parameter for mode o");
+    _msg.ErrInvalidModeParam(_fd, channel->getName(), modestring[1]);
+    return;
+  }
+  const std::string& nick = _token[3];
+  // 방에 없는 닉네임이면 401
+  if (!channel->isMember(nick)) {
+    _msg.ErrNoSuchNick(_fd, nick);
+    return;
+  }
+  // 이미 오퍼레이터인 유저 추가하거나 오퍼레이터가 아닌 유저 빼려고 할 때 리턴
+  if ((modestring == "+o" && channel->isOp(nick)) ||
+      (modestring == "-o" && !channel->isOp(nick)))
+    return;
+  // MODE <channelname> <modestring> :<nick>
+  _msg.setTrailing(nick);
+  modestring == "+o" ? channel->addOp(nick) : channel->removeOp(nick);
+  channel->sendToAll(_msg);
+}
+
+void RequestHandler::limitMode(Channel* channel,
+                               const std::string& modestring) {
+  const std::string& channelName = channel->getName();
+  // MODE +l <number>
+  if (modestring == "+l") {
+    // 인자가 없으면
+    if (_token.size() < 4) {
+      _msg.setTrailing("You must specify a parameter for mode l");
+      _msg.ErrInvalidModeParam(_fd, channelName, 'l');
+      return;
+    }
+    const std::string& limitStr = _token[3];
+    size_t limit = atoi(limitStr.c_str());
+    if (limitStr.find_first_not_of(DIGIT) != std::string::npos || limit < 1) {
+      _msg.setTrailing("Invalid parameter for mode l");
+      _msg.ErrInvalidModeParam(_fd, channelName, 'l');
+      return;
+    }
+    // 이미 설정된 제한인원과 동일하면 리턴
+    if (limit == channel->getLimit()) return;
+    // MODE #hi +l :10
+    _msg.setTrailing(limitStr);
+    channel->setLimit(limit);
+    channel->addMode('l');
+    // MODE -l
+  } else if (modestring == "-l") {
+    // 해당 모드 없으면 리턴
+    if (!channel->isMode('l')) return;
+    // MODE #hi :-l
+    _msg.setParam("MODE " + channelName);
+    _msg.setTrailing("-l");
+    channel->setLimit(0);
+    channel->removeMode('l');
+  }
+  channel->sendToAll(_msg);
+}
+
+// i, t는 항상 인자 없음
+// 응답 메시지 :one!root@127.0.0.1 MODE <channel> :<modestring>
+void RequestHandler::topicMode(Channel* channel,
+                               const std::string& modestring) {
+  // 이미 해당 모드가 있거나 없으면 응답 없이 리턴
+  if ((modestring == "+t" && channel->isMode('t')) ||
+      (modestring == "-t" && !channel->isMode('t')))
+    return;
+  modestring == "+t" ? channel->addMode('t') : channel->removeMode('t');
+  _msg.setParam("MODE " + channel->getName());
+  _msg.setTrailing(modestring);
+  channel->sendToAll(_msg);
+}
+
+// void RequestHandler::inviteMode(Channel* channel, const std::string&
+// modestring) {}
+
+// void RequestHandler::keyMode(Channel* channel, const std::string&
+// modestring) {}

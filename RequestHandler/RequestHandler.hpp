@@ -50,8 +50,11 @@ class RequestHandler {
   void mode();
   void userMode(const std::string &target);
   void channelMode(const std::string &target);
-  bool addModeToChannel(Channel *channel, const char &mode);
-  bool removeModeFromChannel(Channel *channel, const char &mode);
+  // void inviteMode(Channel *channel, const std::string &modestring);
+  void topicMode(Channel *channel, const std::string &modestring);
+  // void keyMode(Channel *channel, const std::string &modestring);
+  void limitMode(Channel *channel, const std::string &modestring);
+  void handleOpMode(Channel *channel, const std::string &modestring);
 
   void pong();
 
