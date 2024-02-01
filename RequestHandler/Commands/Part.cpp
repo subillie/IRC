@@ -41,18 +41,16 @@ void RequestHandler::part() {
       continue;
       // 멤버일 경우 채널에서 client 퇴장
     } else {
-      chanToLeave->removeMember(_client->getNickname());
-      chanToLeave->removeOp(_client->getNickname());
-      chanToLeave->removeInvitee(_client->getNickname());
-      _client->removeChannel(channelName);
-
-      _msg.setPrefix(_client->getNickname() + "!" + _client->getUsername() +
-                     "@" + _client->getHostname());
+      _msg.setPrefix(_client->getPrefix());
       _msg.setParam("PART " + channelName);
       if (!reason.empty()) {
         _msg.setTrailing(reason);
       }
       chanToLeave->sendToAll(_msg);
+      chanToLeave->removeMember(_client->getNickname());
+      chanToLeave->removeOp(_client->getNickname());
+      chanToLeave->removeInvitee(_client->getNickname());
+      _client->removeChannel(channelName);
 
       // 채널에 멤버가 없으면 채널 삭제
       if (chanToLeave->getMembers().empty()) {
