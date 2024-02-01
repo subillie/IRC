@@ -202,4 +202,6 @@ void RequestHandler::keyMode(Channel* channel, const std::string& modestring) {
     channel->removeMode(KEY_CHANNEL);
     channel->setPassword("");
   }
+  _msg.setTrailing(channel->getPassword());
+  channel->sendToAll(_msg);
 }
