@@ -6,7 +6,11 @@ Channel::Channel(const char& mode, const std::string& name)
     : _limit(0), _name(name) {
   time_t now;
   time(&now);
-  _creationTime = ctime(&now);
+
+  size_t t = static_cast<size_t>(now);
+  std::stringstream ss;
+  ss << t;
+  _creationTime = ss.str();
   _modes.insert(mode);
 }
 
