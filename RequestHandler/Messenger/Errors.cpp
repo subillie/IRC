@@ -157,6 +157,14 @@ void Messenger::ErrPasswdMismatch(int fd) {
   sendToClient(fd);
 }
 
+void Messenger::ErrKeySet(int fd, const std::string& channel) {
+  _prefix = SERVER;
+  _param = ERR_KEYSET + " " + Server::_clientFds[fd]->getNickname() + channel;
+  _trailing = "Channel key already set";
+  printRed("ErrKeySet");
+  sendToClient(fd);
+}
+
 void Messenger::ErrChannelIsFull(int fd, const std::string& channel) {
   _prefix = SERVER;
   _param = ERR_CHANNELISFULL + " " + Server::_clientFds[fd]->getNickname() +
@@ -226,6 +234,15 @@ void Messenger::ErrUsersDontMatch(int fd) {
   _param = ERR_USERSDONTMATCH + " " + client->getNickname();
   _trailing = "Cant change mode for other users";
   printRed("ErrUsersDontMatch");
+  sendToClient(fd);
+}
+
+// "<client> <target chan> :Key is not well-formed"
+void Messenger::ErrInvalidKey(int fd, const std::string& channel) {
+  _prefix = SERVER;
+  _param = ERR_INVALIDKEY + " " + channel;
+  _trailing = "Key is not well-formed [0-9] (maximum length: 8)";
+  printRed("ErrInvalidKey");
   sendToClient(fd);
 }
 
