@@ -79,7 +79,7 @@ void RequestHandler::channelMode(const std::string& target) {
       limitMode(channel, modestring);
       break;
     case INVITE_ONLY_CHANNEL:
-      // inviteMode(channel, modestring);
+      inviteMode(channel, modestring);
       break;
     case PROTECTED_TOPIC:
       topicMode(channel, modestring);
@@ -169,8 +169,18 @@ void RequestHandler::topicMode(Channel* channel,
   channel->sendToAll(_msg);
 }
 
-// void RequestHandler::inviteMode(Channel* channel, const std::string&
-// modestring) {}
+void RequestHandler::inviteMode(Channel* channel,
+                                const std::string& modestring) {
+  // 이미 해당 모드가 있거나 없으면 응답 없이 리턴
+  if ((modestring == "+i" && channel->isMode(INVITE_ONLY_CHANNEL)) ||
+      (modestring == "-i" && !channel->isMode(INVITE_ONLY_CHANNEL)))
+    return;
+  modestring == "+i" ? channel->addMode(INVITE_ONLY_CHANNEL)
+                     : channel->removeMode(INVITE_ONLY_CHANNEL);
+  _msg.setParam("MODE " + channel->getName());
+  _msg.setTrailing(modestring);
+  channel->sendToAll(_msg);
+}
 
 // void RequestHandler::keyMode(Channel* channel, const std::string&
 // modestring) {}

@@ -35,6 +35,12 @@ void RequestHandler::quit() {
     channel->removeMember(nickname);
     channel->removeOp(nickname);
     channel->removeInvitee(nickname);
+
+    // 채널에 멤버가 없으면 채널 삭제
+    if (channel->getMembers().empty()) {
+      Server::_channelNames.erase(*chanIter);
+      delete channel;
+    }
   }
 
   _msg.setParam("ERROR");

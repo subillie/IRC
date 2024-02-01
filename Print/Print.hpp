@@ -57,9 +57,10 @@ void printDebug(const std::string& key, const T& val) {
 }
 
 template <typename T>
-void printSet(std::set<T> s) {
+void printSet(const std::set<T>& set) {
   std::cout << "=============\n";
-  for (typename std::set<T>::iterator it = s.begin(); it != s.end(); it++) {
+  for (typename std::set<T>::const_iterator it = set.begin(); it != set.end();
+       it++) {
     std::cout << *it << " ";
   }
   std::cout << std::endl;
@@ -72,8 +73,7 @@ void printVector(std::vector<T> v) {
   for (typename std::vector<T>::iterator it = v.begin(); it != v.end(); it++) {
     std::cout << *it << " ";
   }
-  std::cout << std::endl;
-  std::cout << "=============\n";
+  std::cout << "\n=============\n";
 }
 
 void printPikachu();

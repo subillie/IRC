@@ -7,41 +7,47 @@ void RequestHandler::invite() {
     _msg.ErrNeedMoreParams(_fd, _token[0]);
     return;
   }
-  std::string nickname = _token[1];
+  std::string invitee = _token[1];
   std::string channel = _token[2];
 
-  // 채널이 존재하지 않거나 채널에 유저가 한 명도 없을 때
-  if (Server::_channelNames.find(channel) == Server::_channelNames.end() ||
-      Server::_channelNames[channel]->getMembers().empty()) {
+  // 초대하려는 유저가 존재하지 않을 때
+  if (Server::_clientNicks.find(invitee) == Server::_clientNicks.end()) {
+    _msg.ErrNoSuchNick(_fd, invitee);
+    return;
+  }
+
+  // 채널이 존재하지 않을 때 (= 채널에 아무도 없을 때)
+  if (Server::_channelNames.find(channel) == Server::_channelNames.end()) {
     _msg.ErrNoSuchChannel(_fd, channel);
     return;
   }
 
-  // 초대하려는 유저가 채널의 멤버가 아닐 때
+  // 초대하는 유저가 채널의 멤버가 아닐 때
   Channel *chanToInvite = Server::_channelNames[channel];
-  std::set<std::string> membList = chanToInvite->getMembers();
-  if (membList.find(nickname) == membList.end()) {
+  if (!chanToInvite->isMember(_client->getNickname())) {
     _msg.ErrNotOnChannel(_fd, channel);
     return;
   }
 
   // 채널이 Invite Only이고 유저가 채널의 Operator가 아닐 때
-  std::set<char> modeList = chanToInvite->getModes();
-  std::set<std::string> opList = chanToInvite->getOps();
-  if (modeList.find(INVITE_ONLY_CHANNEL) != modeList.end() &&
-      opList.find(nickname) == opList.end()) {
+  if (chanToInvite->isMode(INVITE_ONLY_CHANNEL) &&
+      !chanToInvite->isOp(_client->getNickname())) {
     _msg.ErrChanOPrivsNeeded(_fd, channel);
     return;
   }
 
   // 초대하려는 유저가 이미 채널에 있을 때
-  if (opList.find(nickname) != membList.end()) {
-    _msg.ErrUserOnChannel(_fd, nickname, channel);
+  if (chanToInvite->isMember(invitee)) {
+    _msg.ErrUserOnChannel(_fd, invitee, channel);
     return;
   }
 
-  // 유저에게 초대장 전송
-  chanToInvite->addInvitee(nickname);
-  int fdToInvite = Server::_clientNicks[nickname]->getFd();
-  _msg.RplInviting(fdToInvite, nickname, channel);
+  // command 전송한 유저에게 RPL_INVITING 전송
+  _msg.RplInviting(_fd, invitee, channel);
+  // 초대할 유저에게 초대장 전송 :dan-!d@localhost INVITE Wiz #test
+  chanToInvite->addInvitee(invitee);
+  int fdToInvite = Server::_clientNicks[invitee]->getFd();
+  _msg.setPrefix(_client->getPrefix());
+  _msg.setParam("INVITE " + invitee + " " + channel);
+  _msg.sendToClient(fdToInvite);
 }
