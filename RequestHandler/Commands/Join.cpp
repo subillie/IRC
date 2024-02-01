@@ -75,21 +75,6 @@ void RequestHandler::join() {
       }
     }
   }
-
-  // std::map<std::string, Channel*>::iterator it =
-  // Server::_channelNames.begin(); for (; it != Server::_channelNames.end();
-  // it++) {
-  //   std::cout << "channel: " << it->first << std::endl;
-  //   std::cout << "members: ";
-  //   std::set<std::string> members = it->second->getMembers();
-  //   std::set<std::string>::iterator mIter = members.begin();
-  //   for (; mIter != members.end(); mIter++) {
-  //     std::cout << *mIter << " ";
-  //   }
-  //   std::cout << std::endl;
-  // }
-
-  // _msg.sendToClient(_fd);  // ?? 없어도 되는지 확인
 }
 
 void RequestHandler::addUser(Channel* chanToJoin) {
