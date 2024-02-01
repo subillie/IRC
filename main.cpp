@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "Channel/Channel.hpp"
 #include "Client/Client.hpp"
 #include "Macros/Characters.hpp"
 #include "Server/Server.hpp"
@@ -51,6 +52,12 @@ void deleteMap(void) {
     delete (channel->second);
   }
   Server::_channelNames.clear();
+  std::cout << "Size of Client Fd Map after deletion: "
+            << Server::_clientFds.size() << std::endl;
+  std::cout << "Size of Client Nick Map after deletion: "
+            << Server::_clientNicks.size() << std::endl;
+  std::cout << "Size of Channel Name Map after deletion: "
+            << Server::_channelNames.size() << std::endl;
 }
 
 int main(int ac, char **av) {
