@@ -35,6 +35,7 @@
 
 #define ERR_UMODEUNKNOWNFLAG std::string("501")
 #define ERR_USERSDONTMATCH std::string("502")
+#define ERR_INVALIDKEY std::string("525")
 #define ERR_INVALIDMODEPARAM std::string("696")
 
 #endif

@@ -43,7 +43,6 @@ void RequestHandler::userMode(const std::string& target) {
 }
 
 // CHANNEL MODE
-// k 는 항상 인자 존재 (그런데 지울 땐 없어도 되는듯..???)
 // l은 set할 때만 인자 존재
 // para가 있어야하는데 없으면 ERR_INVALIDMODEPARAM
 void RequestHandler::channelMode(const std::string& target) {
@@ -126,14 +125,14 @@ void RequestHandler::limitMode(Channel* channel,
     // 인자가 없으면
     if (_token.size() < 4) {
       _msg.setTrailing("You must specify a parameter for mode l");
-      _msg.ErrInvalidModeParam(_fd, channelName, 'l');
+      _msg.ErrInvalidModeParam(_fd, channelName, CLIENT_LIMIT_CHANNEL);
       return;
     }
     const std::string& limitStr = _token[3];
     size_t limit = atoi(limitStr.c_str());
     if (limitStr.find_first_not_of(DIGIT) != std::string::npos || limit < 1) {
       _msg.setTrailing("Invalid parameter for mode l");
-      _msg.ErrInvalidModeParam(_fd, channelName, 'l');
+      _msg.ErrInvalidModeParam(_fd, channelName, CLIENT_LIMIT_CHANNEL);
       return;
     }
     // 이미 설정된 제한인원과 동일하면 리턴
@@ -141,16 +140,16 @@ void RequestHandler::limitMode(Channel* channel,
     // MODE #hi +l :10
     _msg.setTrailing(limitStr);
     channel->setLimit(limit);
-    channel->addMode('l');
+    channel->addMode(CLIENT_LIMIT_CHANNEL);
     // MODE -l
   } else if (modestring == "-l") {
     // 해당 모드 없으면 리턴
-    if (!channel->isMode('l')) return;
+    if (!channel->isMode(CLIENT_LIMIT_CHANNEL)) return;
     // MODE #hi :-l
     _msg.setParam("MODE " + channelName);
     _msg.setTrailing("-l");
     channel->setLimit(0);
-    channel->removeMode('l');
+    channel->removeMode(CLIENT_LIMIT_CHANNEL);
   }
   channel->sendToAll(_msg);
 }
@@ -160,10 +159,11 @@ void RequestHandler::limitMode(Channel* channel,
 void RequestHandler::topicMode(Channel* channel,
                                const std::string& modestring) {
   // 이미 해당 모드가 있거나 없으면 응답 없이 리턴
-  if ((modestring == "+t" && channel->isMode('t')) ||
-      (modestring == "-t" && !channel->isMode('t')))
+  if ((modestring == "+t" && channel->isMode(PROTECTED_TOPIC)) ||
+      (modestring == "-t" && !channel->isMode(PROTECTED_TOPIC)))
     return;
-  modestring == "+t" ? channel->addMode('t') : channel->removeMode('t');
+  modestring == "+t" ? channel->addMode(PROTECTED_TOPIC)
+                     : channel->removeMode(PROTECTED_TOPIC);
   _msg.setParam("MODE " + channel->getName());
   _msg.setTrailing(modestring);
   channel->sendToAll(_msg);
@@ -182,5 +182,24 @@ void RequestHandler::inviteMode(Channel* channel,
   channel->sendToAll(_msg);
 }
 
-// void RequestHandler::keyMode(Channel* channel, const std::string&
-// modestring) {}
+// k 는 항상 인자 존재
+void RequestHandler::keyMode(Channel* channel, const std::string& modestring) {
+  if (_token.size() < 4) {
+    _msg.setTrailing("You must specify a parameter for mode k");
+    _msg.ErrInvalidModeParam(_fd, channel->getName(), KEY_CHANNEL);
+    return;
+  }
+  const std::string& key = _token[3];
+  // 비밀번호 형식(8자리 이내 숫자)에 어긋나면 에러
+  if (key.find_first_not_of(DIGIT) != std::string::npos || key.length() > 8) {
+    _msg.ErrInvalidKey(_fd, channel->getName());
+    return;
+  }
+  if (modestring == "+k") {
+    channel->addMode(KEY_CHANNEL);
+    channel->setPassword(key);
+  } else if (modestring == "-k") {
+    channel->removeMode(KEY_CHANNEL);
+    channel->setPassword("");
+  }
+}

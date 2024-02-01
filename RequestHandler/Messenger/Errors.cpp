@@ -229,6 +229,15 @@ void Messenger::ErrUsersDontMatch(int fd) {
   sendToClient(fd);
 }
 
+// "<client> <target chan> :Key is not well-formed"
+void Messenger::ErrInvalidKey(int fd, const std::string& channel) {
+  _prefix = SERVER;
+  _param = ERR_INVALIDKEY + " " + channel;
+  _trailing = "Key is not well-formed [0-9] (maximum length: 8)";
+  printRed("ErrInvalidKey");
+  sendToClient(fd);
+}
+
 // :<server> 696 <nick> <channel> <mode> * : <description>
 void Messenger::ErrInvalidModeParam(int fd, const std::string& channel,
                                     const char& mode) {
