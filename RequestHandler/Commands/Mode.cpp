@@ -84,7 +84,7 @@ void RequestHandler::channelMode(const std::string& target) {
       topicMode(channel, modestring);
       break;
     case KEY_CHANNEL:
-      // keyMode(channel, modestring);
+      keyMode(channel, modestring);
       break;
     case 'o':
       handleOpMode(channel, modestring);
