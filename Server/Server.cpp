@@ -72,7 +72,7 @@ void Server::run() {
           if (Recv(i, buffer, sizeof(buffer), 0) == 0) {
             printRed("Client closed");
             deleteClient(i);
-            fdCount--;
+            --fdCount;
             continue;
           }
           printDebug("buffer", buffer);  // TODO: delete
@@ -87,7 +87,7 @@ void Server::run() {
           } catch (const char *quit) {
             printRed(quit);
             deleteClient(i);
-            fdCount--;
+            --fdCount;
           }
           memset(buffer, 0, sizeof(buffer));
         }
