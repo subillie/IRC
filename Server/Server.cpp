@@ -10,10 +10,10 @@ Server::~Server() {
   // for (; iter != _clientFds.end(); iter++) {
   //   delete (iter->second);
   // }
-  std::map<std::string, Channel *>::iterator iter2 = _channelNames.begin();
-  for (; iter2 != _channelNames.end(); iter2++) {
-    delete (iter2->second);
-  }
+  //   std::map<std::string, Channel *>::iterator iter2 = _channelNames.begin();
+  //   for (; iter2 != _channelNames.end(); iter2++) {
+  //     delete (iter2->second);
+  //   }
 }
 
 void Server::init() {
