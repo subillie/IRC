@@ -58,7 +58,7 @@ const std::set<std::string>& Channel::getMembers() const { return _members; }
 
 const std::set<std::string>& Channel::getInvitees() const { return _invitees; }
 
-bool Channel::isFull() const { return _limit == _members.size(); }
+bool Channel::isFull() const { return _limit <= _members.size(); }
 
 bool Channel::isOp(const std::string& nick) const {
   return _ops.find(nick) != _ops.end();

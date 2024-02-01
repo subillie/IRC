@@ -64,8 +64,9 @@ void RequestHandler::join() {
           continue;
         }
         // 해당 채널이 Client Limit Channel Mode이면 인원 제한 확인
-        // TODO: 초대장 받은 유저는 인원 제한 수 상관 없이 입장 가능 함....
-        if (chanToJoin->isMode(CLIENT_LIMIT_CHANNEL) && chanToJoin->isFull()) {
+        // 초대장 받은 유저는 인원 제한 수 상관 없이 입장 가능 함
+        if (chanToJoin->isMode(CLIENT_LIMIT_CHANNEL) && chanToJoin->isFull() &&
+            !chanToJoin->isInvitee(_client->getNickname())) {
           _msg.ErrChannelIsFull(_fd, channelName);
           continue;
         }
