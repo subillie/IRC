@@ -5,16 +5,7 @@
 
 Server::Server(int port, char *password) : _port(port), _password(password) {}
 
-Server::~Server() {
-  // std::map<int, Client *>::iterator iter = _clientFds.begin();
-  // for (; iter != _clientFds.end(); iter++) {
-  //   delete (iter->second);
-  // }
-  //   std::map<std::string, Channel *>::iterator iter2 = _channelNames.begin();
-  //   for (; iter2 != _channelNames.end(); iter2++) {
-  //     delete (iter2->second);
-  //   }
-}
+Server::~Server() {}
 
 void Server::init() {
   _serverFd = Socket(PF_INET, SOCK_STREAM, 0);
