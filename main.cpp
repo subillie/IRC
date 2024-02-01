@@ -65,6 +65,7 @@ int main(int ac, char **av) {
     server.run();
   } catch (std::exception &e) {
     std::cerr << RED << e.what() << std::endl;
+    // TODO : free all
   }
   deleteMap();
   return 0;
