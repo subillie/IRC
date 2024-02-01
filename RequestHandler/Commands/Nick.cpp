@@ -12,9 +12,7 @@ void RequestHandler::nick() {
   if (_token.size() != 2) {
     _msg.ErrNoNickNameGiven(_fd);
     return;
-  }  // else if (Server::_clientNicks.find(_token[1]) !=
-     // Server::_clientNicks.end())
-  else if (isExistClient(_token[1])) {
+  } else if (isExistClient(_token[1])) {
     _msg.ErrNickNameInUse(_fd, _token[1]);
     return;
   } else {
