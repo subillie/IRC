@@ -106,11 +106,7 @@ void RequestHandler::addUser(Channel* chanToJoin) {
     if (chanToJoin->isOp(*membIter)) trailing += "@";
     trailing += *membIter + " ";
   }
-  for (membIter = memberList.begin(); membIter != memberList.end();
-       membIter++) {
-    _msg.setTrailing(trailing);
-    _msg.RplNamReply(_fd, channelName);
-    _msg.RplEndOfNames(_fd, nickname);
-  }
-  std::cout << YELLOW << *chanToJoin << RESET;  // TODO: remove
+  _msg.setTrailing(trailing);
+  _msg.RplNamReply(_fd, channelName);
+  _msg.RplEndOfNames(_fd, channelName);
 }
