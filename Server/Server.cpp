@@ -30,6 +30,8 @@ Server::~Server() {
 
 void Server::init() {
   _serverFd = Socket(PF_INET, SOCK_STREAM, 0);
+  int flags = Fcntl(_serverFd, F_GETFL, 0);
+  Fcntl(_serverFd, F_SETFL, flags | O_NONBLOCK);
 
   struct sockaddr_in serverAddr;
   memset(&serverAddr, 0, sizeof(struct sockaddr_in));

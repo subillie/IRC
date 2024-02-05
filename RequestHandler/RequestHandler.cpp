@@ -19,6 +19,7 @@ RequestHandler::RequestHandler(Client* client, const std::string& request,
   _commandMap["PART"] = &RequestHandler::part;
   _commandMap["TOPIC"] = &RequestHandler::topic;
   _commandMap["QUIT"] = &RequestHandler::quit;
+  _commandMap["POCKETMON"] = &RequestHandler::pocketmon;
   // 추후에 명령어 추가될때마다 함수 포인터 추가
 }
 

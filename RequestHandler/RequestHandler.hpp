@@ -48,6 +48,7 @@ class RequestHandler {
   void topic();
   void part();
   void quit();
+  void pocketmon();
 
   void mode();
   void userMode(const std::string &target);
