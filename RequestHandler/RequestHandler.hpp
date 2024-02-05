@@ -4,6 +4,8 @@
 #include <sys/socket.h>
 
 #include <algorithm>
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
 #include <map>
 #include <set>
@@ -43,12 +45,16 @@ class RequestHandler {
   std::string isExistingChannel(const std::string &channel);
 
   void privmsg();
+  void bot(const std::set<std::string> &memberList);
+  const std::string rock();
+  const std::string paper();
+  const std::string scissors();
+
   void kick();
   void invite();
   void topic();
   void part();
   void quit();
-  void pocketmon();
 
   void mode();
   void userMode(const std::string &target);
