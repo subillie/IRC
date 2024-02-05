@@ -56,6 +56,7 @@ void RequestHandler::channelMode(const std::string& target) {
   // <modestring> 이 없으면
   if (_token.size() < 3) {
     _msg.RplChannelModeIS(_fd, target);
+    _msg.RplCreationTime(_fd, target);
     return;
   }
   // operator가 아니면

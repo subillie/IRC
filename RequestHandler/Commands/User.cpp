@@ -2,6 +2,12 @@
 
 // USER <username> 0 * <realname>
 void RequestHandler::user() {
+  // nickname을 받지 못했을 때
+  if (_client->getNickname().empty()) {
+    _msg.ErrNotRegistered(_fd);
+    throw("Quit");
+    return;
+  }
   if (!_client->getUsername().empty()) {
     _msg.ErrUnexpected(_fd);
     return;
@@ -25,11 +31,12 @@ void RequestHandler::user() {
   }
   _client->setUsername(username);
   _client->setHostname(hostname);
-  if (!(_client->getPassword().empty() || _client->getNickname().empty() ||
-        _client->getUsername().empty())) {
+  // User 정보가 다 있을 경우 인증 확인
+  if (!(_client->getUsername().empty())) {
     _client->setIsRegisterd(true);
   } else {
-    _msg.ErrUnexpected(_fd);
+    _msg.ErrNotRegistered(_fd);
+    throw("Quit");
     return;
   }
   std::cout << *_client;  // debug

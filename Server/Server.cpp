@@ -6,14 +6,26 @@
 Server::Server(int port, char *password) : _port(port), _password(password) {}
 
 Server::~Server() {
-  // std::map<int, Client *>::iterator iter = _clientFds.begin();
-  // for (; iter != _clientFds.end(); iter++) {
-  //   delete (iter->second);
-  // }
-  //   std::map<std::string, Channel *>::iterator iter2 = _channelNames.begin();
-  //   for (; iter2 != _channelNames.end(); iter2++) {
-  //     delete (iter2->second);
-  //   }
+  std::map<int, Client *>::iterator client;
+  for (client = Server::_clientFds.begin(); client != Server::_clientFds.end();
+       ++client) {
+    close(client->second->getFd());
+    delete (client->second);
+  }
+  Server::_clientFds.clear();
+  Server::_clientNicks.clear();
+  std::map<std::string, Channel *>::iterator channel;
+  for (channel = Server::_channelNames.begin();
+       channel != Server::_channelNames.end(); ++channel) {
+    delete (channel->second);
+  }
+  Server::_channelNames.clear();
+  std::cout << "Size of Client Fd Map after deletion: "
+            << Server::_clientFds.size() << std::endl;
+  std::cout << "Size of Client Nick Map after deletion: "
+            << Server::_clientNicks.size() << std::endl;
+  std::cout << "Size of Channel Name Map after deletion: "
+            << Server::_channelNames.size() << std::endl;
 }
 
 void Server::init() {
