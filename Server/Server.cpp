@@ -73,7 +73,7 @@ void Server::run() {
           clientFd = Accept(_serverFd,
                             reinterpret_cast<struct sockaddr *>(&clientAddr),
                             &clientAddrLen);
-          printPicachu();
+          printPikachu();
           printHi();
           addClient(clientFd);  // client 할당
           if (fdCount < clientFd) {

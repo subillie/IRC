@@ -46,9 +46,6 @@ class RequestHandler {
 
   void privmsg();
   void bot(const std::set<std::string> &memberList);
-  const std::string rock();
-  const std::string paper();
-  const std::string scissors();
 
   void kick();
   void invite();
