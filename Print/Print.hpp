@@ -77,6 +77,7 @@ void printVector(std::vector<T> v) {
 }
 
 void printPikachu();
+
 void printHi();
 
 #endif
