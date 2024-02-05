@@ -2,6 +2,7 @@
 #define SERVER_HPP
 
 #include <arpa/inet.h>
+#include <fcntl.h>
 #include <netdb.h>
 #include <sys/select.h>
 #include <sys/socket.h>
@@ -30,6 +31,7 @@ class Server {
 
   // Wrapper functions
   int Socket(int domain, int type, int protocol);
+  int Fcntl(int fd, int cmd, int arg);
   void Setsockopt(int s, int level, int optname);
   int Bind(int sockfd, struct sockaddr *my_addr, int addrlen);
   void Close(int fd);

@@ -8,7 +8,8 @@ void RequestHandler::privmsg() {
     _msg.ErrUnexpected(_fd);
     return;
   }
-  // parameter 갯수가 부족할 떄
+
+  // parameter 개수가 부족할 떄
   if (_token.size() < 3) {
     if (_token[1][0] == ':')
       _msg.ErrNoRecipient(_fd);  // 수신자가 없음
@@ -16,18 +17,29 @@ void RequestHandler::privmsg() {
       _msg.ErrNoTextToSend(_fd);  // 메세지가 없음
     return;
   }
+
   std::stringstream ss(_token[1]);
   std::string target;
   while (std::getline(ss, target, ',')) {
     if (target[0] == '#') {
+      // target에 해당하는 채널이 없을 때
       if (Server::_channelNames.find(target) == Server::_channelNames.end()) {
-        _msg.ErrCannotSendToChan(_fd, target);  // target에 해당하는 채널이 없음
+        _msg.ErrCannotSendToChan(_fd, target);
         continue;
       }
+      // 본인 속한 채널이 아닐 때
       Channel* chanToSend = Server::_channelNames[target];
       std::set<std::string> memberList = chanToSend->getMembers();
       if (memberList.find(_client->getNickname()) == memberList.end()) {
-        _msg.ErrCannotSendToChan(_fd, target);  // 본인 속한 채널이 아님
+        _msg.ErrCannotSendToChan(_fd, target);
+        continue;
+      }
+
+      std::istringstream iss(_token[2]);
+      std::string textType;
+      iss >> textType;
+      if (textType == "RPS") {
+        bot(memberList);
         continue;
       }
       std::set<std::string>::const_iterator it;
@@ -41,8 +53,9 @@ void RequestHandler::privmsg() {
         }
       }
     } else {
+      // 등록된 닉네임이 없을 때
       if (Server::_clientNicks.find(target) == Server::_clientNicks.end()) {
-        _msg.ErrNoSuchNick(_fd, target);  // 등록된 닉네임이 없음
+        _msg.ErrNoSuchNick(_fd, target);
         continue;
       }
       _msg.setPrefix(_client->getNickname() + "!" + _client->getUsername() +

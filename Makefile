@@ -10,6 +10,7 @@ SRCS	=	Channel/Channel.cpp \
 			RequestHandler/Messenger/Messenger.cpp \
 			RequestHandler/Messenger/Errors.cpp \
 			RequestHandler/Messenger/Replies.cpp \
+			RequestHandler/Commands/Bot.cpp \
 			RequestHandler/Commands/Cap.cpp \
 			RequestHandler/Commands/Invite.cpp \
 			RequestHandler/Commands/Join.cpp \

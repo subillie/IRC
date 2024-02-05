@@ -8,6 +8,14 @@ int Server::Socket(int domain, int type, int protocol) {
   return val;
 }
 
+int Server::Fcntl(int fd, int cmd, int arg) {
+  int val = fcntl(fd, cmd, arg);
+  if (fcntl(fd, cmd, arg) == -1) {
+    throw std::runtime_error("Fcntl error");
+  }
+  return val;
+}
+
 void Server::Setsockopt(int s, int level, int optname) {
   int optval = 1;
   if (setsockopt(s, level, optname, &optval, sizeof(optval)) < 0) {
