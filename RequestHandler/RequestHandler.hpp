@@ -34,13 +34,13 @@ class RequestHandler {
 
   void cap();
   void nick();
-  bool isExistClient(const std::string &client);
+  bool isExistingClient(const std::string &client);
   void user();
   void pass();
 
   void join();
   void addUser(Channel *chanToJoin);
-  std::string isExistChannel(const std::string &channel);
+  std::string isExistingChannel(const std::string &channel);
 
   void privmsg();
   void kick();

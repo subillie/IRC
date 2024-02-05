@@ -38,13 +38,14 @@ void RequestHandler::join() {
     }
 
     // 채널이 없으면 생성
-    if (isExistChannel(channelName).empty()) {
+    if (isExistingChannel(channelName).empty()) {
       Server::_channelNames[channelName] =
           new Channel(PROTECTED_TOPIC, channelName);
       Server::_channelNames[channelName]->addOp(_client->getNickname());
       addUser(Server::_channelNames[channelName]);
     } else {
-      Channel* chanToJoin = Server::_channelNames[isExistChannel(channelName)];
+      Channel* chanToJoin =
+          Server::_channelNames[isExistingChannel(channelName)];
       // 이미 참가 중인 채널이면 무시
       if (chanToJoin->isMember(_client->getNickname())) {
         continue;
@@ -111,15 +112,15 @@ void RequestHandler::addUser(Channel* chanToJoin) {
 }
 
 // 대소문자 구분없이 이미 있는 채널일 경우 그 채널을 반환
-std::string RequestHandler::isExistChannel(const std::string& channel) {
+std::string RequestHandler::isExistingChannel(const std::string& channel) {
   std::map<std::string, Channel*>::iterator it;
   for (it = Server::_channelNames.begin(); it != Server::_channelNames.end();
        it++) {
-    std::string existChannel = it->second->getName();
-    if (channel.length() != existChannel.length()) continue;
+    std::string existingChan = it->second->getName();
+    if (channel.length() != existingChan.length()) continue;
     for (size_t i = 0; i <= channel.length(); i++) {
-      if (i == channel.length()) return existChannel;
-      if (tolower(channel[i]) != tolower(existChannel[i])) break;
+      if (i == channel.length()) return existingChan;
+      if (tolower(channel[i]) != tolower(existingChan[i])) break;
     }
   }
   return "";

@@ -37,29 +37,6 @@ void isValidPassword(const std::string &pw) {
   }
 }
 
-void deleteMap(void) {
-  std::map<int, Client *>::iterator client;
-  for (client = Server::_clientFds.begin(); client != Server::_clientFds.end();
-       ++client) {
-    close(client->second->getFd());
-    delete (client->second);
-  }
-  Server::_clientFds.clear();
-  Server::_clientNicks.clear();
-  std::map<std::string, Channel *>::iterator channel;
-  for (channel = Server::_channelNames.begin();
-       channel != Server::_channelNames.end(); ++channel) {
-    delete (channel->second);
-  }
-  Server::_channelNames.clear();
-  std::cout << "Size of Client Fd Map after deletion: "
-            << Server::_clientFds.size() << std::endl;
-  std::cout << "Size of Client Nick Map after deletion: "
-            << Server::_clientNicks.size() << std::endl;
-  std::cout << "Size of Channel Name Map after deletion: "
-            << Server::_channelNames.size() << std::endl;
-}
-
 int main(int ac, char **av) {
   if (ac != 3) {
     std::cerr << RED << "Usage: ./ircserver <port> <password>" << std::endl;
@@ -72,8 +49,6 @@ int main(int ac, char **av) {
     server.run();
   } catch (std::exception &e) {
     std::cerr << RED << e.what() << std::endl;
-    // TODO : free all
   }
-  deleteMap();
   return 0;
 }
