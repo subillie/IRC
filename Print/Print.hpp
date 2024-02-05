@@ -76,7 +76,7 @@ void printVector(std::vector<T> v) {
   std::cout << "\n=============\n";
 }
 
-void printPicachu();
+void printPikachu();
 void printHi();
 
 #endif
