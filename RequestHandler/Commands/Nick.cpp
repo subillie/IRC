@@ -31,9 +31,18 @@ void RequestHandler::nick() {
   // nickname 설정이 되어 있을 경우
   if (_client->getNickname() != "") {
     Server::_clientNicks.erase(_client->getNickname());
+    Server::_clientNicks[_token[1]] = _client;
+    // : two!root@127.0.0.1 NICK :new
+    _msg.setPrefix(_client->getPrefix());
+    _msg.setParam("NICK");
+    _msg.setTrailing(_token[1]);
+    // 닉네임 변경 시 모든 클라이언트에 메시지 보냄
+    Server::sendToAllClients(_msg);
+    _client->setNickname(_token[1]);
+  } else {
+    _client->setNickname(_token[1]);
+    Server::_clientNicks[_token[1]] = _client;
   }
-  _client->setNickname(_token[1]);
-  Server::_clientNicks[_token[1]] = _client;
 }
 
 // 대소문자 구분 없이 중복일 경우 확인
