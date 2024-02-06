@@ -45,8 +45,7 @@ void RequestHandler::privmsg() {
       std::set<std::string>::const_iterator it;
       for (it = memberList.begin(); it != memberList.end(); ++it) {
         if (*it != _client->getNickname()) {
-          _msg.setPrefix(_client->getNickname() + "!" + _client->getUsername() +
-                         "@" + _client->getHostname());
+          _msg.setPrefix(_client->getPrefix());
           _msg.setParam("PRIVMSG " + _token[1]);
           _msg.setTrailing(_token[2]);
           _msg.sendToClient(Server::_clientNicks[*it]->getFd());
@@ -58,8 +57,7 @@ void RequestHandler::privmsg() {
         _msg.ErrNoSuchNick(_fd, target);
         continue;
       }
-      _msg.setPrefix(_client->getNickname() + "!" + _client->getUsername() +
-                     "@" + _client->getHostname());
+      _msg.setPrefix(_client->getPrefix());
       _msg.setParam("PRIVMSG " + _token[1]);
       _msg.setTrailing(_token[2]);
       _msg.sendToClient(Server::_clientNicks[_token[1]]->getFd());

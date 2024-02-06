@@ -1,6 +1,7 @@
 #include "Server.hpp"
 
 #include "../Client/Client.hpp"
+#include "../RequestHandler/Messenger/Messenger.hpp"
 #include "../RequestHandler/RequestHandler.hpp"
 
 Server::Server(int port, char *password) : _port(port), _password(password) {}
@@ -135,4 +136,13 @@ void Server::deleteClient(int fd) {
   }
   delete (client);
   _clientFds.erase(fd);
+}
+
+void Server::sendToAllClients(Messenger msg) {
+  for (std::map<int, Client *>::const_iterator it = _clientFds.begin();
+       it != _clientFds.end(); it++) {
+    Messenger copy(msg);
+    const int &fd = it->first;
+    copy.sendToClient(fd);
+  }
 }

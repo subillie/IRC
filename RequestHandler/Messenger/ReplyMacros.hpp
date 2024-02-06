@@ -25,5 +25,6 @@
 #define RPL_INVITING std::string("341")
 #define RPL_NAMREPLY std::string("353")
 #define RPL_ENDOFNAMES std::string("366")
+#define RPL_ENDOFBANLIST std::string("368")
 
 #endif
