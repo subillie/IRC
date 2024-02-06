@@ -31,7 +31,6 @@ void RequestHandler::nick() {
     _msg.ErrErroneusNickName(_fd, newNick);
     return;
   }
-
   // nickname 설정이 되어 있을 경우
   if (!oldNick.empty()) {
     Server::_clientNicks.erase(oldNick);
@@ -43,6 +42,22 @@ void RequestHandler::nick() {
     // 닉네임 변경 시 모든 클라이언트에 메시지 보냄
     Server::sendToAllClients(_msg);
     _client->setNickname(newNick);
+    // 가입한 모든 채널에 대해 닉네임 바꿔줌
+    std::set<std::string> channels = _client->getChannels();
+    for (std::set<std::string>::iterator it = channels.begin();
+         it != channels.end(); it++) {
+      Channel* channel = Server::_channelNames[*it];
+      if (channel->isOp(oldNick)) {
+        channel->removeOp(oldNick);
+        channel->addOp(newNick);
+      }
+      if (channel->isInvitee(oldNick)) {
+        channel->removeInvitee(oldNick);
+        channel->addInvitee(newNick);
+      }
+      channel->removeMember(oldNick);
+      channel->addMember(newNick);
+    }
   } else {
     _client->setNickname(newNick);
     Server::_clientNicks[newNick] = _client;
