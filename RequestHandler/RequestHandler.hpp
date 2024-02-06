@@ -64,6 +64,8 @@ class RequestHandler {
 
   void pong();
 
+  void who();
+
  public:
   RequestHandler(Client *client, const std::string &request,
                  const std::string &password);  // Init map

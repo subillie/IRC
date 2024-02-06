@@ -64,6 +64,7 @@ class Messenger {
   void RplMyinfo(int fd);                                     // 004
   void RplISupport(int fd);                                   // 005
   void RplUModeIs(int fd, const std::string& usermode);       // 221
+  void RplEndOfWho(int fd, const std::string& mask);          // 315
   void RplChannelModeIS(int fd, const std::string& channel);  // 324
   void RplCreationTime(int fd, const std::string& channel);   // 324
   void RplNoTopic(int fd, const std::string& channel);        // 331
@@ -71,7 +72,9 @@ class Messenger {
                 const std::string& topic);                 // 332
   void RplInviteList(int fd, const std::string& channel);  // 336
   void RplInviting(int fd, const std::string& invitee,
-                   const std::string& channel);              // 341
+                   const std::string& channel);  // 341
+  void RplWhoReply(int fd, const std::string& mask, const std::string& channel,
+                   const std::string& flag);                 // 352
   void RplNamReply(int fd, const std::string& channel);      // 353
   void RplEndOfNames(int fd, const std::string& channel);    // 366
   void RplEndOfBanList(int fd, const std::string& channel);  // 368
