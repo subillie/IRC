@@ -158,3 +158,12 @@ void Messenger::RplEndOfNames(int fd, const std::string& channel) {
   printRed("RplEndOfNames");
   sendToClient(fd);
 }
+
+void Messenger::RplEndOfBanList(int fd, const std::string& channel) {
+  _prefix = SERVER;
+  _param = RPL_ENDOFBANLIST + " " + Server::_clientFds[fd]->getNickname() +
+           " " + channel;
+  _trailing = "End of channel ban list";
+  printRed("RplEndOfBanList");
+  sendToClient(fd);
+}

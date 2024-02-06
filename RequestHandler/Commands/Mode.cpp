@@ -59,6 +59,11 @@ void RequestHandler::channelMode(const std::string& target) {
     _msg.RplCreationTime(_fd, target);
     return;
   }
+  // MODE <channel> b
+  if (_token[2] == "b") {
+    _msg.RplEndOfBanList(_fd, target);
+    return;
+  }
   // operator가 아니면
   if (!channel->isOp(nick)) {
     _msg.ErrChanOPrivsNeeded(_fd, target);
