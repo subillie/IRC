@@ -13,8 +13,7 @@ void RequestHandler::bot(const std::set<std::string>& memberList) {
   }
   std::set<std::string>::const_iterator it;
   for (it = memberList.begin(); it != memberList.end(); ++it) {
-    _msg.setPrefix(_client->getNickname() + "!" + _client->getUsername() + "@" +
-                   _client->getHostname());
+    _msg.setPrefix(_client->getPrefix());
     _msg.setParam("PRIVMSG " + _token[1]);
     _msg.setTrailing(rps);
     _msg.sendToClient(Server::_clientNicks[*it]->getFd());
