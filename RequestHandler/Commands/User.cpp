@@ -19,6 +19,7 @@ void RequestHandler::user() {
   }
   std::string username = _token[1];
   std::string hostname = _token[3];
+  std::string realname = _token[4];
   if (_client->getIsRegistered()) {
     return;
   }
@@ -31,6 +32,7 @@ void RequestHandler::user() {
   }
   _client->setUsername(username);
   _client->setHostname(hostname);
+  _client->setRealname(realname);
   // User 정보가 다 있을 경우 인증 확인
   if (!(_client->getUsername().empty())) {
     _client->setIsRegisterd(true);

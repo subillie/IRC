@@ -83,6 +83,15 @@ void Messenger::RplUModeIs(int fd, const std::string& usermode) {
   sendToClient(fd);
 }
 
+void Messenger::RplEndOfWho(int fd, const std::string& mask) {
+  _prefix = SERVER;
+  _param =
+      RPL_ENDOFWHO + " " + Server::_clientFds[fd]->getNickname() + " " + mask;
+  _trailing = "End of /WHO list";
+  printRed("RplEndOfWho");
+  sendToClient(fd);
+}
+
 void Messenger::RplChannelModeIS(int fd, const std::string& channel) {
   _prefix = SERVER;
   _param = RPL_CHANNELMODEIS + " " + Server::_clientFds[fd]->getNickname() +
@@ -139,6 +148,19 @@ void Messenger::RplInviting(int fd, const std::string& invitee,
   _param = RPL_INVITING + " " + Server::_clientFds[fd]->getNickname() + " " +
            invitee + " " + channel;
   printRed("RplInviting");
+  sendToClient(fd);
+}
+
+void Messenger::RplWhoReply(int fd, const std::string& mask,
+                            const std::string& channel,
+                            const std::string& flag) {
+  Client* client = Server::_clientFds[fd];
+  _prefix = SERVER;
+  _param = RPL_WHOREPLY + " " + client->getNickname() + " " + channel + " " +
+           client->getUsername() + " " + client->getHostname() + " " + SERVER +
+           " " + mask + " " + flag;
+  _trailing = "0 " + client->getRealname();
+  printRed("RplWhoReply");
   sendToClient(fd);
 }
 

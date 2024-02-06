@@ -13,6 +13,8 @@ void Client::setPassword(const std::string &password) { _password = password; }
 
 void Client::setHostname(const std::string &hostname) { _hostname = hostname; }
 
+void Client::setRealname(const std::string &realname) { _realname = realname; }
+
 void Client::addChannel(const std::string &channel) {
   _channels.insert(channel);
 }
@@ -32,6 +34,8 @@ const std::string &Client::getPassword() const { return _password; }
 const std::string &Client::getUsername() const { return _username; }
 
 const std::string &Client::getHostname() const { return _hostname; }
+
+const std::string &Client::getRealname() const { return _realname; }
 
 const std::string Client::getPrefix() const {
   return _nickname + "!" + _username + "@" + _hostname;

@@ -15,6 +15,7 @@ class Client {
   std::string _nickname;
   std::string _password;
   std::string _hostname;
+  std::string _realname;
   std::set<std::string> _channels;
   bool _isRegistered;
 
@@ -25,6 +26,7 @@ class Client {
   void setNickname(const std::string &nickname);
   void setPassword(const std::string &password);
   void setHostname(const std::string &hostname);
+  void setRealname(const std::string &realname);
   void addChannel(const std::string &channel);
   void removeChannel(const std::string &channel);
   const int &getFd() const;
@@ -33,6 +35,7 @@ class Client {
   const std::string &getNickname() const;
   const std::string &getPassword() const;
   const std::string &getHostname() const;
+  const std::string &getRealname() const;
   const std::string getPrefix() const;
   const std::set<std::string> &getChannels() const;
   bool isMaxJoined() const;
