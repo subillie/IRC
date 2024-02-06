@@ -8,6 +8,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include <cstring>
 #include <map>
 #include <queue>
 
@@ -16,6 +17,7 @@
 
 class Client;
 class Channel;
+class Messenger;
 
 class Server {
  private:
@@ -52,6 +54,7 @@ class Server {
   void run();  // event loop
   void addClient(int fd);
   void deleteClient(int fd);
+  static void sendToAllClients(Messenger msg);
 };
 
 #endif
