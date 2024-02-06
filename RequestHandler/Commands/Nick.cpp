@@ -15,7 +15,7 @@ void RequestHandler::nick() {
     return;
   }
   const std::string& newNick = _token[1];
-  const std::string& oldNick = _client->getNickname();
+  const std::string oldNick = _client->getNickname();
   if (isExistingClient(newNick)) {
     _msg.ErrNickNameInUse(_fd, newNick);
     return;
@@ -33,8 +33,6 @@ void RequestHandler::nick() {
   }
   // nickname 설정이 되어 있을 경우
   if (!oldNick.empty()) {
-    Server::_clientNicks.erase(oldNick);
-    Server::_clientNicks[newNick] = _client;
     // : two!root@127.0.0.1 NICK :new
     _msg.setPrefix(_client->getPrefix());
     _msg.setParam("NICK");
@@ -42,6 +40,8 @@ void RequestHandler::nick() {
     // 닉네임 변경 시 모든 클라이언트에 메시지 보냄
     Server::sendToAllClients(_msg);
     _client->setNickname(newNick);
+    Server::_clientNicks.erase(oldNick);
+    Server::_clientNicks[newNick] = _client;
     // 가입한 모든 채널에 대해 닉네임 바꿔줌
     std::set<std::string> channels = _client->getChannels();
     for (std::set<std::string>::iterator it = channels.begin();
