@@ -38,8 +38,11 @@ void RequestHandler::privmsg() {
       std::istringstream iss(_token[2]);
       std::string textType;
       iss >> textType;
-      if (textType == "RPS") {
-        bot(memberList);
+      if (textType == "!BGP") {
+        bgp(memberList);
+        continue;
+      } else if (textType == "!RPS") {
+        rps(memberList);
         continue;
       }
       std::set<std::string>::const_iterator it;
