@@ -55,7 +55,7 @@ class Messenger {
   void ErrInvalidKey(int fd, const std::string& channel);        // 525
   void ErrInvalidModeParam(int fd, const std::string& channel,
                            const char& mode);  // 696
-  void ErrUnexpected(int fd);  // 에러코드가 정해져 있지 않은 에러
+  void ErrUnexpected();  // 에러코드가 정해져 있지 않은 에러
 
   // Reply function
   void RplWelcome(int fd);                                    // 001

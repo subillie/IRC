@@ -5,7 +5,7 @@
 #include <set>
 #include <string>
 
-#define MAX_CHANNEL 10;
+#define MAX_CHANNEL 10
 
 class Client {
  private:

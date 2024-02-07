@@ -4,7 +4,11 @@
 #include "../RequestHandler/Messenger/Messenger.hpp"
 #include "../RequestHandler/RequestHandler.hpp"
 
-Server::Server(int port, char *password) : _port(port), _password(password) {}
+Server::Server(int port, char *password) : _port(port), _password(password) {
+  time_t now;
+  time(&now);
+  _serverCreated = ctime(&now);
+}
 
 Server::~Server() {
   std::map<int, Client *>::iterator client;
@@ -21,12 +25,6 @@ Server::~Server() {
     delete (channel->second);
   }
   Server::_channelNames.clear();
-  std::cout << "Size of Client Fd Map after deletion: "
-            << Server::_clientFds.size() << std::endl;
-  std::cout << "Size of Client Nick Map after deletion: "
-            << Server::_clientNicks.size() << std::endl;
-  std::cout << "Size of Channel Name Map after deletion: "
-            << Server::_channelNames.size() << std::endl;
 }
 
 void Server::init() {
@@ -53,17 +51,10 @@ void Server::run() {
 
   int fdCount = _serverFd;
   int clientFd = -1;
-  // TODO: timeout
-  struct timeval timeout;
-  timeout.tv_sec = 10;
-  timeout.tv_usec = 0;
 
   while (true) {
     _readySet = _readSet;
-    if (Select(fdCount + 1, &_readySet, 0, 0, &timeout) == 0) {
-      // std::cout << "Timeout!" << std::endl;
-      continue;
-    }
+    Select(fdCount + 1, &_readySet, 0, 0, 0);
     // Accept connection and handle client's requirements
     for (int i = 0; i <= fdCount; i++) {
       if (FD_ISSET(i, &_readySet)) {
@@ -90,7 +81,7 @@ void Server::run() {
             --fdCount;
             continue;
           }
-          printDebug("buffer", buffer);  // TODO: delete
+          printDebug("buffer", buffer);  // print buffer for debug
           parse(buffer);
           try {
             while (!_requests.empty()) {

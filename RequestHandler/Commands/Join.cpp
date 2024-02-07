@@ -99,6 +99,7 @@ void RequestHandler::addUser(Channel* chanToJoin) {
   joinMsg.setParam("JOIN");
   joinMsg.setTrailing(channelName);
   chanToJoin->sendToAll(joinMsg);
+
   // 채널 모든 멤버를 trailing에 담아서 보냄
   std::string trailing;
   for (membIter = memberList.begin(); membIter != memberList.end();
@@ -111,7 +112,7 @@ void RequestHandler::addUser(Channel* chanToJoin) {
   _msg.RplEndOfNames(_fd, channelName);
 }
 
-// 대소문자 구분없이 이미 있는 채널일 경우 그 채널을 반환
+// 대소문자 구분 없이 이미 있는 채널일 경우 그 채널을 반환
 std::string RequestHandler::isExistingChannel(const std::string& channel) {
   std::map<std::string, Channel*>::iterator it;
   for (it = Server::_channelNames.begin(); it != Server::_channelNames.end();

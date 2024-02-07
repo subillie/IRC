@@ -7,9 +7,9 @@
 #define VERSION std::string("1.0")
 #define AVAILABLE_USER_MODES std::string("i")
 #define AVAILABLE_CHAN_MODES std::string("klit")
-// 인자 확인
 #define ISUPPORT_PARAMS \
-  std::string("CHANMODES=,k,l,it CHANTYPES=# MODES=1 PREFIX=(o)@ ")
+  std::string(          \
+      "CHANMODES=,k,l,it CHANTYPES=# CHANLIMIT=#:10 MODES=1 PREFIX=(o)@")
 #define RPL_WELCOME std::string("001")
 #define RPL_YOURHOST std::string("002")
 #define RPL_CREATED std::string("003")

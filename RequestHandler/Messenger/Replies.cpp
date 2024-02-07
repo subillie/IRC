@@ -51,8 +51,7 @@ void Messenger::RplYourHost(int fd) {
 void Messenger::RplCreated(int fd) {
   _prefix = SERVER;
   _param = RPL_CREATED + " " + Server::_clientFds[fd]->getNickname();
-  // TODO: time server was created
-  // _trailing = "This server was created " + datetime;
+  _trailing = "This server was created " + Server::_serverCreated;
   printRed("RplCreated");
   sendToClient(fd);
 }

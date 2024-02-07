@@ -3,9 +3,9 @@
 // /msg <channel>/<nick>,... <text to be sent>
 
 void RequestHandler::privmsg() {
-  // parameter가 없음
+  // parameter가 없을 때
   if (_token.size() == 1) {
-    _msg.ErrUnexpected(_fd);
+    _msg.ErrUnexpected();
     return;
   }
 
@@ -38,10 +38,14 @@ void RequestHandler::privmsg() {
       std::istringstream iss(_token[2]);
       std::string textType;
       iss >> textType;
-      if (textType == "RPS") {
-        bot(memberList);
+      if (textType == "!BGP") {
+        bgp(memberList);
+        continue;
+      } else if (textType == "!RPS") {
+        rps(memberList);
         continue;
       }
+
       std::set<std::string>::const_iterator it;
       for (it = memberList.begin(); it != memberList.end(); ++it) {
         if (*it != _client->getNickname()) {

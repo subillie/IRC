@@ -1,12 +1,11 @@
 #include <signal.h>
 
-#include <iostream>
-
 #include "Channel/Channel.hpp"
 #include "Client/Client.hpp"
 #include "Macros/Characters.hpp"
 #include "Server/Server.hpp"
 
+std::string Server::_serverCreated;
 std::map<int, Client *> Server::_clientFds;
 std::map<std::string, Client *> Server::_clientNicks;
 std::map<std::string, Channel *> Server::_channelNames;

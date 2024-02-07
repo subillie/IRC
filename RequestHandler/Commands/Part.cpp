@@ -26,7 +26,7 @@ void RequestHandler::part() {
     if (channelName[0] != '#') {
       channelName = '#' + channelName;
     }
-    // 채널이 존재하지 않을 경우
+    // 채널이 존재하지 않을 때
     if (Server::_channelNames.find(channelName) ==
         Server::_channelNames.end()) {
       _msg.ErrNoSuchChannel(_fd, channelName);
@@ -35,7 +35,7 @@ void RequestHandler::part() {
     Channel *chanToLeave = Server::_channelNames[channelName];
     channelName = chanToLeave->getName();
 
-    // client가 해당 채널 멤버가 아닐 경우
+    // client가 해당 채널 멤버가 아닐 때
     if (!chanToLeave->isMember(_client->getNickname())) {
       _msg.ErrNotOnChannel(_fd, channelName);
       continue;

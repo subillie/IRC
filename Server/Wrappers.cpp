@@ -49,7 +49,7 @@ int Server::Select(int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds,
                    struct timeval *timeout) {
   int val = select(n, readfds, writefds, exceptfds, timeout);
   if (val < 0) {
-    throw std::runtime_error("Select error");
+    throw std::runtime_error("Server close");
   }
   return val;
 }
@@ -65,7 +65,6 @@ int Server::Accept(int s, struct sockaddr *addr, socklen_t *addrlen) {
 int Server::Recv(int fd, char *buffer, int bufLen, int n) {
   int val = recv(fd, buffer, bufLen, n);
   if (val < 0) {
-    // Close(fd); free all에서 닫아줄꺼라 할 필요 없을듯...?
     throw std::runtime_error("Recv error");
   }
   return val;

@@ -45,7 +45,8 @@ class RequestHandler {
   std::string isExistingChannel(const std::string &channel);
 
   void privmsg();
-  void bot(const std::set<std::string> &memberList);
+  void rps(const std::set<std::string> &memberList);
+  void bgp(const std::set<std::string> &memberList);
 
   void kick();
   void invite();
