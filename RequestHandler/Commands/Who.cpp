@@ -4,7 +4,7 @@ void RequestHandler::who() {
   std::string member;
   std::string flag;
   if (_token.size() < 2) {
-    _msg.ErrUnexpected(_fd);
+    _msg.ErrUnexpected();
     return;
   }
   if (_token[1][0] == '#' &&

@@ -2,10 +2,10 @@
 #define CHANNEL_HPP
 
 #include <ctime>
+#include <iostream>
 #include <set>
 #include <sstream>
 #include <string>
-#include <vector>
 
 #include "../Server/Server.hpp"
 
@@ -14,7 +14,6 @@
 #define KEY_CHANNEL 'k'
 #define CLIENT_LIMIT_CHANNEL 'l'
 
-class Client;
 class Messenger;
 
 class Channel {
@@ -39,7 +38,7 @@ class Channel {
   void removeMode(const char& mode);
   void removeOp(const std::string& op);
   void removeMember(const std::string& member);
-  void removeInvitee(const std::string& member);  // TODO: 필요한가?
+  void removeInvitee(const std::string& member);
 
   void setLimit(size_t limit);
   void setName(const std::string& name);

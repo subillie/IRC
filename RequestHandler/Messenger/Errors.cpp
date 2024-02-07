@@ -256,10 +256,5 @@ void Messenger::ErrInvalidModeParam(int fd, const std::string& channel,
   sendToClient(fd);
 }
 
-// unexpected behaviour 에러 코드
-void Messenger::ErrUnexpected(int fd) {
-  //_prefix = SERVER;
-  printRed("Unexpected");
-  (void)fd;
-  // sendToClient(fd);
-}
+// unexpected behaviour 에러
+void Messenger::ErrUnexpected() { printRed("Unexpected behaviour"); }

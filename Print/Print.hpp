@@ -5,7 +5,6 @@
 #include <iostream>
 #include <set>
 #include <string>
-#include <vector>
 
 #include "../Macros/Colors.hpp"
 
@@ -54,26 +53,6 @@ void printDebug(const std::string& key, const T& val) {
   std::cout << "=============\n";
   std::cout << key << ": " << val << std::endl;
   std::cout << "=============\n";
-}
-
-template <typename T>
-void printSet(const std::set<T>& set) {
-  std::cout << "=============\n";
-  for (typename std::set<T>::const_iterator it = set.begin(); it != set.end();
-       it++) {
-    std::cout << *it << " ";
-  }
-  std::cout << std::endl;
-  std::cout << "=============\n";
-}
-
-template <typename T>
-void printVector(std::vector<T> v) {
-  std::cout << "=============\n";
-  for (typename std::vector<T>::iterator it = v.begin(); it != v.end(); it++) {
-    std::cout << *it << " ";
-  }
-  std::cout << "\n=============\n";
 }
 
 void printPikachu();

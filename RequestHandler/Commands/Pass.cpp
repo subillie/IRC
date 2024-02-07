@@ -6,14 +6,19 @@ void RequestHandler::pass() {
   if (_token.size() < 2) {
     _msg.ErrNeedMoreParams(_fd, "PASS");
     return;
-    // 비번 틀림 ERR_PASSWDMISMATCH => close connection
-  } else if (_token[1] != _password) {
+  }
+
+  // 비번 틀림 ERR_PASSWDMISMATCH => close connection
+  if (_token[1] != _password) {
     _msg.ErrPasswdMismatch(_fd);
     return;
-    // 이미 가입 됨 ERR_ALREADYREGISTERED
-  } else if (_client->getIsRegistered()) {
+  }
+
+  // 이미 가입 됨 ERR_ALREADYREGISTERED
+  if (_client->getIsRegistered()) {
     _msg.ErrAlreadyRegistered(_fd);
     return;
   }
+
   _client->setPassword(_token[1]);
 }

@@ -9,10 +9,13 @@
 #include <unistd.h>
 
 #include <cstring>
+#include <ctime>
 #include <map>
 #include <queue>
+// #include <sstream>
 
 #include "../Print/Print.hpp"
+
 #define FD_MAX 1024
 
 class Client;
@@ -47,11 +50,12 @@ class Server {
   static std::map<int, Client *> _clientFds;
   static std::map<std::string, Client *> _clientNicks;
   static std::map<std::string, Channel *> _channelNames;
+  static std::string _serverCreated;
 
   Server(int port, char *password);
   virtual ~Server();
 
-  void run();  // event loop
+  void run();  // Event loop
   void addClient(int fd);
   void deleteClient(int fd);
   static void sendToAllClients(Messenger msg);

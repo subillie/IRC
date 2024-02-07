@@ -5,12 +5,10 @@ void RequestHandler::bgp(const std::set<std::string>& memberList) {
                                      "french toast🍞", "yogurt🥛",
                                      "pancake🥞",      "scrambled egg🥚"};
   const std::string menuLunch[] = {"sandwich🥪", "tomato pasta🍝",  "omurice🍳",
-                                   "donkatsu🍛", "dooboo kimchi🫓", "pizza🍕"};
-  const std::string menuDinner[] = {"cheese burger🍔",
-                                    "sushi🍣"
-                                    "pho🍲🫓",
-                                    "gambas🦐", "kimchi jjigae🥘",
-                                    "samgyeopsal🥩"};
+                                   "donkatsu🍛", "dooboo kimchi🍽️", "pizza🍕"};
+  const std::string menuDinner[] = {"burger🍔",        "sushi🍣",
+                                    "pho🍲",           "gambas🦐",
+                                    "kimchi jjigae🥘", "samgyeopsal🥩"};
   const std::string menuDawn[] = {"chicken🍗",  "ramyeon🍜",  "jokbal🐷",
                                   "bibimbap🥢", "tanghuru🍓", "french fries🍟"};
 
@@ -18,6 +16,7 @@ void RequestHandler::bgp(const std::set<std::string>& memberList) {
   time(&now);
   struct tm* timeInfo = localtime(&now);
   int hour = timeInfo->tm_hour;
+
   srand((unsigned int)time(NULL));
   int random = rand() % 6;
   std::string bgp;
@@ -29,7 +28,8 @@ void RequestHandler::bgp(const std::set<std::string>& memberList) {
     bgp = menuDinner[random];
   else
     bgp = menuDawn[random];
-  bgp = "Today's menu recommendation is ...... < " + bgp + " > !!!!";
+  bgp = "What about... <" + bgp + "> !!!!";
+
   std::set<std::string>::const_iterator it;
   for (it = memberList.begin(); it != memberList.end(); ++it) {
     _msg.setPrefix(_client->getPrefix());

@@ -9,7 +9,7 @@ void RequestHandler::user() {
     return;
   }
   if (!_client->getUsername().empty()) {
-    _msg.ErrUnexpected(_fd);
+    _msg.ErrUnexpected();
     return;
   }
   // : 뒤에는 하나로 침
@@ -27,7 +27,7 @@ void RequestHandler::user() {
   bool isOutOfLen = (username.length() < 1 || username.length() > 12);
   bool isSpecialChar = (username.find_first_not_of("\0@") == std::string::npos);
   if (isOutOfLen || isSpecialChar) {
-    _msg.ErrUnexpected(_fd);
+    _msg.ErrUnexpected();
     return;
   }
   _client->setUsername(username);
@@ -38,7 +38,7 @@ void RequestHandler::user() {
     _client->setIsRegisterd(true);
   } else {
     _msg.ErrNotRegistered(_fd);
-    throw("Quit");
+    throw("Client cannot register to server");
     return;
   }
   std::cout << *_client;  // debug

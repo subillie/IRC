@@ -42,9 +42,8 @@ void RequestHandler::invite() {
     return;
   }
 
-  // command 전송한 유저에게 RPL_INVITING 전송
+  // RPL 및 invitee에게 초대장 전송 (dan-!d@localhost INVITE Wiz #test)
   _msg.RplInviting(_fd, invitee, channel);
-  // 초대할 유저에게 초대장 전송 :dan-!d@localhost INVITE Wiz #test
   chanToInvite->addInvitee(invitee);
   int fdToInvite = Server::_clientNicks[invitee]->getFd();
   _msg.setPrefix(_client->getPrefix());
