@@ -2,17 +2,18 @@
 
 // USER <username> 0 * <realname>
 void RequestHandler::user() {
+  // 이미 등록이 되어있을 때
+  if (_client->getIsRegistered()) {
+    _msg.ErrAlreadyRegistered(_fd);
+    return;
+  }
+
   // nickname을 받지 못했을 때
-  if (_client->getNickname().empty()) {
+  if (_client->getNickname() == "*") {
     _msg.ErrNotRegistered(_fd);
-    throw("Quit");
     return;
   }
-  if (!_client->getUsername().empty()) {
-    _msg.ErrUnexpected();
-    return;
-  }
-  // : 뒤에는 하나로 침
+
   if (_token.size() != 5) {
     _msg.ErrNeedMoreParams(_fd, "USER");
     return;
@@ -23,13 +24,14 @@ void RequestHandler::user() {
   if (_client->getIsRegistered()) {
     return;
   }
-  // max 길이 정해야 함
+
   bool isOutOfLen = (username.length() < 1 || username.length() > 12);
   bool isSpecialChar = (username.find_first_not_of("\0@") == std::string::npos);
   if (isOutOfLen || isSpecialChar) {
     _msg.ErrUnexpected();
     return;
   }
+
   _client->setUsername(username);
   _client->setHostname(hostname);
   _client->setRealname(realname);
@@ -41,7 +43,7 @@ void RequestHandler::user() {
     throw("Client cannot register to server");
     return;
   }
-  std::cout << *_client;  // debug
+  std::cout << *_client;  // Debug
   _msg.RplWelcome(_fd);
   _msg.RplYourHost(_fd);
   _msg.RplCreated(_fd);

@@ -9,7 +9,7 @@
 #include "../../Channel/Channel.hpp"
 #include "../../Client/Client.hpp"
 #include "../../Macros/Characters.hpp"
-#include "../../Print/Print.hpp"  // TODO: delete
+#include "../../Print/Print.hpp"
 #include "../../Server/Server.hpp"
 #include "ErrorMacros.hpp"
 #include "ReplyMacros.hpp"

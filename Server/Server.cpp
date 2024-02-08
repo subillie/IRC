@@ -16,6 +16,7 @@ Server::~Server() {
        ++client) {
     close(client->second->getFd());
     delete (client->second);
+    client->second = NULL;
   }
   Server::_clientFds.clear();
   Server::_clientNicks.clear();
@@ -23,6 +24,7 @@ Server::~Server() {
   for (channel = Server::_channelNames.begin();
        channel != Server::_channelNames.end(); ++channel) {
     delete (channel->second);
+    channel->second = NULL;
   }
   Server::_channelNames.clear();
 }
@@ -55,6 +57,7 @@ void Server::run() {
   while (true) {
     _readySet = _readSet;
     Select(fdCount + 1, &_readySet, 0, 0, 0);
+
     // Accept connection and handle client's requirements
     for (int i = 0; i <= fdCount; i++) {
       if (FD_ISSET(i, &_readySet)) {
@@ -73,16 +76,19 @@ void Server::run() {
           }
           // Handle requirements of 기존 client
         } else {
-          char buffer[512];
-          memset(buffer, 0, sizeof(buffer));
-          if (Recv(i, buffer, sizeof(buffer), 0) == 0) {
+          char recvBuffer[512];
+          memset(recvBuffer, 0, sizeof(recvBuffer));
+          Client *client = _clientFds[i];
+          if (Recv(i, recvBuffer, sizeof(recvBuffer), 0) == 0) {
             printRed("Client closed");
             deleteClient(i);
             --fdCount;
             continue;
           }
-          printDebug("buffer", buffer);  // print buffer for debug
-          parse(buffer);
+          client->buffer += recvBuffer;
+          printDebug("buffer", client->buffer);  // print buffer for debug
+          parse(client->buffer);
+
           try {
             while (!_requests.empty()) {
               RequestHandler requestHandler(_clientFds[i], _requests.front(),
@@ -95,14 +101,14 @@ void Server::run() {
             deleteClient(i);
             --fdCount;
           }
-          memset(buffer, 0, sizeof(buffer));
+          memset(recvBuffer, 0, sizeof(recvBuffer));
         }
       }
     }
   }
 }
 
-void Server::parse(std::string buffer) {
+void Server::parse(std::string &buffer) {
   size_t found = buffer.find("\r\n");
   while (found != std::string::npos) {
     _requests.push(buffer.substr(0, found));
@@ -126,6 +132,7 @@ void Server::deleteClient(int fd) {
     _clientNicks.erase(nick);
   }
   delete (client);
+  client = NULL;
   _clientFds.erase(fd);
 }
 

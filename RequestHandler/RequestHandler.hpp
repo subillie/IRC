@@ -62,6 +62,7 @@ class RequestHandler {
   void keyMode(Channel *channel, const std::string &modestring);
   void limitMode(Channel *channel, const std::string &modestring);
   void handleOpMode(Channel *channel, const std::string &modestring);
+  bool isConnectionMsgs();
 
   void pong();
 

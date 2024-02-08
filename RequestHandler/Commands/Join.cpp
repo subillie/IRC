@@ -23,6 +23,9 @@ void RequestHandler::join() {
   for (; iter != keys.end(); iter++) {
     const std::string& channelName = iter->first;
     const std::string& channelKey = iter->second;
+    if (channelKey[0] != '#') {
+      _msg.ErrBadChanMask(_fd);
+    }
 
     // 채널명이 유효하지 않을 때
     if (channelName.empty() || channelName[0] != '#' ||

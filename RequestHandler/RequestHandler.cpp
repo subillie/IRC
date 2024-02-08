@@ -46,13 +46,21 @@ void RequestHandler::execute() {
   if (_request.empty()) {
     return;
   }
-  Messenger msg;
   parse();
   std::map<std::string, RequestHandler::CommandFunction>::iterator found =
       _commandMap.find(_command);
   if (found == _commandMap.end()) {
-    msg.ErrUnknownCommand(_fd, _command);
+    _msg.ErrUnknownCommand(_fd, _command);
+    return;
+  }
+  if (!isConnectionMsgs() && !_client->getIsRegistered()) {
+    _msg.ErrNotRegistered(_fd);
     return;
   }
   (this->*(found->second))();
+}
+
+bool RequestHandler::isConnectionMsgs() {
+  return (_command == "USER" || _command == "NICK" || _command == "PING" ||
+          _command == "CAP" || _command == "PASS" || _command == "QUIT");
 }

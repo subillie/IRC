@@ -11,6 +11,10 @@ void RequestHandler::part() {
   std::string channelName;
   std::vector<std::string> channels;
   while (getline(ss, channelName, ',')) {
+    if (channelName[0] != '#') {
+      _msg.ErrBadChanMask(_fd);
+      continue;
+    }
     channels.push_back(channelName);
   }
   std::string reason;
@@ -22,10 +26,6 @@ void RequestHandler::part() {
   for (; iter != channels.end(); ++iter) {
     channelName = *iter;
 
-    // client가 입력한 채널명이 #으로 시작하지 않는다면 #을 붙여줌
-    if (channelName[0] != '#') {
-      channelName = '#' + channelName;
-    }
     // 채널이 존재하지 않을 때
     if (Server::_channelNames.find(channelName) ==
         Server::_channelNames.end()) {
@@ -56,6 +56,7 @@ void RequestHandler::part() {
       if (chanToLeave->getMembers().empty()) {
         Server::_channelNames.erase(channelName);
         delete chanToLeave;
+        chanToLeave = NULL;
       }
     }
   }
