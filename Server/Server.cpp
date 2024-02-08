@@ -41,7 +41,7 @@ void Server::init() {
   Setsockopt(_serverFd, SOL_SOCKET, SO_REUSEADDR);
   Bind(_serverFd, reinterpret_cast<struct sockaddr *>(&serverAddr),
        sizeof(serverAddr));
-  Listen(_serverFd, FD_MAX);
+  Listen(_serverFd, FD_SETSIZE);
   FD_ZERO(&_readSet);
   FD_SET(_serverFd, &_readSet);
 }
@@ -59,7 +59,7 @@ void Server::run() {
     for (int i = 0; i <= fdCount; i++) {
       if (FD_ISSET(i, &_readySet)) {
         // Accept connection of a new client
-        if (i == _serverFd && _clientFds.size() <= FD_MAX) {
+        if (i == _serverFd && _clientFds.size() <= FD_SETSIZE) {
           sockaddr_in clientAddr;
           socklen_t clientAddrLen = sizeof(clientAddr);
           clientFd = Accept(_serverFd,
@@ -117,8 +117,8 @@ void Server::addClient(int fd) {
 }
 
 void Server::deleteClient(int fd) {
-  Close(fd);
   FD_CLR(fd, &_readSet);
+  Close(fd);
 
   Client *client = _clientFds[fd];
   std::string nick = client->getNickname();
