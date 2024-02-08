@@ -25,11 +25,11 @@ void RequestHandler::join() {
     const std::string& channelKey = iter->second;
     if (channelName[0] != '#') {
       _msg.ErrBadChanMask(_fd);
+      continue;
     }
 
     // 채널명이 유효하지 않을 때
-    if (channelName.empty() || channelName[0] != '#' ||
-        channelName.length() > MAX_CHANNEL_LEN) {
+    if (channelName.length() > MAX_CHANNEL_LEN) {
       _msg.ErrNoSuchChannel(_fd, channelName);
       continue;
     }
