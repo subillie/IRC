@@ -12,11 +12,8 @@
 #include <ctime>
 #include <map>
 #include <queue>
-// #include <sstream>
 
 #include "../Print/Print.hpp"
-
-#define FD_MAX 1024
 
 class Client;
 class Channel;

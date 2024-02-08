@@ -43,6 +43,9 @@ void RequestHandler::parse() {
 }
 
 void RequestHandler::execute() {
+  if (_request.empty()) {
+    return;
+  }
   Messenger msg;
   parse();
   std::map<std::string, RequestHandler::CommandFunction>::iterator found =

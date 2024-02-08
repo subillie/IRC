@@ -28,7 +28,7 @@ int getPort(const std::string &port) {
 
 void isValidPassword(const std::string &pw) {
   if (pw.length() > 10) {
-    throw std::runtime_error("Password should be no more than 10 characters");
+    throw std::runtime_error("Password maximum length: 10");
   }
   if (pw.find_first_not_of(LOWERCASE + UPPERCASE + DIGIT) !=
       std::string::npos) {
