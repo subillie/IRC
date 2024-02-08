@@ -5,8 +5,6 @@ void RequestHandler::nick() {
   // 올바른 password를 못 받았을 때
   if (_client->getPassword().empty()) {
     _msg.ErrNotRegistered(_fd);
-    std::string prefix = _client->getPrefix();
-    throw("Quit");
     return;
   }
 

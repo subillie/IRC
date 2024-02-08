@@ -8,16 +8,19 @@ void RequestHandler::kick() {
     _msg.ErrNeedMoreParams(_fd, _token[0]);
     return;
   }
+
   // 채널 형식이 올바르지 않을 때
   if (_token[1][0] != '#') {
     _msg.ErrBadChanMask(_fd);
     return;
   }
-  // 해당하는 채널이 없을 때
+
+  // 해당 채널이 존재하지 않을 때
   if (Server::_channelNames.find(_token[1]) == Server::_channelNames.end()) {
     _msg.ErrNoSuchChannel(_fd, _token[1]);
     return;
   }
+
   Channel *chanToKick = Server::_channelNames[_token[1]];
   std::set<std::string> memberList = chanToKick->getMembers();
   std::set<std::string> opList = chanToKick->getOps();

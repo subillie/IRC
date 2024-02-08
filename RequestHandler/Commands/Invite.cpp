@@ -9,6 +9,9 @@ void RequestHandler::invite() {
   }
   std::string invitee = _token[1];
   std::string channel = _token[2];
+  if (channel[0] != '#') {
+    _msg.ErrBadChanMask(_fd);
+  }
 
   // 초대하려는 유저가 존재하지 않을 때
   if (Server::_clientNicks.find(invitee) == Server::_clientNicks.end()) {

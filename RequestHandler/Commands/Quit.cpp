@@ -38,6 +38,7 @@ void RequestHandler::quit() {
     if (channel->getMembers().empty()) {
       Server::_channelNames.erase(*chanIter);
       delete channel;
+      channel = NULL;
     }
   }
   _msg.setParam("ERROR");

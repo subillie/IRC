@@ -1,7 +1,7 @@
 
 #include "Client.hpp"
 
-Client::Client(int fd) : _fd(fd), _isRegistered(false) {}
+Client::Client(int fd) : _fd(fd), _nickname("*"), _isRegistered(false) {}
 
 void Client::setMode(const std::string &mode) { _mode = mode; }
 

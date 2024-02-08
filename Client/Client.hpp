@@ -20,15 +20,21 @@ class Client {
   bool _isRegistered;
 
  public:
+  std::string buffer;
+
   Client(int fd);
+
+  void addChannel(const std::string &channel);
+  void removeChannel(const std::string &channel);
+  bool isMaxJoined() const;
+
   void setMode(const std::string &mode);
   void setUsername(const std::string &username);
   void setNickname(const std::string &nickname);
   void setPassword(const std::string &password);
   void setHostname(const std::string &hostname);
   void setRealname(const std::string &realname);
-  void addChannel(const std::string &channel);
-  void removeChannel(const std::string &channel);
+  void setIsRegisterd(bool val);
   const int &getFd() const;
   const std::string &getMode() const;
   const std::string &getUsername() const;
@@ -38,9 +44,7 @@ class Client {
   const std::string &getRealname() const;
   const std::string getPrefix() const;
   const std::set<std::string> &getChannels() const;
-  bool isMaxJoined() const;
   bool getIsRegistered() const;
-  void setIsRegisterd(bool val);
 };
 
 std::ostream &operator<<(std::ostream &os, const Client &client);
