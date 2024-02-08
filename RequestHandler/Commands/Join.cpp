@@ -23,7 +23,7 @@ void RequestHandler::join() {
   for (; iter != keys.end(); iter++) {
     const std::string& channelName = iter->first;
     const std::string& channelKey = iter->second;
-    if (channelKey[0] != '#') {
+    if (channelName[0] != '#') {
       _msg.ErrBadChanMask(_fd);
     }
 
