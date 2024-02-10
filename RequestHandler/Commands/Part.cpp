@@ -47,17 +47,7 @@ void RequestHandler::part() {
         _msg.setTrailing(reason);
       }
       chanToLeave->sendToAll(_msg);
-      chanToLeave->removeMember(_client->getNickname());
-      chanToLeave->removeOp(_client->getNickname());
-      chanToLeave->removeInvitee(_client->getNickname());
-      _client->removeChannel(channelName);
-
-      // 채널에 멤버가 없으면 채널 삭제
-      if (chanToLeave->getMembers().empty()) {
-        Server::_channelNames.erase(channelName);
-        delete chanToLeave;
-        chanToLeave = NULL;
-      }
+      _client->leaveChannel(chanToLeave);
     }
   }
 }

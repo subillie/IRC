@@ -16,7 +16,7 @@ void Messenger::sendToClient(int fd) {
   std::string response = _prefix + _param + _trailing + CRLF;
   printCyan(response);
   if (send(fd, response.c_str(), response.length(), 0) == -1) {
-    throw std::runtime_error("Send error");
+    throw fd;
   }
   _prefix.clear();
   _param.clear();

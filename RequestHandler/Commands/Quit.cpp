@@ -21,25 +21,12 @@ void RequestHandler::quit() {
     Channel* channel = Server::_channelNames[*chanIter];
 
     // 채널에 있는 모든 멤버들에게 메시지 전송
-    std::set<std::string> members = channel->getMembers();
-    std::set<std::string>::iterator membIter = members.begin();
-    for (; membIter != members.end(); membIter++) {
-      int fd = Server::_clientNicks[*membIter]->getFd();
-      _msg.setPrefix(prefix + " QUIT");
-      _msg.setParam("Quit");
-      _msg.setTrailing(reason);
-      _msg.sendToClient(fd);
-    }
-    channel->removeMember(nickname);
-    channel->removeOp(nickname);
-    channel->removeInvitee(nickname);
+    _msg.setPrefix(prefix + " QUIT");
+    _msg.setParam("Quit");
+    _msg.setTrailing(reason);
+    channel->sendToAll(_msg);
 
-    // 채널에 멤버가 없으면 채널 삭제
-    if (channel->getMembers().empty()) {
-      Server::_channelNames.erase(*chanIter);
-      delete channel;
-      channel = NULL;
-    }
+    _client->leaveChannel(channel);
   }
   _msg.setParam("ERROR");
   _msg.setTrailing("Closing link: (" + Server::_clientFds[_fd]->getHostname() +

@@ -5,6 +5,8 @@
 #include <set>
 #include <string>
 
+#include "../Channel/Channel.hpp"
+
 #define MAX_CHANNEL 10
 
 class Client {
@@ -24,9 +26,9 @@ class Client {
 
   Client(int fd);
 
-  void addChannel(const std::string &channel);
-  void removeChannel(const std::string &channel);
   bool isMaxJoined() const;
+  void addChannel(const std::string &channel);
+  void leaveChannel(Channel *channel);
 
   void setMode(const std::string &mode);
   void setUsername(const std::string &username);

@@ -55,9 +55,7 @@ void RequestHandler::kick() {
         }
         _msg.sendToClient(Server::_clientNicks[*it]->getFd());
       }
-      chanToKick->removeMember(target);
-      chanToKick->removeOp(target);
-      chanToKick->removeInvitee(target);
+      _client->leaveChannel(chanToKick);
     }
   }
 }

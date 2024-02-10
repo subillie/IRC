@@ -86,7 +86,7 @@ void Server::run() {
             continue;
           }
           client->buffer += recvBuffer;
-          printDebug("buffer", client->buffer);  // print buffer for debug
+          printDebug("buffer", client->buffer);  // Print buffer for debug
           parse(client->buffer);
 
           try {
@@ -99,6 +99,10 @@ void Server::run() {
           } catch (const char *quit) {
             printRed(quit);
             deleteClient(i);
+            --fdCount;
+          } catch (const int fdToQuit) {
+            printRed(fdToQuit);
+            deleteClient(fdToQuit);
             --fdCount;
           }
           memset(recvBuffer, 0, sizeof(recvBuffer));
@@ -125,9 +129,17 @@ void Server::addClient(int fd) {
 void Server::deleteClient(int fd) {
   FD_CLR(fd, &_readSet);
   Close(fd);
-
   Client *client = _clientFds[fd];
+
+  // 가입한 모든 채널에서 나가기
+  std::set<std::string> channels = client->getChannels();
   std::string nick = client->getNickname();
+  for (std::set<std::string>::iterator it = channels.begin();
+       it != channels.end(); it++) {
+    Channel *channel = Server::_channelNames[*it];
+    client->leaveChannel(channel);
+  }
+  // server의 client 목록에서 삭제
   if (_clientNicks.find(nick) != _clientNicks.end()) {
     _clientNicks.erase(nick);
   }

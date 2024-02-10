@@ -41,7 +41,7 @@ int main(int ac, char **av) {
     std::cerr << RED << "Usage: ./ircserver <port> <password>" << std::endl;
     return 1;
   }
-  signal(SIGINT, signalHandler);
+  signal(SIGPIPE, signalHandler);
   try {
     isValidPassword(av[2]);
     Server server(getPort(av[1]), av[2]);
