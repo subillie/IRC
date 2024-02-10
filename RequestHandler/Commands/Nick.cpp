@@ -17,6 +17,15 @@ void RequestHandler::nick() {
   const std::string& newNick = _token[1];
   const std::string oldNick = _client->getNickname();
 
+  // 변경하려는 닉네임이 이전과 같은 경우
+  if (oldNick == newNick) return;
+
+  // 중복되는 닉네임이 있는 경우
+  if (isExistingClient(newNick)) {
+    _msg.ErrNickNameInUse(_fd, newNick);
+    return;
+  }
+
   // 닉네임이 규칙에 맞지 않는 경우
   if (std::isdigit(newNick[0])) {
     _msg.ErrErroneusNickName(_fd, newNick);
@@ -26,15 +35,6 @@ void RequestHandler::nick() {
       LOWERCASE + UPPERCASE + SPECIAL_CHAR + DIGIT, 1);
   if (newNick.length() > 31 || pos != std::string::npos) {
     _msg.ErrErroneusNickName(_fd, newNick);
-    return;
-  }
-
-  // 변경하려는 닉네임이 이전과 같은 경우
-  if (oldNick == newNick) return;
-
-  // 중복되는 닉네임이 있는 경우
-  if (isExistingClient(newNick)) {
-    _msg.ErrNickNameInUse(_fd, newNick);
     return;
   }
 
