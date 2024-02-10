@@ -16,16 +16,21 @@ void RequestHandler::nick() {
 
   const std::string& newNick = _token[1];
   const std::string oldNick = _client->getNickname();
+
+  // 변경하려는 닉네임이 이전과 같은 경우
+  if (oldNick == newNick) return;
+
+  // 중복되는 닉네임이 있는 경우
   if (isExistingClient(newNick)) {
     _msg.ErrNickNameInUse(_fd, newNick);
     return;
   }
+
+  // 닉네임이 규칙에 맞지 않는 경우
   if (std::isdigit(newNick[0])) {
     _msg.ErrErroneusNickName(_fd, newNick);
     return;
   }
-
-  // 닉네임이 규칙에 맞지 않는 경우
   size_t pos = newNick.find_first_not_of(
       LOWERCASE + UPPERCASE + SPECIAL_CHAR + DIGIT, 1);
   if (newNick.length() > 31 || pos != std::string::npos) {
@@ -33,8 +38,8 @@ void RequestHandler::nick() {
     return;
   }
 
-  // nickname 설정이 되어 있을 경우
-  if (!oldNick.empty()) {
+  // 등록 후 닉네임 변경하려는 경우
+  if (_client->getIsRegistered()) {
     // : two!root@127.0.0.1 NICK :new
     _msg.setPrefix(_client->getPrefix());
     _msg.setParam("NICK");
@@ -63,6 +68,8 @@ void RequestHandler::nick() {
       channel->addMember(newNick);
     }
   } else {
+    // 등록 전 닉네임 변경하려는 경우
+    if (oldNick != "*") Server::_clientNicks.erase(oldNick);
     _client->setNickname(newNick);
     Server::_clientNicks[newNick] = _client;
   }
