@@ -61,7 +61,6 @@ void RequestHandler::execute() {
   (this->*(found->second))();
   if (_client->getNickname() != "*" && !_client->getHostname().empty() &&
       !_client->getPassword().empty() && !_client->getIsRegistered()) {
-    std::cout << *_client;  // Debug
     _msg.RplWelcome(_fd);
     _msg.RplYourHost(_fd);
     _msg.RplCreated(_fd);
