@@ -101,7 +101,7 @@ void Server::run() {
             deleteClient(i);
             --fdCount;
           } catch (const int fdToQuit) {
-            printRed(fdToQuit);
+            printRed(_clientFds[fdToQuit]->getNickname());
             deleteClient(fdToQuit);
             --fdCount;
           }
