@@ -82,7 +82,6 @@ void Server::run() {
           if (recv(i, recvBuffer, sizeof(recvBuffer), 0) <= 0) {
             printRed("Client closed");
             deleteClient(i);
-            --fdCount;
             continue;
           }
           client->buffer += recvBuffer;
@@ -99,11 +98,9 @@ void Server::run() {
           } catch (const char *quit) {
             printRed(quit);
             deleteClient(i);
-            --fdCount;
           } catch (const int fdToQuit) {
             printRed(_clientFds[fdToQuit]->getNickname());
             deleteClient(fdToQuit);
-            --fdCount;
           }
           memset(recvBuffer, 0, sizeof(recvBuffer));
         }

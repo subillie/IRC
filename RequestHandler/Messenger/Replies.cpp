@@ -70,7 +70,7 @@ void Messenger::RplISupport(int fd) {
   _param = RPL_ISUPPORT + " " + Server::_clientFds[fd]->getNickname() + " " +
            ISUPPORT_PARAMS;
   _trailing = "are supported by this server";
-  printRed("RplMyinfo");
+  printRed("RplISupport");
   sendToClient(fd);
 }
 
