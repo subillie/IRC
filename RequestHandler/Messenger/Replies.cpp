@@ -91,7 +91,16 @@ void Messenger::RplEndOfWho(int fd, const std::string& mask) {
   sendToClient(fd);
 }
 
-void Messenger::RplChannelModeIS(int fd, const std::string& channel) {
+void Messenger::RplEndOfWhoIs(int fd, const std::string& client) {
+  _prefix = SERVER;
+  _param = RPL_ENDOFWHOIS + " " + Server::_clientFds[fd]->getNickname() + " " +
+           client;
+  _trailing = "End of /WHOIS list";
+  printRed("RplEndOfWhoIs");
+  sendToClient(fd);
+}
+
+void Messenger::RplChannelModeIs(int fd, const std::string& channel) {
   _prefix = SERVER;
   _param = RPL_CHANNELMODEIS + " " + Server::_clientFds[fd]->getNickname() +
            " " + channel;
@@ -100,7 +109,7 @@ void Messenger::RplChannelModeIS(int fd, const std::string& channel) {
   for (std::set<char>::iterator it = chanModes.begin(); it != chanModes.end();
        ++it)
     _trailing += *it;
-  printRed("RplChannelModeIS");
+  printRed("RplChannelModeIs");
   sendToClient(fd);
 }
 

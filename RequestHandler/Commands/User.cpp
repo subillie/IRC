@@ -2,18 +2,6 @@
 
 // USER <username> 0 * <realname>
 void RequestHandler::user() {
-  // 이미 등록이 되어있을 때
-  if (_client->getIsRegistered()) {
-    _msg.ErrAlreadyRegistered(_fd);
-    return;
-  }
-
-  // nickname을 받지 못했을 때
-  if (_client->getNickname() == "*") {
-    _msg.ErrNotRegistered(_fd);
-    return;
-  }
-
   if (_token.size() != 5) {
     _msg.ErrNeedMoreParams(_fd, "USER");
     return;
@@ -22,6 +10,7 @@ void RequestHandler::user() {
   std::string hostname = _token[3];
   std::string realname = _token[4];
   if (_client->getIsRegistered()) {
+    _msg.ErrAlreadyRegistered(_fd);
     return;
   }
 
@@ -35,18 +24,4 @@ void RequestHandler::user() {
   _client->setUsername(username);
   _client->setHostname(hostname);
   _client->setRealname(realname);
-  // User 정보가 다 있을 경우 인증 확인
-  if (!(_client->getUsername().empty())) {
-    _client->setIsRegisterd(true);
-  } else {
-    _msg.ErrNotRegistered(_fd);
-    throw("Client cannot register to server");
-    return;
-  }
-  std::cout << *_client;  // Debug
-  _msg.RplWelcome(_fd);
-  _msg.RplYourHost(_fd);
-  _msg.RplCreated(_fd);
-  _msg.RplMyinfo(_fd);
-  _msg.RplISupport(_fd);
 }

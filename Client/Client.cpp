@@ -1,7 +1,32 @@
-
 #include "Client.hpp"
 
-Client::Client(int fd) : _fd(fd), _nickname("*"), _isRegistered(false) {}
+Client::Client(int fd) : _fd(fd), _isRegistered(false), _nickname("*") {}
+
+bool Client::isMaxJoined() const { return _channels.size() == MAX_CHANNEL; }
+
+void Client::addChannel(const std::string &channel) {
+  _channels.insert(channel);
+}
+
+void Client::leaveChannel(Channel *channel) {
+  // Client의 채널 목록에서 제거
+  std::string channelName = channel->getName();
+  _channels.erase(channelName);
+
+  // 채널의 Client 목록에서 제거
+  channel->removeOp(_nickname);
+  channel->removeInvitee(_nickname);
+  channel->removeMember(_nickname);
+
+  // 빈 채널이 되면 채널 삭제
+  if (channel->getMembers().empty()) {
+    Server::_channelNames.erase(channelName);
+    delete channel;
+    channel = NULL;
+  }
+}
+
+void Client::setIsRegistered(bool val) { _isRegistered = val; }
 
 void Client::setMode(const std::string &mode) { _mode = mode; }
 
@@ -15,15 +40,9 @@ void Client::setHostname(const std::string &hostname) { _hostname = hostname; }
 
 void Client::setRealname(const std::string &realname) { _realname = realname; }
 
-void Client::addChannel(const std::string &channel) {
-  _channels.insert(channel);
-}
-
-void Client::removeChannel(const std::string &channel) {
-  _channels.erase(channel);
-}
-
 const int &Client::getFd() const { return _fd; }
+
+bool Client::getIsRegistered() const { return _isRegistered; }
 
 const std::string &Client::getMode() const { return _mode; }
 
@@ -42,12 +61,6 @@ const std::string Client::getPrefix() const {
 }
 
 const std::set<std::string> &Client::getChannels() const { return _channels; }
-
-bool Client::isMaxJoined() const { return _channels.size() == MAX_CHANNEL; }
-
-bool Client::getIsRegistered() const { return _isRegistered; }
-
-void Client::setIsRegisterd(bool val) { _isRegistered = val; }
 
 std::ostream &operator<<(std::ostream &os, const Client &client) {
   os << "Client Information:" << std::endl;

@@ -18,6 +18,7 @@
 #define RPL_UMODEIS std::string("221")
 #define RPL_AWAY std::string("301")
 #define RPL_ENDOFWHO std::string("315")
+#define RPL_ENDOFWHOIS std::string("318")
 #define RPL_CHANNELMODEIS std::string("324")
 #define RPL_NOTOPIC std::string("331")
 #define RPL_CREATIONTIME std::string("329")

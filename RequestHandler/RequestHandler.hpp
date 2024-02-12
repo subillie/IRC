@@ -67,6 +67,7 @@ class RequestHandler {
   void pong();
 
   void who();
+  void whois();
 
  public:
   RequestHandler(Client *client, const std::string &request,

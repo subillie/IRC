@@ -61,11 +61,3 @@ int Server::Accept(int s, struct sockaddr *addr, socklen_t *addrlen) {
   }
   return val;
 }
-
-int Server::Recv(int fd, char *buffer, int bufLen, int n) {
-  int val = recv(fd, buffer, bufLen, n);
-  if (val < 0) {
-    throw std::runtime_error("Recv error");
-  }
-  return val;
-}
