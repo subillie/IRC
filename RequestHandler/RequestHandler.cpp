@@ -20,6 +20,7 @@ RequestHandler::RequestHandler(Client* client, const std::string& request,
   _commandMap["TOPIC"] = &RequestHandler::topic;
   _commandMap["QUIT"] = &RequestHandler::quit;
   _commandMap["WHO"] = &RequestHandler::who;
+  _commandMap["WHOIS"] = &RequestHandler::whois;
 }
 
 void RequestHandler::parse() {
@@ -58,6 +59,16 @@ void RequestHandler::execute() {
     return;
   }
   (this->*(found->second))();
+  if (_client->getNickname() != "*" && !_client->getHostname().empty() &&
+      !_client->getPassword().empty() && !_client->getIsRegistered()) {
+    std::cout << *_client;  // Debug
+    _msg.RplWelcome(_fd);
+    _msg.RplYourHost(_fd);
+    _msg.RplCreated(_fd);
+    _msg.RplMyinfo(_fd);
+    _msg.RplISupport(_fd);
+    _client->setIsRegistered(true);
+  }
 }
 
 bool RequestHandler::isConnectionMsgs() {

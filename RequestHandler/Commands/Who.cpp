@@ -22,3 +22,9 @@ void RequestHandler::who() {
   }
   _msg.RplEndOfWho(_fd, _token[1]);
 }
+
+void RequestHandler::whois() {
+  if (_token.size() < 2) return;
+
+  _msg.RplEndOfWhoIs(_fd, _token[1]);
+}

@@ -79,7 +79,7 @@ void Server::run() {
           char recvBuffer[512];
           memset(recvBuffer, 0, sizeof(recvBuffer));
           Client *client = _clientFds[i];
-          if (Recv(i, recvBuffer, sizeof(recvBuffer), 0) == 0) {
+          if (recv(i, recvBuffer, sizeof(recvBuffer), 0) <= 0) {
             printRed("Client closed");
             deleteClient(i);
             --fdCount;

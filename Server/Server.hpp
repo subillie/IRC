@@ -24,7 +24,7 @@ class Server {
   const int _port;
   const char *_password;
   int _serverFd;
-  fd_set _readSet;   // 초기 상태의 set
+  fd_set _readSet;   // loop별 초기 상태의 set
   fd_set _readySet;  // event 발생으로 변한 set
   std::queue<std::string> _requests;
 
@@ -41,7 +41,6 @@ class Server {
   int Select(int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds,
              struct timeval *timeout);
   int Accept(int s, struct sockaddr *addr, socklen_t *addrlen);
-  int Recv(int fd, char *buffer, int bufLen, int n);
 
  public:
   static std::map<int, Client *> _clientFds;

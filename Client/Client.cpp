@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client(int fd) : _fd(fd), _nickname("*"), _isRegistered(false) {}
+Client::Client(int fd) : _fd(fd), _isRegistered(false), _nickname("*") {}
 
 bool Client::isMaxJoined() const { return _channels.size() == MAX_CHANNEL; }
 
@@ -26,6 +26,8 @@ void Client::leaveChannel(Channel *channel) {
   }
 }
 
+void Client::setIsRegistered(bool val) { _isRegistered = val; }
+
 void Client::setMode(const std::string &mode) { _mode = mode; }
 
 void Client::setUsername(const std::string &username) { _username = username; }
@@ -39,6 +41,8 @@ void Client::setHostname(const std::string &hostname) { _hostname = hostname; }
 void Client::setRealname(const std::string &realname) { _realname = realname; }
 
 const int &Client::getFd() const { return _fd; }
+
+bool Client::getIsRegistered() const { return _isRegistered; }
 
 const std::string &Client::getMode() const { return _mode; }
 
@@ -57,10 +61,6 @@ const std::string Client::getPrefix() const {
 }
 
 const std::set<std::string> &Client::getChannels() const { return _channels; }
-
-bool Client::getIsRegistered() const { return _isRegistered; }
-
-void Client::setIsRegisterd(bool val) { _isRegistered = val; }
 
 std::ostream &operator<<(std::ostream &os, const Client &client) {
   os << "Client Information:" << std::endl;
