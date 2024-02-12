@@ -1,6 +1,6 @@
 CC 		=	c++
 
-CFLAGS 	=	-std=c++98 -Wall -Wextra -Werror -g -fsanitize=address
+CFLAGS 	=	-std=c++98 -Wall -Wextra -Werror
 
 NAME 	=	ircserv
 
