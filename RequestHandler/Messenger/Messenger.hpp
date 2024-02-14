@@ -19,6 +19,7 @@ class Messenger {
   std::string _prefix;
   std::string _param;
   std::string _trailing;
+  fd_set _writeSet;
 
  public:
   Messenger();
@@ -84,12 +85,16 @@ class Messenger {
   void setPrefix(const std::string& prefix);
   void setParam(const std::string& param);
   void setTrailing(const std::string& trailing);
-  void sendToClient(int fd);
+  void addRespondToClient(int fd);
+  void addRespondToChannel(Channel* channel);
 
   // getter
   const std::string& getPrefix() const;
   const std::string& getParam() const;
   const std::string& getTrailing() const;
+  const fd_set& getWriteSet() const;
+
+  void addWriteSet(int fd);
 };
 
 #endif

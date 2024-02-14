@@ -97,11 +97,15 @@ void RequestHandler::addUser(Channel* chanToJoin) {
   std::set<std::string>::const_iterator membIter;
 
   // one_!root@127.0.0.1 JOIN :#bbbbb
-  Messenger joinMsg;
-  joinMsg.setPrefix(_client->getPrefix());
-  joinMsg.setParam("JOIN");
-  joinMsg.setTrailing(channelName);
-  chanToJoin->sendToAll(joinMsg);
+  _msg.setPrefix(_client->getPrefix());
+  _msg.setParam("JOIN");
+  _msg.setTrailing(channelName);
+  _msg.addRespondToChannel(chanToJoin);
+  //   Messenger joinMsg;
+  //   joinMsg.setPrefix(_client->getPrefix());
+  //   joinMsg.setParam("JOIN");
+  //   joinMsg.setTrailing(channelName);
+  // chanToJoin->sendToAll(joinMsg);
 
   // 채널 모든 멤버를 trailing에 담아서 보냄
   std::string trailing;

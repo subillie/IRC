@@ -52,7 +52,7 @@ void RequestHandler::privmsg() {
           _msg.setPrefix(_client->getPrefix());
           _msg.setParam("PRIVMSG " + _token[1]);
           _msg.setTrailing(_token[2]);
-          _msg.sendToClient(Server::_clientNicks[*it]->getFd());
+          _msg.addRespondToClient(Server::_clientNicks[*it]->getFd());
         }
       }
     } else {
@@ -64,7 +64,7 @@ void RequestHandler::privmsg() {
       _msg.setPrefix(_client->getPrefix());
       _msg.setParam("PRIVMSG " + _token[1]);
       _msg.setTrailing(_token[2]);
-      _msg.sendToClient(Server::_clientNicks[_token[1]]->getFd());
+      _msg.addRespondToClient(Server::_clientNicks[_token[1]]->getFd());
     }
   }
 }

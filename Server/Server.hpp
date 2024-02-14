@@ -24,8 +24,8 @@ class Server {
   const int _port;
   const char *_password;
   int _serverFd;
-  fd_set _readSet;   // loop별 초기 상태의 set
-  fd_set _readySet;  // event 발생으로 변한 set
+  fd_set _readSet;   // read event
+  fd_set _writeSet;  // write event
   std::queue<std::string> _requests;
 
   void init();  // Server init : Select function
@@ -54,7 +54,9 @@ class Server {
   void run();  // Event loop
   void addClient(int fd);
   void deleteClient(int fd);
-  static void sendToAllClients(Messenger msg);
+
+  fd_set updateWriteSet(fd_set writeSet, int fds);
+  // static void sendToAllClients(Messenger msg); //not used
 };
 
 #endif

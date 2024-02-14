@@ -35,7 +35,7 @@ void RequestHandler::bgp(const std::set<std::string>& memberList) {
     _msg.setPrefix(_client->getPrefix());
     _msg.setParam("PRIVMSG " + _token[1]);
     _msg.setTrailing(bgp);
-    _msg.sendToClient(Server::_clientNicks[*it]->getFd());
+    _msg.addRespondToClient(Server::_clientNicks[*it]->getFd());
   }
 }
 
@@ -56,6 +56,6 @@ void RequestHandler::rps(const std::set<std::string>& memberList) {
     _msg.setPrefix(_client->getPrefix());
     _msg.setParam("PRIVMSG " + _token[1]);
     _msg.setTrailing(rps);
-    _msg.sendToClient(Server::_clientNicks[*it]->getFd());
+    _msg.addRespondToClient(Server::_clientNicks[*it]->getFd());
   }
 }

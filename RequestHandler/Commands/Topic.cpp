@@ -60,6 +60,7 @@ void RequestHandler::topic() {
   _msg.setPrefix(_client->getPrefix());
   _msg.setParam("TOPIC " + channel);
   _msg.setTrailing(newtopic);
-  chanToTopic->sendToAll(_msg);
+  // chanToTopic->sendToAll(_msg);
+  _msg.addRespondToChannel(chanToTopic);
   chanToTopic->setTopic(newtopic);
 }

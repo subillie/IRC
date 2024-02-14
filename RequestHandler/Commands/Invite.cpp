@@ -51,5 +51,5 @@ void RequestHandler::invite() {
   int fdToInvite = Server::_clientNicks[invitee]->getFd();
   _msg.setPrefix(_client->getPrefix());
   _msg.setParam("INVITE " + invitee + " " + channel);
-  _msg.sendToClient(fdToInvite);
+  _msg.addRespondToClient(fdToInvite);
 }

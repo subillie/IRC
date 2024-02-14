@@ -14,5 +14,5 @@ void RequestHandler::pong() {
   _msg.setPrefix(SERVER);
   _msg.setParam("PONG " + SERVER);
   _msg.setTrailing(_token[1]);
-  _msg.sendToClient(_fd);
+  _msg.addRespondToClient(_fd);
 }

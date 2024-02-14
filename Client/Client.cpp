@@ -1,6 +1,7 @@
 #include "Client.hpp"
 
-Client::Client(int fd) : _fd(fd), _isRegistered(false), _nickname("*") {}
+Client::Client(int fd)
+    : _fd(fd), _isRegistered(false), _isQuited(false), _nickname("*") {}
 
 bool Client::isMaxJoined() const { return _channels.size() == MAX_CHANNEL; }
 
@@ -28,6 +29,8 @@ void Client::leaveChannel(Channel *channel) {
 
 void Client::setIsRegistered(bool val) { _isRegistered = val; }
 
+void Client::setIsQuited(bool val) { _isQuited = val; }
+
 void Client::setMode(const std::string &mode) { _mode = mode; }
 
 void Client::setUsername(const std::string &username) { _username = username; }
@@ -43,6 +46,8 @@ void Client::setRealname(const std::string &realname) { _realname = realname; }
 const int &Client::getFd() const { return _fd; }
 
 bool Client::getIsRegistered() const { return _isRegistered; }
+
+bool Client::getIsQuited() const { return _isQuited; };
 
 const std::string &Client::getMode() const { return _mode; }
 
@@ -61,6 +66,25 @@ const std::string Client::getPrefix() const {
 }
 
 const std::set<std::string> &Client::getChannels() const { return _channels; }
+
+void Client::sendResponds() {
+  while (!_responds.empty()) {
+    std::string response = _responds.front();
+    printRed(response);
+    if (send(_fd, response.c_str(), response.length(), 0) == -1) {
+      printRed(response);
+      throw _fd;
+    }
+    _responds.pop();
+  }
+  if (_isQuited) {
+    throw _fd;
+  }
+}
+
+void Client::addResponds(const std::string &responds) {
+  _responds.push(responds);
+}
 
 std::ostream &operator<<(std::ostream &os, const Client &client) {
   os << "Client Information:" << std::endl;
