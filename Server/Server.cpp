@@ -95,9 +95,12 @@ void Server::run() {
                                           _password);
             _requests.pop();
             requestHandler.execute();
-            // writeSet에 전송할 fd추가
+            // WriteSet에 전송할 fd추가
             _writeSet = updateWriteSet(
                 _writeSet, requestHandler.getMsgWriteSet(), fdCount);
+            // Quit 명령어 들어왔을 때 readSet 제거
+            if (_clientFds[i]->getIsQuit())
+              if (FD_ISSET(i, &_readSet)) FD_CLR(i, &_readSet);
           }
           memset(recvBuffer, 0, sizeof(recvBuffer));
         }
@@ -105,11 +108,8 @@ void Server::run() {
       if (FD_ISSET(i, &write)) {
         try {
           Client *writeClient = _clientFds[i];
-          // client에 저장된 replies를 전송
-          writeClient->sendReplies();
-          // check send error
-        } catch (const int fdToQuit) {
-          // printRed(_clientFds[fdToQuit]->getNickname()); //debug
+          writeClient->sendReplies();   // Client에 저장된 replies를 전송
+        } catch (const int fdToQuit) {  // Check send error
           deleteClient(fdToQuit);
         }
         FD_CLR(i, &_writeSet);
