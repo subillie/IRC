@@ -19,10 +19,6 @@ void Messenger::addReplyToClient(int fd) {
   std::string reply = _prefix + _param + _trailing + CRLF;
   printCyan(reply);
   client->addReplies(reply);
-  // client[fd]->request <- reply
-  //   if (send(fd, reply.c_str(), reply.length(), 0) == -1) {
-  //     throw fd;
-  //   }
   addWriteSet(fd);
   _prefix.clear();
   _param.clear();

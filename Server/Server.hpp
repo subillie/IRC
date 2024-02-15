@@ -51,12 +51,11 @@ class Server {
   Server(int port, char *password);
   virtual ~Server();
 
-  void run();  // Event loop
+  void run();
   void addClient(int fd);
   void deleteClient(int fd);
 
   fd_set updateWriteSet(fd_set mainSet, fd_set writeSet, int fds);
-  // static void sendToAllClients(Messenger msg); //not used
 };
 
 #endif

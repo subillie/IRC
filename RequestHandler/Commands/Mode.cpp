@@ -205,7 +205,6 @@ void RequestHandler::inviteMode(Channel* channel,
                      : channel->removeMode(INVITE_ONLY_CHANNEL);
   _msg.setParam("MODE " + channel->getName());
   _msg.setTrailing(modestring);
-  // channel->sendToAll(_msg);
   _msg.addReplyToChannel(channel);
 }
 
@@ -239,6 +238,5 @@ void RequestHandler::keyMode(Channel* channel, const std::string& modestring) {
     channel->setPassword("");
   }
   _msg.setTrailing(channel->getPassword());
-  // channel->sendToAll(_msg);
   _msg.addReplyToChannel(channel);
 }

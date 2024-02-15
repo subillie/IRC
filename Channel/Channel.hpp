@@ -58,8 +58,6 @@ class Channel {
   bool isMember(const std::string& nick) const;
   bool isInvitee(const std::string& nick) const;
   bool isMode(const char& mode) const;
-
-  //   void sendToAll(Messenger& msg) const; //not use
 };
 
 std::ostream& operator<<(std::ostream& os, const Channel& channel);

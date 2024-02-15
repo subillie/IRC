@@ -109,7 +109,7 @@ void Server::run() {
           writeClient->sendReplies();
           // check send error
         } catch (const int fdToQuit) {
-          printRed(_clientFds[fdToQuit]->getNickname());
+          // printRed(_clientFds[fdToQuit]->getNickname()); //debug
           deleteClient(fdToQuit);
         }
         FD_CLR(i, &_writeSet);
@@ -159,17 +159,7 @@ fd_set Server::updateWriteSet(fd_set mainSet, fd_set writeSet, int fds) {
   for (int i = 0; i <= fds; i++) {
     if (FD_ISSET(i, &writeSet) && !FD_ISSET(i, &newWriteSet)) {
       FD_SET(i, &newWriteSet);
-      std::cout << "update set :" << i << std::endl;
     }
   }
   return (newWriteSet);
 }
-
-// void Server::sendToAllClients(Messenger msg) {
-//   for (std::map<int, Client *>::const_iterator it = _clientFds.begin();
-//        it != _clientFds.end(); it++) {
-//     Messenger copy(msg);
-//     const int &fd = it->first;
-//     copy.addReplyToClient(fd);
-//   }
-// }

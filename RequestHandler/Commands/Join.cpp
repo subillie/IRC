@@ -101,11 +101,6 @@ void RequestHandler::addUser(Channel* chanToJoin) {
   _msg.setParam("JOIN");
   _msg.setTrailing(channelName);
   _msg.addReplyToChannel(chanToJoin);
-  //   Messenger joinMsg;
-  //   joinMsg.setPrefix(_client->getPrefix());
-  //   joinMsg.setParam("JOIN");
-  //   joinMsg.setTrailing(channelName);
-  // chanToJoin->sendToAll(joinMsg);
 
   // 채널 모든 멤버를 trailing에 담아서 보냄
   std::string trailing;
