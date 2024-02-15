@@ -21,7 +21,7 @@ class Client {
   std::string _hostname;
   std::string _realname;
   std::set<std::string> _channels;
-  std::queue<std::string> _responds;
+  std::queue<std::string> _replies;
 
  public:
   std::string buffer;
@@ -33,7 +33,7 @@ class Client {
   void leaveChannel(Channel *channel);
 
   void setIsRegistered(bool val);
-  void setisQuit(bool val);
+  void setIsQuit(bool val);
   void setMode(const std::string &mode);
   void setUsername(const std::string &username);
   void setNickname(const std::string &nickname);
@@ -42,7 +42,7 @@ class Client {
   void setRealname(const std::string &realname);
   const int &getFd() const;
   bool getIsRegistered() const;
-  bool getisQuit() const;
+  bool getIsQuit() const;
   const std::string &getMode() const;
   const std::string &getUsername() const;
   const std::string &getNickname() const;
@@ -52,8 +52,8 @@ class Client {
   const std::string getPrefix() const;
   const std::set<std::string> &getChannels() const;
 
-  void sendResponds();
-  void addResponds(const std::string &responds);
+  void sendReplies();
+  void addReplies(const std::string &replies);
 };
 
 std::ostream &operator<<(std::ostream &os, const Client &client);

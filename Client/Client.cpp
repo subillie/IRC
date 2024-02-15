@@ -29,7 +29,7 @@ void Client::leaveChannel(Channel *channel) {
 
 void Client::setIsRegistered(bool val) { _isRegistered = val; }
 
-void Client::setisQuit(bool val) { _isQuit = val; }
+void Client::setIsQuit(bool val) { _isQuit = val; }
 
 void Client::setMode(const std::string &mode) { _mode = mode; }
 
@@ -47,7 +47,7 @@ const int &Client::getFd() const { return _fd; }
 
 bool Client::getIsRegistered() const { return _isRegistered; }
 
-bool Client::getisQuit() const { return _isQuit; };
+bool Client::getIsQuit() const { return _isQuit; };
 
 const std::string &Client::getMode() const { return _mode; }
 
@@ -67,24 +67,22 @@ const std::string Client::getPrefix() const {
 
 const std::set<std::string> &Client::getChannels() const { return _channels; }
 
-void Client::sendResponds() {
-  while (!_responds.empty()) {
-    std::string response = _responds.front();
+void Client::sendReplies() {
+  while (!_replies.empty()) {
+    std::string response = _replies.front();
     printRed(response);
     if (send(_fd, response.c_str(), response.length(), 0) == -1) {
       printRed(response);
       throw _fd;
     }
-    _responds.pop();
+    _replies.pop();
   }
   if (_isQuit) {
     throw _fd;
   }
 }
 
-void Client::addResponds(const std::string &responds) {
-  _responds.push(responds);
-}
+void Client::addReplies(const std::string &replies) { _replies.push(replies); }
 
 std::ostream &operator<<(std::ostream &os, const Client &client) {
   os << "Client Information:" << std::endl;

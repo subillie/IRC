@@ -38,7 +38,7 @@ void Messenger::RplWelcome(int fd) {
   _param = RPL_WELCOME + " " + nick;
   _trailing = squirtle + hello + nick;
   printRed("RplWelcome");
-  addRespondToClient(fd);
+  addReplyToClient(fd);
 }
 
 void Messenger::RplYourHost(int fd) {
@@ -46,14 +46,14 @@ void Messenger::RplYourHost(int fd) {
   _param = RPL_YOURHOST + " " + Server::_clientFds[fd]->getNickname();
   _trailing = "Your host is " + SERVER + ", running version " + VERSION;
   printRed("RplYourHost");
-  addRespondToClient(fd);
+  addReplyToClient(fd);
 }
 void Messenger::RplCreated(int fd) {
   _prefix = SERVER;
   _param = RPL_CREATED + " " + Server::_clientFds[fd]->getNickname();
   _trailing = "This server was created " + Server::_serverCreated;
   printRed("RplCreated");
-  addRespondToClient(fd);
+  addReplyToClient(fd);
 }
 
 void Messenger::RplMyinfo(int fd) {
@@ -62,7 +62,7 @@ void Messenger::RplMyinfo(int fd) {
            SERVER + " " + VERSION + " " + AVAILABLE_USER_MODES + " " +
            AVAILABLE_CHAN_MODES;
   printRed("RplMyinfo");
-  addRespondToClient(fd);
+  addReplyToClient(fd);
 }
 
 void Messenger::RplISupport(int fd) {
@@ -71,7 +71,7 @@ void Messenger::RplISupport(int fd) {
            ISUPPORT_PARAMS;
   _trailing = "are supported by this server";
   printRed("RplISupport");
-  addRespondToClient(fd);
+  addReplyToClient(fd);
 }
 
 void Messenger::RplUModeIs(int fd, const std::string& usermode) {
@@ -79,7 +79,7 @@ void Messenger::RplUModeIs(int fd, const std::string& usermode) {
   _param = RPL_UMODEIS + " " + Server::_clientFds[fd]->getNickname() + " " +
            usermode;
   printRed("RplUModeIs");
-  addRespondToClient(fd);
+  addReplyToClient(fd);
 }
 
 void Messenger::RplEndOfWho(int fd, const std::string& mask) {
@@ -88,7 +88,7 @@ void Messenger::RplEndOfWho(int fd, const std::string& mask) {
       RPL_ENDOFWHO + " " + Server::_clientFds[fd]->getNickname() + " " + mask;
   _trailing = "End of /WHO list";
   printRed("RplEndOfWho");
-  addRespondToClient(fd);
+  addReplyToClient(fd);
 }
 
 void Messenger::RplEndOfWhoIs(int fd, const std::string& client) {
@@ -97,7 +97,7 @@ void Messenger::RplEndOfWhoIs(int fd, const std::string& client) {
            client;
   _trailing = "End of /WHOIS list";
   printRed("RplEndOfWhoIs");
-  addRespondToClient(fd);
+  addReplyToClient(fd);
 }
 
 void Messenger::RplChannelModeIs(int fd, const std::string& channel) {
@@ -110,7 +110,7 @@ void Messenger::RplChannelModeIs(int fd, const std::string& channel) {
        ++it)
     _trailing += *it;
   printRed("RplChannelModeIs");
-  addRespondToClient(fd);
+  addReplyToClient(fd);
 }
 
 void Messenger::RplNoTopic(int fd, const std::string& channel) {
@@ -119,7 +119,7 @@ void Messenger::RplNoTopic(int fd, const std::string& channel) {
       RPL_NOTOPIC + " " + Server::_clientFds[fd]->getNickname() + " " + channel;
   _trailing = "No topic is set";
   printRed("RplNoTopic");
-  addRespondToClient(fd);
+  addReplyToClient(fd);
 }
 
 void Messenger::RplCreationTime(int fd, const std::string& channel) {
@@ -128,7 +128,7 @@ void Messenger::RplCreationTime(int fd, const std::string& channel) {
            " " + channel + " " +
            Server::_channelNames[channel]->getCreationTime();
   printRed("RplCreationTime");
-  addRespondToClient(fd);
+  addReplyToClient(fd);
   RplCreated(fd);
 }
 
@@ -139,7 +139,7 @@ void Messenger::RplTopic(int fd, const std::string& channel,
       RPL_TOPIC + " " + Server::_clientFds[fd]->getNickname() + " " + channel;
   _trailing = topic;
   printRed("RplTopic");
-  addRespondToClient(fd);
+  addReplyToClient(fd);
 }
 
 void Messenger::RplInviteList(int fd, const std::string& channel) {
@@ -147,7 +147,7 @@ void Messenger::RplInviteList(int fd, const std::string& channel) {
   _param = RPL_INVITELIST + " " + Server::_clientFds[fd]->getNickname() + " " +
            channel;
   printRed("RplInviteList");
-  addRespondToClient(fd);
+  addReplyToClient(fd);
 }
 
 void Messenger::RplInviting(int fd, const std::string& invitee,
@@ -156,7 +156,7 @@ void Messenger::RplInviting(int fd, const std::string& invitee,
   _param = RPL_INVITING + " " + Server::_clientFds[fd]->getNickname() + " " +
            invitee + " " + channel;
   printRed("RplInviting");
-  addRespondToClient(fd);
+  addReplyToClient(fd);
 }
 
 void Messenger::RplWhoReply(int fd, const std::string& mask,
@@ -169,7 +169,7 @@ void Messenger::RplWhoReply(int fd, const std::string& mask,
            " " + mask + " " + flag;
   _trailing = "0 " + client->getRealname();
   printRed("RplWhoReply");
-  addRespondToClient(fd);
+  addReplyToClient(fd);
 }
 
 void Messenger::RplNamReply(int fd, const std::string& channel) {
@@ -177,7 +177,7 @@ void Messenger::RplNamReply(int fd, const std::string& channel) {
   _param = RPL_NAMREPLY + " " + Server::_clientFds[fd]->getNickname() + " = " +
            channel;
   printRed("RplNamReply");
-  addRespondToClient(fd);
+  addReplyToClient(fd);
 }
 
 void Messenger::RplEndOfNames(int fd, const std::string& channel) {
@@ -186,7 +186,7 @@ void Messenger::RplEndOfNames(int fd, const std::string& channel) {
            channel;
   _trailing = "End of /NAMES list";
   printRed("RplEndOfNames");
-  addRespondToClient(fd);
+  addReplyToClient(fd);
 }
 
 void Messenger::RplEndOfBanList(int fd, const std::string& channel) {
@@ -195,5 +195,5 @@ void Messenger::RplEndOfBanList(int fd, const std::string& channel) {
            " " + channel;
   _trailing = "End of channel ban list";
   printRed("RplEndOfBanList");
-  addRespondToClient(fd);
+  addReplyToClient(fd);
 }

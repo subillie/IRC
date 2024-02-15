@@ -105,8 +105,8 @@ void Server::run() {
       if (FD_ISSET(i, &write)) {
         try {
           Client *writeClient = _clientFds[i];
-          // client에 저장된 responds를 전송
-          writeClient->sendResponds();
+          // client에 저장된 replies를 전송
+          writeClient->sendReplies();
           // check send error
         } catch (const int fdToQuit) {
           printRed(_clientFds[fdToQuit]->getNickname());
@@ -171,6 +171,6 @@ fd_set Server::updateWriteSet(fd_set writeSet, int fds) {
 //        it != _clientFds.end(); it++) {
 //     Messenger copy(msg);
 //     const int &fd = it->first;
-//     copy.addRespondToClient(fd);
+//     copy.addReplyToClient(fd);
 //   }
 // }

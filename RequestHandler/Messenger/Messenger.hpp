@@ -85,8 +85,8 @@ class Messenger {
   void setPrefix(const std::string& prefix);
   void setParam(const std::string& param);
   void setTrailing(const std::string& trailing);
-  void addRespondToClient(int fd);
-  void addRespondToChannel(Channel* channel);
+  void addReplyToClient(int fd);
+  void addReplyToChannel(Channel* channel);
 
   // getter
   const std::string& getPrefix() const;

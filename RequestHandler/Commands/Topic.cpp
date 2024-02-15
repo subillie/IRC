@@ -61,6 +61,6 @@ void RequestHandler::topic() {
   _msg.setParam("TOPIC " + channel);
   _msg.setTrailing(newtopic);
   // chanToTopic->sendToAll(_msg);
-  _msg.addRespondToChannel(chanToTopic);
+  _msg.addReplyToChannel(chanToTopic);
   chanToTopic->setTopic(newtopic);
 }

@@ -84,7 +84,7 @@ bool Channel::isMode(const char& mode) const {
 //   for (std::set<std::string>::const_iterator it = _members.begin();
 //        it != _members.end(); it++) {
 //     Messenger copy = msg;
-//     copy.addRespondToClient(Server::_clientNicks[*it]->getFd());
+//     copy.addReplyToClient(Server::_clientNicks[*it]->getFd());
 //   }
 // }
 

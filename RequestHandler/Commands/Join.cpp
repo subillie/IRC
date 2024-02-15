@@ -100,7 +100,7 @@ void RequestHandler::addUser(Channel* chanToJoin) {
   _msg.setPrefix(_client->getPrefix());
   _msg.setParam("JOIN");
   _msg.setTrailing(channelName);
-  _msg.addRespondToChannel(chanToJoin);
+  _msg.addReplyToChannel(chanToJoin);
   //   Messenger joinMsg;
   //   joinMsg.setPrefix(_client->getPrefix());
   //   joinMsg.setParam("JOIN");

@@ -53,7 +53,7 @@ void RequestHandler::nick() {
       _msg.setPrefix(_client->getPrefix());
       _msg.setParam("NICK");
       _msg.setTrailing(newNick);
-      _msg.addRespondToChannel(chan);
+      _msg.addReplyToChannel(chan);
     }
 
     _client->setNickname(newNick);

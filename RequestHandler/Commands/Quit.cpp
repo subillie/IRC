@@ -25,15 +25,15 @@ void RequestHandler::quit() {
     _msg.setParam("Quit");
     _msg.setTrailing(reason);
     // channel->sendToAll(_msg);
-    _msg.addRespondToChannel(channel);
+    _msg.addReplyToChannel(channel);
 
     _client->leaveChannel(channel);
   }
   _msg.setParam("ERROR");
   _msg.setTrailing("Closing link: (" + Server::_clientFds[_fd]->getHostname() +
                    ") [Quit: " + reason + "]");
-  _msg.addRespondToClient(_fd);
+  _msg.addReplyToClient(_fd);
 
-  _client->setisQuit(true);
+  _client->setIsQuit(true);
   printRed("Client Quit");
 }

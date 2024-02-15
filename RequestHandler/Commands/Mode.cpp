@@ -38,7 +38,7 @@ void RequestHandler::userMode(const std::string& target) {
     _msg.setPrefix(_client->getPrefix());
     _msg.setParam("MODE " + nick);
     _msg.setTrailing(_token[2]);
-    _msg.addRespondToClient(_fd);
+    _msg.addReplyToClient(_fd);
     _client->setMode(_token[2]);
   } else {
     _msg.ErrUModeUnknownFlag(_fd);
@@ -132,7 +132,7 @@ void RequestHandler::handleOpMode(Channel* channel,
   _msg.setTrailing(nick);
   modestring == "+o" ? channel->addOp(nick) : channel->removeOp(nick);
   // channel->sendToAll(_msg);
-  _msg.addRespondToChannel(channel);
+  _msg.addReplyToChannel(channel);
 }
 
 void RequestHandler::limitMode(Channel* channel,
@@ -175,7 +175,7 @@ void RequestHandler::limitMode(Channel* channel,
     channel->removeMode(CLIENT_LIMIT_CHANNEL);
   }
   // channel->sendToAll(_msg);
-  _msg.addRespondToChannel(channel);
+  _msg.addReplyToChannel(channel);
 }
 
 void RequestHandler::topicMode(Channel* channel,
@@ -192,7 +192,7 @@ void RequestHandler::topicMode(Channel* channel,
   _msg.setParam("MODE " + channel->getName());
   _msg.setTrailing(modestring);
   // channel->sendToAll(_msg);
-  _msg.addRespondToChannel(channel);
+  _msg.addReplyToChannel(channel);
 }
 
 void RequestHandler::inviteMode(Channel* channel,
@@ -206,7 +206,7 @@ void RequestHandler::inviteMode(Channel* channel,
   _msg.setParam("MODE " + channel->getName());
   _msg.setTrailing(modestring);
   // channel->sendToAll(_msg);
-  _msg.addRespondToChannel(channel);
+  _msg.addReplyToChannel(channel);
 }
 
 void RequestHandler::keyMode(Channel* channel, const std::string& modestring) {
@@ -240,5 +240,5 @@ void RequestHandler::keyMode(Channel* channel, const std::string& modestring) {
   }
   _msg.setTrailing(channel->getPassword());
   // channel->sendToAll(_msg);
-  _msg.addRespondToChannel(channel);
+  _msg.addReplyToChannel(channel);
 }

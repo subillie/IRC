@@ -12,13 +12,13 @@ void Messenger::setTrailing(const std::string& trailing) {
   _trailing = trailing;
 }
 
-void Messenger::addRespondToClient(int fd) {
+void Messenger::addReplyToClient(int fd) {
   Client* client = Server::_clientFds[fd];
   if (!_prefix.empty()) _prefix = ":" + _prefix + " ";
   if (!_trailing.empty()) _trailing = " :" + _trailing;
   std::string response = _prefix + _param + _trailing + CRLF;
   printCyan(response);
-  client->addResponds(response);
+  client->addReplies(response);
   // client[fd]->request <- response
   //   if (send(fd, response.c_str(), response.length(), 0) == -1) {
   //     throw fd;
@@ -29,7 +29,7 @@ void Messenger::addRespondToClient(int fd) {
   _trailing.clear();
 }
 
-void Messenger::addRespondToChannel(Channel* channel) {
+void Messenger::addReplyToChannel(Channel* channel) {
   std::set<std::string> members = channel->getMembers();
   std::string prefix = _prefix;
   std::string param = _param;
@@ -39,7 +39,7 @@ void Messenger::addRespondToChannel(Channel* channel) {
     _prefix = prefix;
     _param = param;
     _trailing = trailing;
-    addRespondToClient(Server::_clientNicks[*it]->getFd());
+    addReplyToClient(Server::_clientNicks[*it]->getFd());
   }
 }
 

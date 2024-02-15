@@ -47,7 +47,7 @@ void RequestHandler::part() {
         _msg.setTrailing(reason);
       }
       // chanToLeave->sendToAll(_msg);
-      _msg.addRespondToChannel(chanToLeave);
+      _msg.addReplyToChannel(chanToLeave);
       _client->leaveChannel(chanToLeave);
     }
   }
