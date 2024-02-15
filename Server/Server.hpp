@@ -55,7 +55,7 @@ class Server {
   void addClient(int fd);
   void deleteClient(int fd);
 
-  fd_set updateWriteSet(fd_set writeSet, int fds);
+  fd_set updateWriteSet(fd_set mainSet, fd_set writeSet, int fds);
   // static void sendToAllClients(Messenger msg); //not used
 };
 

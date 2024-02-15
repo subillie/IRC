@@ -96,8 +96,8 @@ void Server::run() {
             _requests.pop();
             requestHandler.execute();
             // writeSet에 전송할 fd추가
-            _writeSet =
-                updateWriteSet(requestHandler.getMsgWriteSet(), fdCount);
+            _writeSet = updateWriteSet(
+                _writeSet, requestHandler.getMsgWriteSet(), fdCount);
           }
           memset(recvBuffer, 0, sizeof(recvBuffer));
         }
@@ -154,9 +154,8 @@ void Server::deleteClient(int fd) {
   _clientFds.erase(fd);
 }
 
-fd_set Server::updateWriteSet(fd_set writeSet, int fds) {
-  fd_set newWriteSet;
-  FD_ZERO(&newWriteSet);
+fd_set Server::updateWriteSet(fd_set mainSet, fd_set writeSet, int fds) {
+  fd_set newWriteSet = mainSet;
   for (int i = 0; i <= fds; i++) {
     if (FD_ISSET(i, &writeSet) && !FD_ISSET(i, &newWriteSet)) {
       FD_SET(i, &newWriteSet);
