@@ -17,7 +17,7 @@ c1		:
 	docker exec -it irc irssi -c 127.0.0.1 -p 6667 -n one
 
 c2		:
-	docker exec -it irc irssi -c 127.0.0.1 -p 6667 -n one
+	docker exec -it irc irssi -c 127.0.0.1 -p 6667 -n two
 
 c3		:
 	docker exec -it irc irssi -c 127.0.0.1 -p 6667 -n three
