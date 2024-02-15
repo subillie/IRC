@@ -69,12 +69,18 @@ const std::set<std::string> &Client::getChannels() const { return _channels; }
 
 void Client::sendReplies() {
   while (!_replies.empty()) {
-    std::string response = _replies.front();
-    printRed(response);
-    if (send(_fd, response.c_str(), response.length(), 0) == -1) {
-      printRed(response);
+    std::string reply = _replies.front();
+    printRed(reply);
+    // size_t fullLen = reply.length();
+    // for (size_t fracLen = 0; fullLen != fracLen;) {
+    size_t sendLen = send(_fd, reply.c_str(), reply.length(), 0);
+    if (sendLen == static_cast<size_t>(-1)) {
+      if (reply.length() > 0) printRed(reply);
       throw _fd;
-    }
+    }  // else {
+       // fracLen += sendLen;
+    // }
+    // }
     _replies.pop();
   }
   if (_isQuit) {

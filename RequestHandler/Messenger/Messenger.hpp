@@ -81,7 +81,7 @@ class Messenger {
   void RplEndOfNames(int fd, const std::string& channel);    // 366
   void RplEndOfBanList(int fd, const std::string& channel);  // 368
 
-  //  make response
+  //  make reply
   void setPrefix(const std::string& prefix);
   void setParam(const std::string& param);
   void setTrailing(const std::string& trailing);

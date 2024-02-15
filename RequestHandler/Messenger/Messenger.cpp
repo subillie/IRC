@@ -16,11 +16,11 @@ void Messenger::addReplyToClient(int fd) {
   Client* client = Server::_clientFds[fd];
   if (!_prefix.empty()) _prefix = ":" + _prefix + " ";
   if (!_trailing.empty()) _trailing = " :" + _trailing;
-  std::string response = _prefix + _param + _trailing + CRLF;
-  printCyan(response);
-  client->addReplies(response);
-  // client[fd]->request <- response
-  //   if (send(fd, response.c_str(), response.length(), 0) == -1) {
+  std::string reply = _prefix + _param + _trailing + CRLF;
+  printCyan(reply);
+  client->addReplies(reply);
+  // client[fd]->request <- reply
+  //   if (send(fd, reply.c_str(), reply.length(), 0) == -1) {
   //     throw fd;
   //   }
   addWriteSet(fd);
