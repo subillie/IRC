@@ -34,6 +34,6 @@ void RequestHandler::quit() {
                    ") [Quit: " + reason + "]");
   _msg.addRespondToClient(_fd);
 
-  _client->setIsQuited(true);
+  _client->setisQuit(true);
   printRed("Client Quit");
 }

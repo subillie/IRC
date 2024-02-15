@@ -1,7 +1,7 @@
 #include "Client.hpp"
 
 Client::Client(int fd)
-    : _fd(fd), _isRegistered(false), _isQuited(false), _nickname("*") {}
+    : _fd(fd), _isRegistered(false), _isQuit(false), _nickname("*") {}
 
 bool Client::isMaxJoined() const { return _channels.size() == MAX_CHANNEL; }
 
@@ -29,7 +29,7 @@ void Client::leaveChannel(Channel *channel) {
 
 void Client::setIsRegistered(bool val) { _isRegistered = val; }
 
-void Client::setIsQuited(bool val) { _isQuited = val; }
+void Client::setisQuit(bool val) { _isQuit = val; }
 
 void Client::setMode(const std::string &mode) { _mode = mode; }
 
@@ -47,7 +47,7 @@ const int &Client::getFd() const { return _fd; }
 
 bool Client::getIsRegistered() const { return _isRegistered; }
 
-bool Client::getIsQuited() const { return _isQuited; };
+bool Client::getisQuit() const { return _isQuit; };
 
 const std::string &Client::getMode() const { return _mode; }
 
@@ -77,7 +77,7 @@ void Client::sendResponds() {
     }
     _responds.pop();
   }
-  if (_isQuited) {
+  if (_isQuit) {
     throw _fd;
   }
 }
