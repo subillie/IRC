@@ -76,6 +76,7 @@ class RequestHandler {
   void parse();
   void execute();  // Execute commands and handle errors
   const fd_set &getMsgWriteSet() const;
+  bool isInSameChannel(Client *c1, Client *c2);
 };
 
 #endif

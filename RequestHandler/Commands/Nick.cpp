@@ -38,22 +38,18 @@ void RequestHandler::nick() {
     return;
   }
 
-  // 등록 후 닉네임 변경하려는 경우
   if (_client->getIsRegistered()) {
     // : two!root@127.0.0.1 NICK :new
     // 닉네임 변경 시 모든 클라이언트에 메시지 보냄
-    // Server::sendToAllClients(_msg);
-    // Server::_channelNames[oldNick]->sendToAll(_msg);
-    std::set<std::string> chanToNick = _client->getChannels();
-    std::set<std::string>::iterator chanIter = chanToNick.begin();
-    for (; chanIter != chanToNick.end(); chanIter++) {
-      Channel* chan = Server::_channelNames[*chanIter];
-
-      // 채널에 있는 모든 멤버들에게 메시지 전송
-      _msg.setPrefix(_client->getPrefix());
-      _msg.setParam("NICK");
-      _msg.setTrailing(newNick);
-      _msg.addReplyToChannel(chan);
+    _msg.addReplyToClient(_fd);
+    std::map<int, Client*>::iterator fdIter = Server::_clientFds.begin();
+    for (; fdIter != Server::_clientFds.end(); fdIter++) {
+      if (isInSameChannel(_client, fdIter->second)) {
+        _msg.setPrefix(_client->getPrefix());
+        _msg.setParam("NICK");
+        _msg.setTrailing(newNick);
+        _msg.addReplyToClient(fdIter->first);
+      }
     }
 
     _client->setNickname(newNick);

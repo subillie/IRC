@@ -78,3 +78,16 @@ bool RequestHandler::isConnectionMsgs() {
 const fd_set& RequestHandler::getMsgWriteSet() const {
   return (_msg.getWriteSet());
 };
+
+bool RequestHandler::isInSameChannel(Client* c1, Client* c2) {
+  std::set<std::string> chanC1 = c1->getChannels();
+  std::set<std::string> chanC2 = c2->getChannels();
+  for (std::set<std::string>::iterator it1 = chanC1.begin();
+       it1 != chanC1.end(); it1++) {
+    for (std::set<std::string>::iterator it2 = chanC2.begin();
+         it2 != chanC2.end(); it2++) {
+      if (*it1 == *it2) return true;
+    }
+  }
+  return false;
+}

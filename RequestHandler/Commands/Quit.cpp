@@ -13,22 +13,25 @@ void RequestHandler::quit() {
   reason.erase(reason.find_last_not_of(' ') + 1);
 
   // client가 참여 중인 모든 채널에 대해
-  std::string nickname = _client->getNickname();
   std::string prefix = _client->getPrefix();
+  _msg.addReplyToClient(_fd);
+  std::map<int, Client *>::iterator fdIter = Server::_clientFds.begin();
+  for (; fdIter != Server::_clientFds.end(); fdIter++) {
+    if (isInSameChannel(_client, fdIter->second)) {
+      _msg.setPrefix(prefix + " QUIT");
+      _msg.setParam("Quit");
+      _msg.setTrailing(reason);
+      _msg.addReplyToClient(fdIter->first);
+    }
+  }
+
   std::set<std::string> channels = _client->getChannels();
-  std::set<std::string>::iterator chanIter = channels.begin();
-  for (; chanIter != channels.end(); chanIter++) {
-    Channel* channel = Server::_channelNames[*chanIter];
-
-    // 채널에 있는 모든 멤버들에게 메시지 전송
-    _msg.setPrefix(prefix + " QUIT");
-    _msg.setParam("Quit");
-    _msg.setTrailing(reason);
-    // channel->sendToAll(_msg);
-    _msg.addReplyToChannel(channel);
-
+  std::set<std::string>::iterator chanToQuit = channels.begin();
+  for (; chanToQuit != channels.end(); chanToQuit++) {
+    Channel *channel = Server::_channelNames[*chanToQuit];
     _client->leaveChannel(channel);
   }
+
   _msg.setParam("ERROR");
   _msg.setTrailing("Closing link: (" + Server::_clientFds[_fd]->getHostname() +
                    ") [Quit: " + reason + "]");
