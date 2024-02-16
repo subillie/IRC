@@ -1,6 +1,7 @@
 #include "Client.hpp"
 
-Client::Client(int fd) : _fd(fd), _isRegistered(false), _nickname("*") {}
+Client::Client(int fd)
+    : _fd(fd), _isRegistered(false), _isQuit(false), _nickname("*") {}
 
 bool Client::isMaxJoined() const { return _channels.size() == MAX_CHANNEL; }
 
@@ -28,6 +29,8 @@ void Client::leaveChannel(Channel *channel) {
 
 void Client::setIsRegistered(bool val) { _isRegistered = val; }
 
+void Client::setIsQuit(bool val) { _isQuit = val; }
+
 void Client::setMode(const std::string &mode) { _mode = mode; }
 
 void Client::setUsername(const std::string &username) { _username = username; }
@@ -43,6 +46,8 @@ void Client::setRealname(const std::string &realname) { _realname = realname; }
 const int &Client::getFd() const { return _fd; }
 
 bool Client::getIsRegistered() const { return _isRegistered; }
+
+bool Client::getIsQuit() const { return _isQuit; };
 
 const std::string &Client::getMode() const { return _mode; }
 
@@ -61,6 +66,29 @@ const std::string Client::getPrefix() const {
 }
 
 const std::set<std::string> &Client::getChannels() const { return _channels; }
+
+void Client::sendReplies() {
+  long fullLen, sendLen = 0;
+  while (!_replies.empty()) {
+    std::string reply = _replies.front();
+    fullLen = reply.length();
+    for (long fracLen = 0; fullLen != fracLen;) {
+      sendLen = send(_fd, reply.c_str(), reply.length(), 0);
+      if (sendLen == -1) {
+        if (reply.length() > 0) printRed(reply);
+        throw _fd;
+      } else {
+        fracLen += sendLen;
+      }
+    }
+    _replies.pop();
+  }
+  if (_isQuit) {
+    throw _fd;
+  }
+}
+
+void Client::addReplies(const std::string &replies) { _replies.push(replies); }
 
 std::ostream &operator<<(std::ostream &os, const Client &client) {
   os << "Client Information:" << std::endl;

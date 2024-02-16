@@ -11,18 +11,17 @@ void RequestHandler::join() {
     return;
   }
 
-  std::stringstream ss1(_token[1]), ss2(_token[2]);
-  std::string channel, password;
-  std::map<std::string, std::string> keys;
-  while (std::getline(ss1, channel, ',')) {
-    std::getline(ss2, password, ',');
-    keys[channel] = password;
+  std::string channelName, channelKey;
+  std::stringstream ss1(_token[1]), ss2("");
+  if (_token.size() >= 3) {
+    ss2 << _token[2];
   }
 
-  std::map<std::string, std::string>::iterator iter = keys.begin();
-  for (; iter != keys.end(); iter++) {
-    const std::string& channelName = iter->first;
-    const std::string& channelKey = iter->second;
+  while (std::getline(ss1, channelName, ',')) {
+    std::getline(ss2, channelKey, ',');
+    std::cout << YELLOW << "name: " << channelName << " key: " << channelKey
+              << RESET << std::endl;
+
     if (channelName[0] != '#') {
       _msg.ErrBadChanMask(_fd);
       continue;
@@ -37,7 +36,7 @@ void RequestHandler::join() {
     // 이미 가입한 채널 수가 최대치일 때
     if (_client->isMaxJoined()) {
       _msg.ErrTooManyChannels(_fd, channelName);
-      break;
+      continue;
     }
 
     // 채널이 없으면 생성
@@ -77,6 +76,7 @@ void RequestHandler::join() {
         addUser(chanToJoin);
       }
     }
+    channelKey.clear();
   }
 }
 
@@ -97,11 +97,10 @@ void RequestHandler::addUser(Channel* chanToJoin) {
   std::set<std::string>::const_iterator membIter;
 
   // one_!root@127.0.0.1 JOIN :#bbbbb
-  Messenger joinMsg;
-  joinMsg.setPrefix(_client->getPrefix());
-  joinMsg.setParam("JOIN");
-  joinMsg.setTrailing(channelName);
-  chanToJoin->sendToAll(joinMsg);
+  _msg.setPrefix(_client->getPrefix());
+  _msg.setParam("JOIN");
+  _msg.setTrailing(channelName);
+  _msg.addReplyToChannel(chanToJoin);
 
   // 채널 모든 멤버를 trailing에 담아서 보냄
   std::string trailing;

@@ -38,7 +38,7 @@ void RequestHandler::userMode(const std::string& target) {
     _msg.setPrefix(_client->getPrefix());
     _msg.setParam("MODE " + nick);
     _msg.setTrailing(_token[2]);
-    _msg.sendToClient(_fd);
+    _msg.addReplyToClient(_fd);
     _client->setMode(_token[2]);
   } else {
     _msg.ErrUModeUnknownFlag(_fd);
@@ -131,7 +131,8 @@ void RequestHandler::handleOpMode(Channel* channel,
   // MODE <channelname> <modestring> :<nick>
   _msg.setTrailing(nick);
   modestring == "+o" ? channel->addOp(nick) : channel->removeOp(nick);
-  channel->sendToAll(_msg);
+  // channel->sendToAll(_msg);
+  _msg.addReplyToChannel(channel);
 }
 
 void RequestHandler::limitMode(Channel* channel,
@@ -173,7 +174,8 @@ void RequestHandler::limitMode(Channel* channel,
     channel->setLimit(0);
     channel->removeMode(CLIENT_LIMIT_CHANNEL);
   }
-  channel->sendToAll(_msg);
+  // channel->sendToAll(_msg);
+  _msg.addReplyToChannel(channel);
 }
 
 void RequestHandler::topicMode(Channel* channel,
@@ -189,7 +191,8 @@ void RequestHandler::topicMode(Channel* channel,
   // 응답 메시지 :one!root@127.0.0.1 MODE <channel> :<modestring>
   _msg.setParam("MODE " + channel->getName());
   _msg.setTrailing(modestring);
-  channel->sendToAll(_msg);
+  // channel->sendToAll(_msg);
+  _msg.addReplyToChannel(channel);
 }
 
 void RequestHandler::inviteMode(Channel* channel,
@@ -202,7 +205,7 @@ void RequestHandler::inviteMode(Channel* channel,
                      : channel->removeMode(INVITE_ONLY_CHANNEL);
   _msg.setParam("MODE " + channel->getName());
   _msg.setTrailing(modestring);
-  channel->sendToAll(_msg);
+  _msg.addReplyToChannel(channel);
 }
 
 void RequestHandler::keyMode(Channel* channel, const std::string& modestring) {
@@ -235,5 +238,5 @@ void RequestHandler::keyMode(Channel* channel, const std::string& modestring) {
     channel->setPassword("");
   }
   _msg.setTrailing(channel->getPassword());
-  channel->sendToAll(_msg);
+  _msg.addReplyToChannel(channel);
 }

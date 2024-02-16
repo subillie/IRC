@@ -80,14 +80,6 @@ bool Channel::isMode(const char& mode) const {
   return _modes.find(mode) != _modes.end();
 }
 
-void Channel::sendToAll(Messenger& msg) const {
-  for (std::set<std::string>::const_iterator it = _members.begin();
-       it != _members.end(); it++) {
-    Messenger copy = msg;
-    copy.sendToClient(Server::_clientNicks[*it]->getFd());
-  }
-}
-
 std::ostream& operator<<(std::ostream& os, const Channel& channel) {
   os << "====Channel====\n";
   os << "Name : " << channel.getName() << "\n";

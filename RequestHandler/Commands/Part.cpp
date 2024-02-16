@@ -46,7 +46,8 @@ void RequestHandler::part() {
       if (!reason.empty()) {
         _msg.setTrailing(reason);
       }
-      chanToLeave->sendToAll(_msg);
+      // chanToLeave->sendToAll(_msg);
+      _msg.addReplyToChannel(chanToLeave);
       _client->leaveChannel(chanToLeave);
     }
   }

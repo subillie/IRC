@@ -10,7 +10,7 @@ int Server::Socket(int domain, int type, int protocol) {
 
 int Server::Fcntl(int fd, int cmd, int arg) {
   int val = fcntl(fd, cmd, arg);
-  if (fcntl(fd, cmd, arg) == -1) {
+  if (val == -1) {
     throw std::runtime_error("Fcntl error");
   }
   return val;

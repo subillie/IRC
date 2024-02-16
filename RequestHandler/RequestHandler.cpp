@@ -74,3 +74,7 @@ bool RequestHandler::isConnectionMsgs() {
   return (_command == "USER" || _command == "NICK" || _command == "PING" ||
           _command == "CAP" || _command == "PASS" || _command == "QUIT");
 }
+
+const fd_set& RequestHandler::getMsgWriteSet() const {
+  return (_msg.getWriteSet());
+};

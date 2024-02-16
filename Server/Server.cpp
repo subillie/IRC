@@ -45,6 +45,7 @@ void Server::init() {
        sizeof(serverAddr));
   Listen(_serverFd, FD_SETSIZE);
   FD_ZERO(&_readSet);
+  FD_ZERO(&_writeSet);
   FD_SET(_serverFd, &_readSet);
 }
 
@@ -55,12 +56,13 @@ void Server::run() {
   int clientFd = -1;
 
   while (true) {
-    _readySet = _readSet;
-    Select(fdCount + 1, &_readySet, 0, 0, 0);
+    fd_set read = _readSet;
+    fd_set write = _writeSet;
+    Select(fdCount + 1, &read, &write, 0, 0);
 
     // Accept connection and handle client's requirements
     for (int i = 0; i <= fdCount; i++) {
-      if (FD_ISSET(i, &_readySet)) {
+      if (FD_ISSET(i, &read)) {
         // Accept connection of a new client
         if (i == _serverFd && _clientFds.size() <= FD_SETSIZE) {
           sockaddr_in clientAddr;
@@ -82,31 +84,35 @@ void Server::run() {
           if (recv(i, recvBuffer, sizeof(recvBuffer), 0) <= 0) {
             printRed("Client closed");
             deleteClient(i);
-            --fdCount;
             continue;
           }
           client->buffer += recvBuffer;
           printDebug("buffer", client->buffer);  // Print buffer for debug
           parse(client->buffer);
 
-          try {
-            while (!_requests.empty()) {
-              RequestHandler requestHandler(_clientFds[i], _requests.front(),
-                                            _password);
-              _requests.pop();
-              requestHandler.execute();
-            }
-          } catch (const char *quit) {
-            printRed(quit);
-            deleteClient(i);
-            --fdCount;
-          } catch (const int fdToQuit) {
-            printRed(_clientFds[fdToQuit]->getNickname());
-            deleteClient(fdToQuit);
-            --fdCount;
+          while (!_requests.empty()) {
+            RequestHandler requestHandler(_clientFds[i], _requests.front(),
+                                          _password);
+            _requests.pop();
+            requestHandler.execute();
+            // WriteSet에 전송할 fd추가
+            _writeSet = updateWriteSet(
+                _writeSet, requestHandler.getMsgWriteSet(), fdCount);
+            // Quit 명령어 들어왔을 때 readSet 제거
+            if (_clientFds[i]->getIsQuit())
+              if (FD_ISSET(i, &_readSet)) FD_CLR(i, &_readSet);
           }
           memset(recvBuffer, 0, sizeof(recvBuffer));
         }
+      }
+      if (FD_ISSET(i, &write)) {
+        try {
+          Client *writeClient = _clientFds[i];
+          writeClient->sendReplies();   // Client에 저장된 replies를 전송
+        } catch (const int fdToQuit) {  // Check send error
+          deleteClient(fdToQuit);
+        }
+        FD_CLR(i, &_writeSet);
       }
     }
   }
@@ -127,7 +133,7 @@ void Server::addClient(int fd) {
 }
 
 void Server::deleteClient(int fd) {
-  FD_CLR(fd, &_readSet);
+  if (FD_ISSET(fd, &_readSet)) FD_CLR(fd, &_readSet);
   Close(fd);
   Client *client = _clientFds[fd];
 
@@ -148,11 +154,12 @@ void Server::deleteClient(int fd) {
   _clientFds.erase(fd);
 }
 
-void Server::sendToAllClients(Messenger msg) {
-  for (std::map<int, Client *>::const_iterator it = _clientFds.begin();
-       it != _clientFds.end(); it++) {
-    Messenger copy(msg);
-    const int &fd = it->first;
-    copy.sendToClient(fd);
+fd_set Server::updateWriteSet(fd_set mainSet, fd_set writeSet, int fds) {
+  fd_set newWriteSet = mainSet;
+  for (int i = 0; i <= fds; i++) {
+    if (FD_ISSET(i, &writeSet) && !FD_ISSET(i, &newWriteSet)) {
+      FD_SET(i, &newWriteSet);
+    }
   }
+  return (newWriteSet);
 }

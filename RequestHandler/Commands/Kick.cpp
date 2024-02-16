@@ -51,7 +51,8 @@ void RequestHandler::kick() {
         if (i < _token.size() - 1) trailing += " ";
         _msg.setTrailing(trailing);
       }
-      chanToKick->sendToAll(_msg);
+      _msg.addReplyToChannel(chanToKick);
+      // chanToKick->sendToAll(_msg);
       Server::_clientNicks[target]->leaveChannel(chanToKick);
     }
   }

@@ -71,10 +71,11 @@ class RequestHandler {
 
  public:
   RequestHandler(Client *client, const std::string &request,
-                 const std::string &password);  // Init map
+                 const std::string &password);  // Init function map
 
   void parse();
   void execute();  // Execute commands and handle errors
+  const fd_set &getMsgWriteSet() const;
 };
 
 #endif
