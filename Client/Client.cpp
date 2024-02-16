@@ -67,15 +67,14 @@ const std::string Client::getPrefix() const {
 
 const std::set<std::string> &Client::getChannels() const { return _channels; }
 
-// TODO : 고치기
 void Client::sendReplies() {
-  size_t fullLen, sendLen = 0;
+  long fullLen, sendLen = 0;
   while (!_replies.empty()) {
     std::string reply = _replies.front();
     fullLen = reply.length();
-    for (size_t fracLen = 0; fullLen != fracLen;) {
+    for (long fracLen = 0; fullLen != fracLen;) {
       sendLen = send(_fd, reply.c_str(), reply.length(), 0);
-      if (sendLen == static_cast<size_t>(-1)) {
+      if (sendLen == -1) {
         if (reply.length() > 0) printRed(reply);
         throw _fd;
       } else {

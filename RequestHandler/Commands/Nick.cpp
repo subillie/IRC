@@ -41,6 +41,8 @@ void RequestHandler::nick() {
   if (_client->getIsRegistered()) {
     // Reply를 보낼 client 명단 만듦
     std::set<std::string> clientsToReply;
+    clientsToReply.insert(_client->getNickname());
+
     std::set<std::string> channels = _client->getChannels();
     std::set<std::string>::iterator chanIter, memIter;
     for (chanIter = channels.begin(); chanIter != channels.end(); chanIter++) {
