@@ -12,24 +12,26 @@ void RequestHandler::quit() {
   }
   reason.erase(reason.find_last_not_of(' ') + 1);
 
-  // client가 참여 중인 모든 채널에 대해
-  std::string prefix = _client->getPrefix();
-  _msg.addReplyToClient(_fd);
-  std::map<int, Client *>::iterator fdIter = Server::_clientFds.begin();
-  for (; fdIter != Server::_clientFds.end(); fdIter++) {
-    if (isInSameChannel(_client, fdIter->second)) {
-      _msg.setPrefix(prefix + " QUIT");
-      _msg.setParam("Quit");
-      _msg.setTrailing(reason);
-      _msg.addReplyToClient(fdIter->first);
+  // Reply를 보낼 client 명단 만듦
+  std::set<std::string> clientsToReply;
+  std::set<std::string> channels = _client->getChannels();
+  std::set<std::string>::iterator chanIter, memIter;
+  for (chanIter = channels.begin(); chanIter != channels.end(); chanIter++) {
+    Channel *channel = Server::_channelNames[*chanIter];
+    std::set<std::string> members = channel->getMembers();
+    for (memIter = members.begin(); memIter != members.end(); memIter++) {
+      clientsToReply.insert(*memIter);
     }
+    _client->leaveChannel(channel);  // Quit
   }
 
-  std::set<std::string> channels = _client->getChannels();
-  std::set<std::string>::iterator chanToQuit = channels.begin();
-  for (; chanToQuit != channels.end(); chanToQuit++) {
-    Channel *channel = Server::_channelNames[*chanToQuit];
-    _client->leaveChannel(channel);
+  // 명단에 있는 모든 client에게 reply를 보냄
+  for (memIter = clientsToReply.begin(); memIter != clientsToReply.end();
+       memIter++) {
+    _msg.setPrefix(_client->getPrefix() + " QUIT");
+    _msg.setParam("Quit");
+    _msg.setTrailing(reason);
+    _msg.addReplyToClient(Server::_clientNicks[*memIter]->getFd());
   }
 
   _msg.setParam("ERROR");

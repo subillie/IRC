@@ -39,28 +39,36 @@ void RequestHandler::nick() {
   }
 
   if (_client->getIsRegistered()) {
-    // : two!root@127.0.0.1 NICK :new
-    // 닉네임 변경 시 모든 클라이언트에 메시지 보냄
-    _msg.addReplyToClient(_fd);
-    std::map<int, Client*>::iterator fdIter = Server::_clientFds.begin();
-    for (; fdIter != Server::_clientFds.end(); fdIter++) {
-      if (isInSameChannel(_client, fdIter->second)) {
-        _msg.setPrefix(_client->getPrefix());
-        _msg.setParam("NICK");
-        _msg.setTrailing(newNick);
-        _msg.addReplyToClient(fdIter->first);
+    // Reply를 보낼 client 명단 만듦
+    std::set<std::string> clientsToReply;
+    std::set<std::string> channels = _client->getChannels();
+    std::set<std::string>::iterator chanIter, memIter;
+    for (chanIter = channels.begin(); chanIter != channels.end(); chanIter++) {
+      std::set<std::string> members =
+          Server::_channelNames[*chanIter]->getMembers();
+      for (memIter = members.begin(); memIter != members.end(); memIter++) {
+        clientsToReply.insert(*memIter);
       }
     }
 
+    // : two!root@127.0.0.1 NICK :new
+    // 명단에 있는 모든 client에게 reply를 보냄
+    for (memIter = clientsToReply.begin(); memIter != clientsToReply.end();
+         memIter++) {
+      _msg.setPrefix(_client->getPrefix());
+      _msg.setParam("NICK");
+      _msg.setTrailing(newNick);
+      _msg.addReplyToClient(Server::_clientNicks[*memIter]->getFd());
+    }
+
+    // Nickname 변경
     _client->setNickname(newNick);
     Server::_clientNicks.erase(oldNick);
     Server::_clientNicks[newNick] = _client;
 
-    // 가입한 모든 채널에 대해 닉네임 바꿔줌
-    std::set<std::string> channels = _client->getChannels();
-    for (std::set<std::string>::iterator it = channels.begin();
-         it != channels.end(); it++) {
-      Channel* channel = Server::_channelNames[*it];
+    // 가입한 모든 channel 정보 수정
+    for (chanIter = channels.begin(); chanIter != channels.end(); chanIter++) {
+      Channel* channel = Server::_channelNames[*chanIter];
       if (channel->isOp(oldNick)) {
         channel->removeOp(oldNick);
         channel->addOp(newNick);
