@@ -24,7 +24,6 @@ RequestHandler::RequestHandler(Client* client, const std::string& request,
 }
 
 void RequestHandler::parse() {
-  std::cout << _request << std::endl;
   std::stringstream ss(_request);
   std::string str;
   while (getline(ss, str, ' ')) {

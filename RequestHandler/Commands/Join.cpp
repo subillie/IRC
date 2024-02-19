@@ -19,9 +19,6 @@ void RequestHandler::join() {
 
   while (std::getline(ss1, channelName, ',')) {
     std::getline(ss2, channelKey, ',');
-    std::cout << YELLOW << "name: " << channelName << " key: " << channelKey
-              << RESET << std::endl;
-
     if (channelName[0] != '#') {
       _msg.ErrBadChanMask(_fd);
       continue;

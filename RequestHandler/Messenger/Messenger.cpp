@@ -17,7 +17,7 @@ void Messenger::addReplyToClient(int fd) {
   if (!_prefix.empty()) _prefix = ":" + _prefix + " ";
   if (!_trailing.empty()) _trailing = " :" + _trailing;
   std::string reply = _prefix + _param + _trailing + CRLF;
-  printCyan(reply);
+  printCyan(reply);  // Debug reply
   client->addReplies(reply);
   addWriteSet(fd);
   _prefix.clear();
