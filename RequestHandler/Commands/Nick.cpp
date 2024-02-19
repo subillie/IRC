@@ -9,7 +9,7 @@ void RequestHandler::nick() {
   }
 
   // 인자가 없을 때
-  if (_token.size() != 2 || _token[1].empty()) {
+  if (_token.size() < 2 || _token[1].empty()) {
     _msg.ErrNoNickNameGiven(_fd);
     return;
   }
