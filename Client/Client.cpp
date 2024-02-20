@@ -75,7 +75,6 @@ void Client::sendReplies() {
     for (long fracLen = 0; fullLen != fracLen;) {
       sendLen = send(_fd, reply.c_str(), reply.length(), 0);
       if (sendLen == -1) {
-        if (reply.length() > 0) printRed(reply);
         throw _fd;
       } else {
         fracLen += sendLen;

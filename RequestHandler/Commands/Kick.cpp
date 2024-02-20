@@ -45,12 +45,7 @@ void RequestHandler::kick() {
     } else {
       _msg.setPrefix(_client->getPrefix());
       _msg.setParam("KICK " + channelName + " " + target);
-      std::string trailing;
-      for (size_t i = 3; i < _token.size(); ++i) {
-        trailing += _token[i];
-        if (i < _token.size() - 1) trailing += " ";
-        _msg.setTrailing(trailing);
-      }
+      joinTrailing(3);
       _msg.addReplyToChannel(chanToKick);
       // chanToKick->sendToAll(_msg);
       Server::_clientNicks[target]->leaveChannel(chanToKick);

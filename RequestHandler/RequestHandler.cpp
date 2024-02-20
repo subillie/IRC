@@ -77,3 +77,12 @@ bool RequestHandler::isConnectionMsgs() {
 const fd_set& RequestHandler::getMsgWriteSet() const {
   return (_msg.getWriteSet());
 };
+
+void RequestHandler::joinTrailing(int index) {
+  std::string trailing;
+  for (size_t i = index; i < _token.size(); ++i) {
+    trailing += _token[i];
+    if (i < _token.size() - 1) trailing += " ";
+    _msg.setTrailing(trailing);
+  }
+}

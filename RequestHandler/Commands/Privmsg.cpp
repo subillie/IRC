@@ -51,7 +51,7 @@ void RequestHandler::privmsg() {
         if (*it != _client->getNickname()) {
           _msg.setPrefix(_client->getPrefix());
           _msg.setParam("PRIVMSG " + _token[1]);
-          _msg.setTrailing(_token[2]);
+          joinTrailing(2);
           _msg.addReplyToClient(Server::_clientNicks[*it]->getFd());
         }
       }
@@ -63,7 +63,7 @@ void RequestHandler::privmsg() {
       }
       _msg.setPrefix(_client->getPrefix());
       _msg.setParam("PRIVMSG " + _token[1]);
-      _msg.setTrailing(_token[2]);
+      joinTrailing(2);
       _msg.addReplyToClient(Server::_clientNicks[_token[1]]->getFd());
     }
   }
