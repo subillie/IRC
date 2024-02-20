@@ -63,6 +63,7 @@ class RequestHandler {
   void limitMode(Channel *channel, const std::string &modestring);
   void handleOpMode(Channel *channel, const std::string &modestring);
   bool isConnectionMsgs();
+  void joinTrailing(int index);
 
   void pong();
 

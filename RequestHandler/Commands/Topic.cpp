@@ -43,15 +43,9 @@ void RequestHandler::topic() {
     return;
   }
 
-  std::string newtopic;
-  for (size_t i = 2; i < _token.size(); ++i) {
-    newtopic += _token[i];
-    if (i < _token.size() - 1) {
-      newtopic += " ";
-    }
-  }
-
   // 전에 있던 topic과 동일할 때 무시
+  joinTrailing(2);
+  const std::string newtopic = _msg.getTrailing();
   if (newtopic == chanToTopic->getTopic()) {
     return;
   }
@@ -59,7 +53,6 @@ void RequestHandler::topic() {
   // 채널 member에 topic 전송
   _msg.setPrefix(_client->getPrefix());
   _msg.setParam("TOPIC " + channel);
-  _msg.setTrailing(newtopic);
   _msg.addReplyToChannel(chanToTopic);
   chanToTopic->setTopic(newtopic);
 }

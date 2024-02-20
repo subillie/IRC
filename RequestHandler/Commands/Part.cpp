@@ -17,10 +17,6 @@ void RequestHandler::part() {
     }
     channels.push_back(channelName);
   }
-  std::string reason;
-  if (_token.size() == 3) {
-    reason = _token[2];
-  }
 
   std::vector<std::string>::iterator iter = channels.begin();
   for (; iter != channels.end(); ++iter) {
@@ -43,8 +39,8 @@ void RequestHandler::part() {
     } else {
       _msg.setPrefix(_client->getPrefix());
       _msg.setParam("PART " + channelName);
-      if (!reason.empty()) {
-        _msg.setTrailing(reason);
+      if (_token.size() >= 3) {
+        joinTrailing(2);
       }
       // chanToLeave->sendToAll(_msg);
       _msg.addReplyToChannel(chanToLeave);
